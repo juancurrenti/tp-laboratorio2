@@ -1,37 +1,53 @@
 const express = require('express');
-const axios = require('axios');
-const bodyParser = require('body-parser');
 const app = express();
-const path = require('path');
-const mysql = require('mysql');
-const port = process.env.PORT || 4000;
+const sequelize = require('./config/database');
+const pacienteRuta = require('./routes/pacienteRuta'); 
+const Paciente = require('./models/paciente');
+app.use(express.static(__dirname + '/public'));
+app.use(express.urlencoded({ extended: true }));
+app.use('/', pacienteRuta); 
 
-// Configura la conexión a la base de datos MySQL
-const db = mysql.createConnection({
-  host: 'localhost',
-  user: 'root',
-  password: '',
-  database: 'laboratorio',
+app.get('/', (req, res) => {
+    res.sendFile(__dirname + '/views/ingresarPaciente.html');
 });
 
-// Conecta a la base de datos
-db.connect((err) => {
-    if (err) {
-      console.error('Error al conectar a la base de datos:', err);
-      throw err;
+// Ruta para procesar el formulario
+app.post('/guardar-paciente', async (req, res) => {
+    try {
+        // Obtiene los datos del formulario
+        const { nombre, apellido, dni,  email, telefono, fecha_nacimiento, genero, embarazo,
+            diagnostico} = req.body;
+
+        // Guarda los datos en la base de datos
+        await Paciente.create({
+            nombre,
+            apellido,
+            dni,
+            email,
+            telefono,
+            fecha_nacimiento,
+            genero,
+            embarazo,
+            diagnostico
+        });
+
+        // Muestra un mensaje por consola
+        console.log('Datos del paciente guardados con éxito:', nombre, apellido, dni);
+
+        // Redirige o muestra un mensaje de éxito
+        res.redirect('/formulario'); // Puedes redirigir a donde desees o mostrar un mensaje de éxito
+    } catch (error) {
+        console.error(error);
+        res.status(500).send('Error al guardar el paciente en la base de datos.');
     }
-    console.log('Conexión a la base de datos MySQL exitosa');
-  });
-  
-  app.use(bodyParser.json());
-  app.use(express.static(__dirname));
+});
 
-  // Ruta para servir la página principal
-app.get('/', (req, res) => {
-    res.sendFile(path.join(__dirname, './public/index.html'));
-  });
-
-  app.listen(port, () => {
-    console.log(`Servidor escuchando en el puerto ${port}`);
-  });
-  
+sequelize.sync() // Sincroniza los modelos con la base de datos
+    .then(() => {
+        app.listen(3000, () => {
+            console.log('Servidor en ejecución en el puerto 3000');
+        });
+    })
+    .catch((error) => {
+        console.error('Error al sincronizar modelos con la base de datos:', error);
+    });

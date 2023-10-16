@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Formulario de Datos del Paciente</title>
+    <link rel="stylesheet" type="text/css" href="/public/css/style.css">
+</head>
+<body>
+    <h2 class="titulo-formulario">Ingrese los datos del paciente</h2>
+    <form action="/guardar-paciente" method="post"> <!-- Corrige la acción a "/guardar-paciente" -->
+        <label for="nombre" class="etiqueta">Nombre:</label>
+        <input type="text" id="nombre" name="nombre" class="campo" required><br> <!-- Agrega el atributo "name" -->
+        <label for="apellido" class="etiqueta">Apellido:</label>
+        <input type="text" id="apellido" name="apellido" class="campo" required><br> <!-- Corrige el atributo "id" y agrega el "name" -->
+        <label for="identificacion" class="etiqueta">DNI:</label>
+        <input type="text" id="identificacion" name="dni" class="campo" required><br> <!-- Agrega el atributo "name" -->
+        
+        <label for="fecha_nacimiento" class="etiqueta">Fecha de Nacimiento:</label>
+        <input type="date" id="fecha_nacimiento" name="fecha_nacimiento" class="campo" required><br> <!-- Agrega el atributo "name" -->
+        
+        <label for="genero" class="etiqueta">Género:</label>
+        <select id="genero" name="genero" class="campo" required> <!-- Agrega el atributo "name" -->
+            <option value="Masculino">Masculino</option>
+            <option value="Femenino">Femenino</option>
+        </select><br>
+        <label for="embarazo" class="etiqueta">¿Embarazada?</label>
+        <div>
+            <input type="radio" id="embarazo-si" name="embarazo" value="Si" required>
+            <label for="embarazo-si">Sí</label>
+        
+            <input type="radio" id="embarazo-no" name="embarazo" value="No" required>
+            <label for="embarazo-no">No</label>
+        </div>
+
+        <label for="direccion" class="etiqueta">Dirección:</label>
+        <input type="text" id="direccion" name="direccion" class="campo"><br> <!-- Agrega el atributo "name" -->
+        
+        <label for="telefono" class="etiqueta">Teléfono:</label>
+        <input type="text" id="telefono" name="telefono" class="campo"><br> <!-- Agrega el atributo "name" -->
+        
+        <label for="email" class="etiqueta">Correo Electrónico:</label>
+        <input type="email" id="email" name="email" class="campo"><br> <!-- Agrega el atributo "name" -->
+        
+        <label for="diagnostico" class="etiqueta">Diagnóstico (presuntivo o confirmado):</label>
+        <input type="text" id="diagnostico" name="diagnostico" class="campo"><br> <!-- Agrega el atributo "name" -->
+
+        <input type="submit" value="Guardar Datos" class="boton">
+    </form>
+</body>
+</html>
