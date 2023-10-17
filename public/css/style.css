@@ -4,17 +4,24 @@ body {
     align-items: center;
     height: 100vh;
     margin: 0;
+    background-image:url(../img/fondocomun.jpg) ;
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    background-position: center;
   }
   
   #container {
     max-width: 400px;
     padding: 20px;
-    background-color: #f0f0f0;
+    background-color: #a7c2ec;
     text-align: left; /* Alinea el contenido de izquierda a derecha */
     border-radius: 30px;
 }
   
-
+.error-mensaje{
+  color: red;
+}
   
   #titulo {
     font-size: 24px;

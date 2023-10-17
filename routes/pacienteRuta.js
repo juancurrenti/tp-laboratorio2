@@ -3,7 +3,7 @@ const router = express.Router();
 const Paciente = require('../models/paciente');
 
 router.get('/ingresar-paciente', (req, res) => {
-    res.render('ingresarPaciente', { paciente: null }); // Renderiza el formulario de ingreso de pacientes
+    res.render('ingresarPaciente', { paciente: null, mensaje: null }); // Renderiza el formulario de ingreso de pacientes
 });
 
 router.post('/buscar-paciente', async (req, res) => {
@@ -14,10 +14,10 @@ router.post('/buscar-paciente', async (req, res) => {
 
         if (paciente) {
             // Paciente encontrado, muestra el formulario con los campos llenos
-            res.render('ingresarPaciente', { paciente });
+            res.render('ingresarPaciente', { paciente, mensaje1: 'Paciente encontrado: ' });
         } else {
-            // Paciente no encontrado, muestra el mismo formulario vacío
-            res.render('ingresarPaciente', { paciente: null });
+            // Paciente no encontrado, muestra el mensaje y redirige a la página de ingreso de paciente
+            res.render('ingresarPaciente', { paciente: null, mensaje: 'Paciente no encontrado. Ingrese los datos del paciente.' });
         }
     } catch (error) {
         console.error(error);

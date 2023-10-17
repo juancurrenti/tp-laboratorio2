@@ -7,7 +7,9 @@ html
     div#container
       div#content
         h2#titulo Ingresar Datos del Paciente
+        p(class="error-mensaje") #{mensaje}
         form#guardar-form(action="/guardar-paciente", method="post")
+        
           label(for="nombre") Nombre:
           input(type="text", id="nombre", name="nombre", class="input-field", value=`${paciente ? paciente.nombre : ''}`, required)
           br
