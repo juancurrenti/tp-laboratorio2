@@ -2,6 +2,7 @@ doctype html
 html
   head
     title Ingresar Datos del Paciente
+    link(rel="stylesheet", href="/public/css/style.css")
   body
     h2 Ingresar Datos del Paciente
     form(action="/guardar-paciente" method="post")
@@ -13,8 +14,8 @@ html
       input(type="text" id="apellido" name="apellido", value=`${paciente ? paciente.apellido : ''}`, required)
       br
 
-      label(for="identificacion") DNI:
-      input(type="text" id="identificacion" name="dni", value=`${paciente ? paciente.dni : ''}`, required)
+      label(for="dni") DNI:
+      input(type="text" id="dni" name="dni", value=`${paciente ? paciente.dni : ''}`, required)
       br
 
       label(for="fecha_nacimiento") Fecha de Nacimiento:
