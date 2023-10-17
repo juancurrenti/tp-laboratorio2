@@ -33,6 +33,9 @@ app.post('/guardar-paciente', async (req, res) => {
             diagnostico,
         } = req.body;
 
+        // Obtiene la fecha actual para la fecha_registro
+        const fecha_registro = new Date();
+
         const existingPaciente = await Paciente.findOne({ where: { dni } });
 
         if (existingPaciente) {
@@ -60,6 +63,7 @@ app.post('/guardar-paciente', async (req, res) => {
                 genero,
                 embarazo,
                 diagnostico,
+                fecha_registro, // Agrega la fecha de registro
             });
             console.log('Datos del paciente guardados con éxito:', nombre, apellido, dni);
         }

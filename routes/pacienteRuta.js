@@ -44,6 +44,7 @@ router.post('/guardar-paciente', async (req, res) => {
             });
             console.log('Datos del paciente actualizados con éxito:', nombre, apellido, dni);
         } else {
+            // Agregar fecha_registro al crear un nuevo paciente
             await Paciente.create({
                 nombre,
                 apellido,
@@ -54,6 +55,7 @@ router.post('/guardar-paciente', async (req, res) => {
                 genero,
                 embarazo,
                 diagnostico,
+                fecha_registro: new Date(), // La fecha de registro es la fecha y hora actual
             });
             console.log('Datos del paciente guardados con éxito:', nombre, apellido, dni);
         }

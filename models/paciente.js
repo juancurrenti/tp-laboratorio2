@@ -44,6 +44,11 @@ const Paciente = sequelize.define('pacientes', {
     diagnostico: {
         type: DataTypes.STRING,
     },
+    fecha_registro: { 
+        type: DataTypes.DATE,
+        allowNull: false,
+        defaultValue: sequelize.literal('CURRENT_TIMESTAMP'), // Valor por defecto es la fecha y hora actual
+    },
 }, {
     timestamps: false, // Deshabilita las columnas createdAt y updatedAt
 });
