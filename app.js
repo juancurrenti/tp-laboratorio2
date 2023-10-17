@@ -3,11 +3,15 @@ const app = express();
 const sequelize = require('./config/database');
 const pacienteRuta = require('./routes/pacienteRuta');
 const Paciente = require('./models/paciente');
-
+const path = require('path');
 app.set('view engine', 'pug');
 app.set('views', __dirname + '/views');
 
-app.use(express.static(__dirname + '/public'));
+app.use('/public', express.static(path.join(__dirname, 'public'), {
+    setHeaders: (res, path, stat) => {
+      res.set('Content-Type', 'text/css');
+    },
+  }));
 app.use(express.urlencoded({ extended: true }));
 app.use('/', pacienteRuta);
 

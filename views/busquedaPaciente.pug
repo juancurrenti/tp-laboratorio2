@@ -2,9 +2,12 @@ doctype html
 html
   head
     title Buscar Paciente por DNI
+    link(rel="stylesheet", type="text/css", href="../public/css/style.css")
   body
-    h2 Buscar Paciente por DNI
-    form(action="/buscar-paciente" method="post")
-      label(for="dni") DNI:
-      input(type="text" id="dni" name="dni" required)
-      input(type="submit" value="Buscar")
+    div#container
+      h2#titulo Buscar Paciente por DNI
+      form#buscar-form(action="/buscar-paciente", method="post")
+        label(for="dni") DNI:
+        input(type="text", id="dni", name="dni", class="input-field", required)
+        input(type="submit", id="buscar-btn", class="submit-button", value="Buscar")
+

@@ -1,52 +1,93 @@
 body {
-    font-family: Arial, sans-serif;
-    background-color: #f0f0f0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
     margin: 0;
-    padding: 0;
-}
-
-.titulo-formulario {
-    background-color: #3498db;
-    color: #fff;
-    text-align: center;
-    padding: 10px;
-    margin: 0;
-}
-
-form {
-    background-color: #fff;
-    border: 1px solid #ccc;
-    padding: 20px;
+  }
+  
+  #container {
     max-width: 400px;
-    margin: 20px auto;
+    padding: 20px;
+    background-color: #f0f0f0;
+    text-align: left; /* Alinea el contenido de izquierda a derecha */
+    border-radius: 30px;
 }
+  
 
-.etiqueta {
-    display: block;
+  
+  #titulo {
+    font-size: 24px;
     font-weight: bold;
-    margin-bottom: 5px;
-}
-
-.campo {
-    width: 100%;
-    padding: 8px;
-    margin-bottom: 10px;
+    margin-bottom: 20px;
+  }
+  
+  .input-field {
+    width: 90%;
+    padding: 10px;
+    margin: 5px 0;
     border: 1px solid #ccc;
-    border-radius: 3px;
-}
-
-select {
-    background-color: #f5f5f5;
-}
-
-.boton {
-    background-color: #3498db;
+    border-radius: 4px;
+  }
+  .select-field {
+    width: 95%;
+    padding: 10px;
+    margin: 5px 0;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 16px;
+    background-color: #f9f9f9; 
+    color: #333; 
+    outline: none; 
+    
+  }
+  .radio-field {
+    display: inline-block;
+    margin-right: 10px; /* Espacio entre los radio buttons */
+  }
+  
+  .radio-field input[type="radio"] {
+    display: none; /* Oculta los radio buttons por defecto */
+  }
+  
+  .radio-field label {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    border: 2px solid #007bff;
+    border-radius: 50%;
+    position: relative;
+    transition: background-color 0.3s;
+  }
+  
+  .radio-field label::after {
+    content: '';
+    width: 10px;
+    height: 10px;
+    background-color: #fff; /* Color de la "pelotita" */
+    border-radius: 50%;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    display: none;
+  }
+  
+  .radio-field input[type="radio"]:checked + label {
+    background-color: #007bff; /* Cambia el color de fondo cuando está seleccionado */
+  }
+  
+  .radio-field input[type="radio"]:checked + label::after {
+    display: block;
+  }
+  #guardar-btn {
+    background-color: #007bff;
     color: #fff;
-    border: none;
     padding: 10px 20px;
+    border: none;
+    border-radius: 4px;
     cursor: pointer;
-}
-
-.boton:hover {
-    background-color: #2386c8;
-}
+  }
+  
+  /* Añade estilos adicionales según tus necesidades */
+  
