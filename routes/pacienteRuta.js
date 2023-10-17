@@ -7,21 +7,28 @@ router.get('/ingresar-paciente', (req, res) => {
 });
 
 router.post('/buscar-paciente', async (req, res) => {
-    const dni = req.body.dni; // Obtiene el DNI ingresado en el formulario
+    const searchType = req.body.searchType; // Obtiene el tipo de búsqueda seleccionado (DNI, apellido o email)
+    const searchTerm = req.body.searchTerm; // Obtiene el valor de búsqueda ingresado
 
     try {
-        const paciente = await Paciente.findOne({ where: { dni } });
+        const whereCondition = {};
 
-        if (paciente) {
-            // Paciente encontrado, muestra el formulario con los campos llenos
-            res.render('ingresarPaciente', { paciente, mensaje1: 'Paciente encontrado: ' });
-        } else {
-            // Paciente no encontrado, muestra el mensaje y redirige a la página de ingreso de paciente
-            res.render('ingresarPaciente', { paciente: null, mensaje: 'Paciente no encontrado. Ingrese los datos del paciente.' });
+        // Establece la condición de búsqueda según el tipo seleccionado
+        if (searchType === 'dni') {
+            whereCondition.dni = searchTerm;
+        } else if (searchType === 'apellido') {
+            whereCondition.apellido = searchTerm;
+        } else if (searchType === 'email') {
+            whereCondition.email = searchTerm;
         }
+
+        const paciente = await Paciente.findOne({ where: whereCondition });
+
+        // Renderiza el formulario con los campos llenos si se encuentra un paciente, o vacío si no se encuentra
+        res.render('ingresarPaciente', { paciente, mensaje: paciente ? 'Paciente encontrado: ' : 'Paciente no encontrado. Ingrese los datos del paciente.' });
     } catch (error) {
         console.error(error);
-        res.status(500).send('Error al buscar paciente por DNI.');
+        res.status(500).send('Error al buscar paciente por DNI, apellido o email.');
     }
 });
 
