@@ -39,7 +39,7 @@ const Paciente = sequelize.define('pacientes', {
     embarazo: {
         type: DataTypes.TINYINT,
         allowNull: false,
-        defaultValues: 0,
+        defaultValue: 0,
     },
     diagnostico: {
         type: DataTypes.STRING,

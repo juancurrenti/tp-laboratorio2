@@ -2,6 +2,7 @@ doctype html
 html
   head
     title Ingresar Datos del Paciente
+    link(rel="icon" href="../public/img/icon.png" type="image/png")  
     link(rel="stylesheet", type="text/css", href="../public/css/style.css")
   body
     div#container
@@ -12,48 +13,47 @@ html
         
           label(for="nombre") Nombre:
           input(type="text", id="nombre", name="nombre", class="input-field", value=`${paciente ? paciente.nombre : ''}`, required)
-          br
+         
 
           label(for="apellido") Apellido:
           input(type="text", id="apellido", name="apellido", class="input-field", value=`${paciente ? paciente.apellido : ''}`, required)
-          br
+          
 
           label(for="dni") DNI:
           input(type="text", id="dni", name="dni", class="input-field", value=`${paciente ? paciente.dni : ''}`, required)
-          br
+          
 
           label(for="fecha_nacimiento") Fecha de Nacimiento:
-          input(type="date", id="fecha_nacimiento", name="fecha_nacimiento", class="input-field", value=`${paciente && paciente.fecha_nacimiento instanceof Date ? paciente.fecha_nacimiento.toISOString().substring(0, 10) : ''}`, required)
-          br
+          input(type="date", id="fecha_nacimiento", name="fecha_nacimiento", class="input-field", value=fechaNacimiento, required)
+
+          
 
           label(for="genero") Género:
           select(id="genero", name="genero", class="select-field", required)
             option(value="Masculino", selected=`${paciente && paciente.genero === 'Masculino'}`) Masculino
             option(value="Femenino", selected=`${paciente && paciente.genero === 'Femenino'}`) Femenino
-          br
+          
 
-          label(for="embarazo") ¿Embarazada?
-          div
-            input(type="radio", id="embarazo-si", name="embarazo", class="radio-field", value="Si", required, checked=`${paciente && paciente.embarazo === 'Si'}`)
-            label(for="embarazo-si") Sí
-            input(type="radio", id="embarazo-no", name="embarazo", class="radio-field", value="No", required, checked=`${paciente && paciente.embarazo === 'No'}`)
-            label(for="embarazo-no") No
-          br
+          label(for="embarazo") ¿Embarazo?
+            select(id="embarazo", name="embarazo", class="select-field", required)
+             option(value=0, selected=`${paciente && paciente.embarazo === 0}`) No
+              option(value=1, selected=`${paciente && paciente.embarazo === 1}`) Sí
+          
 
           label(for="direccion") Dirección:
           input(type="text", id="direccion", name="direccion", class="input-field", value=`${paciente ? paciente.direccion : ''}`)
-          br
+          
 
           label(for="telefono") Teléfono:
           input(type="text", id="telefono", name="telefono", class="input-field", value=`${paciente ? paciente.telefono : ''}`)
-          br
+          
 
           label(for="email") Correo Electrónico:
           input(type="email", id="email", name="email", class="input-field", value=`${paciente ? paciente.email : ''}`)
-          br
+          
 
           label(for="diagnostico") Diagnóstico (presuntivo o confirmado):
           input(type="text", id="diagnostico", name="diagnostico", class="input-field", value=`${paciente ? paciente.diagnostico : ''}`)
-          br
+          
 
           input(type="submit", id="guardar-btn", class="submit-button", value="Guardar Datos")
