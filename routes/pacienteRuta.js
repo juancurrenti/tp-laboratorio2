@@ -5,7 +5,9 @@ const Paciente = require('../models/paciente');
 router.get('/ingresar-paciente', (req, res) => {
     res.render('ingresarPaciente', { paciente: null, mensaje: null }); // Renderiza el formulario de ingreso de pacientes
 });
-
+router.get('/buscar-paciente', (req, res) => {
+    res.render('busquedaPaciente');
+});
 router.post('/buscar-paciente', async (req, res) => {
     const searchType = req.body.searchType;
     const searchTerm = req.body.searchTerm;
@@ -23,13 +25,13 @@ router.post('/buscar-paciente', async (req, res) => {
                 // Si hay múltiples pacientes con el mismo apellido, mostrar una lista para seleccionar
                 res.render('seleccionarPaciente', { pacientes, searchTerm, searchType });
             } else if (pacientes.length === 1) {
-                // Si se encuentra un paciente, renderizar el formulario con los campos llenos
-                res.render('ingresarPaciente', { paciente: pacientes[0], mensaje: 'Paciente encontrado:' });
+                // Si se encuentra un paciente, redirigir a la página de edición
+                res.redirect(`/editar-paciente/${pacientes[0].id_paciente}`);
             } else {
                 // Si no se encuentra un paciente, mostrar un mensaje de error
                 res.render('ingresarPaciente', { paciente: null, mensaje: 'Paciente no encontrado. Ingrese los datos del paciente.' });
             }
-            return; // Importante: sal del controlador después de renderizar la lista de pacientes
+            return; // Importante: sal del controlador después de renderizar la lista o redirigir
         } else if (searchType === 'email') {
             whereCondition.email = searchTerm;
         }
@@ -37,8 +39,8 @@ router.post('/buscar-paciente', async (req, res) => {
         const paciente = await Paciente.findOne({ where: whereCondition });
 
         if (paciente) {
-            // Si se encuentra un paciente, renderizar el formulario con los campos llenos
-            res.render('ingresarPaciente', { paciente, mensaje: 'Paciente encontrado:' });
+            // Si se encuentra un paciente, redirigir a la página de edición
+            res.redirect(`/editar-paciente/${paciente.id_paciente}`);
         } else {
             // Si no se encuentra un paciente, mostrar un mensaje de error
             res.render('ingresarPaciente', { paciente: null, mensaje: 'Paciente no encontrado. Ingrese los datos del paciente.' });

@@ -22,63 +22,9 @@ app.use(express.urlencoded({ extended: true }));
 app.use('/', pacienteRuta);
 
 
+// Nueva ruta para mostrar la vista de vistaPrevia en la ruta raíz (http://localhost:3000)
 app.get('/', (req, res) => {
-    res.render('busquedaPaciente'); 
-});
-
-// Controlador para la ruta de guardar paciente
-app.post('/guardar-paciente', async (req, res) => {
-    try {
-        const {
-            dni, 
-            nombre,
-            apellido,
-            email,
-            telefono,
-            fecha_nacimiento,
-            genero,
-            embarazo,
-            diagnostico,
-        } = req.body;
-        const fecha_registro = new Date();
-
-        const existingPaciente = await Paciente.findOne({ where: { dni } });
-
-        if (existingPaciente) {
-            // Si el paciente existe, actualiza los datos
-            await existingPaciente.update({
-                nombre,
-                apellido,
-                email,
-                telefono,
-                fecha_nacimiento,
-                genero,
-                embarazo,
-                diagnostico,
-            });
-            console.log('Datos del paciente actualizados con éxito:', nombre, apellido, dni);
-        } else {
-            // Si no se encuentra un paciente con el DNI, crea uno nuevo
-            await Paciente.create({
-                nombre,
-                apellido,
-                dni,
-                email,
-                telefono,
-                fecha_nacimiento,
-                genero,
-                embarazo,
-                diagnostico,
-                fecha_registro, // Agrega la fecha de registro
-            });
-            console.log('Datos del paciente guardados con éxito:', nombre, apellido, dni);
-        }
-
-        res.redirect('/'); // Redirige de vuelta a la página principal
-    } catch (error) {
-        console.error(error);
-        res.status(500).send('Error al guardar el paciente en la base de datos.');
-    }
+    res.render('preRegistro'); 
 });
 
 // Sincronización de modelos con la base de datos y arranque del servidor en el puerto 3000

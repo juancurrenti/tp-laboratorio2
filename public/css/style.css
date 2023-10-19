@@ -21,6 +21,21 @@ body {
     color: white;
     font-size: 17px;
     font-weight: bold;
+
+}
+
+
+.card {
+    border: 1px solid #ccc; 
+    padding: 20px; 
+    margin: 10px 0; 
+}
+
+a {
+    display: block; /* Hace que los enlaces ocupen todo el ancho del contenedor */
+    text-decoration: none; /* Quita el subrayado predeterminado */
+    color: #333; /* Cambia el color del texto a negro o el deseado */
+    margin: 5px 0; /* Agrega margen vertical entre los enlaces */
 }
 #content{
   opacity: 1;
@@ -83,6 +98,7 @@ body {
 }
 
   #guardar-btn {
+    margin: 20px ;
     background-color: #06269A;
     color: #fff;
     padding: 10px 20px;
