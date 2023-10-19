@@ -4,25 +4,33 @@ const sequelize = require('./config/database');
 const pacienteRuta = require('./routes/pacienteRuta');
 const Paciente = require('./models/paciente');
 const path = require('path');
+
+// Configuración de la vista
 app.set('view engine', 'pug');
 app.set('views', __dirname + '/views');
 
+// Middleware para servir archivos estáticos desde la carpeta '/public'
 app.use('/public', express.static(path.join(__dirname, 'public'), {
     setHeaders: (res, path, stat) => {
-      res.set('Content-Type', 'text/css');
+      res.set('Content-Type', 'text/css'); // Configura el tipo de contenido para archivos CSS
     },
-  }));
+}));
+
 app.use(express.urlencoded({ extended: true }));
+
+// Middleware para manejar rutas relacionadas con pacientes
 app.use('/', pacienteRuta);
 
+
 app.get('/', (req, res) => {
-    res.render('busquedaPaciente'); // Ruta de búsqueda de paciente
+    res.render('busquedaPaciente'); 
 });
 
+// Controlador para la ruta de guardar paciente
 app.post('/guardar-paciente', async (req, res) => {
     try {
         const {
-            dni, // Obtén el campo dni del formulario
+            dni, 
             nombre,
             apellido,
             email,
@@ -32,8 +40,6 @@ app.post('/guardar-paciente', async (req, res) => {
             embarazo,
             diagnostico,
         } = req.body;
-
-        // Obtiene la fecha actual para la fecha_registro
         const fecha_registro = new Date();
 
         const existingPaciente = await Paciente.findOne({ where: { dni } });
@@ -68,13 +74,14 @@ app.post('/guardar-paciente', async (req, res) => {
             console.log('Datos del paciente guardados con éxito:', nombre, apellido, dni);
         }
 
-        res.redirect('/');
+        res.redirect('/'); // Redirige de vuelta a la página principal
     } catch (error) {
         console.error(error);
         res.status(500).send('Error al guardar el paciente en la base de datos.');
     }
 });
 
+// Sincronización de modelos con la base de datos y arranque del servidor en el puerto 3000
 sequelize.sync()
     .then(() => {
         app.listen(3000, () => {

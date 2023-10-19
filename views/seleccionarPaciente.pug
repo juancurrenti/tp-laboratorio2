@@ -1,0 +1,17 @@
+doctype html
+html
+  head
+    title Ingresar Datos del Paciente
+    link(rel="icon" href="../public/img/icon.png" type="image/png")
+    link(rel="stylesheet", type="text/css", href="../public/css/style.css")
+  body
+    div#container
+      div#content
+        block content
+          h1 Seleccionar Paciente
+          p Elige un paciente de la lista para editar:
+
+          ul
+            each paciente in pacientes
+              li
+                a(href=`/editar-paciente/${paciente.id_paciente}?searchTerm=${searchTerm}&searchType=${searchType}`) #{paciente.apellido}, #{paciente.nombre}
