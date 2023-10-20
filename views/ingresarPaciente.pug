@@ -26,22 +26,23 @@ html
           label(for="fecha_nacimiento") Fecha de Nacimiento:
           input(type="date", id="fecha_nacimiento", name="fecha_nacimiento", class="input-field", value=fechaNacimiento, required)
 
-          
+
+
+
 
           label(for="genero") Género:
           select(id="genero", name="genero", class="select-field", required)
-            option(value="Masculino", selected=`${paciente && paciente.genero === 'Masculino'}`) Masculino
-            option(value="Femenino", selected=`${paciente && paciente.genero === 'Femenino'}`) Femenino
-          
+            option(value="femenino", selected=(paciente && paciente.genero.toLowerCase() === "femenino")) Femenino
+            option(value="masculino", selected=(paciente && paciente.genero.toLowerCase() === "masculino")) Masculino
 
           label(for="embarazo") ¿Embarazo?
             select(id="embarazo", name="embarazo", class="select-field", required)
-             option(value=0, selected=`${paciente && paciente.embarazo === 0}`) No
-              option(value=1, selected=`${paciente && paciente.embarazo === 1}`) Sí
+              option(value=0, selected=(paciente && paciente.embarazo === 0)) No
+              option(value=1, selected=(paciente && paciente.embarazo === 1)) Sí
           
 
           label(for="direccion") Dirección:
-          input(type="text", id="direccion", name="direccion", class="input-field", value=`${paciente ? paciente.direccion : ''}`)
+          input(type="text", id="direccion", name="direccion", class="input-field", value=`${paciente && paciente.direccion }`)
           
 
           label(for="telefono") Teléfono:

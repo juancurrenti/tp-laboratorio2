@@ -41,6 +41,7 @@ router.post('/buscar-paciente', async (req, res) => {
         if (paciente) {
             // Si se encuentra un paciente, redirigir a la página de edición
             res.redirect(`/editar-paciente/${paciente.id_paciente}`);
+
         } else {
             // Si no se encuentra un paciente, mostrar un mensaje de error
             res.render('ingresarPaciente', { paciente: null, mensaje: 'Paciente no encontrado. Ingrese los datos del paciente.' });
@@ -60,8 +61,14 @@ router.get('/editar-paciente/:id', async (req, res) => {
         const paciente = await Paciente.findByPk(id);
 
         if (paciente) {
-            // Renderiza el formulario con los campos llenos y muestra el mensaje
-            res.render('ingresarPaciente', { paciente, mensaje: 'Paciente seleccionado:' });
+            // Configura la variable fechaNacimiento
+            const fechaNacimiento = paciente.fecha_nacimiento;
+
+            // Agrega la línea de registro
+            console.log('Fecha de nacimiento:', fechaNacimiento);
+
+            // Renderiza el formulario con los campos llenos, pasando el valor de "fechaNacimiento"
+            res.render('ingresarPaciente', { paciente, fechaNacimiento, mensaje: 'Paciente seleccionado:' });
         } else {
             // Si no se encuentra un paciente, muestra un mensaje de error
             res.render('ingresarPaciente', { paciente: null, mensaje: 'Paciente no encontrado. Ingrese los datos del paciente.' });
@@ -72,9 +79,11 @@ router.get('/editar-paciente/:id', async (req, res) => {
     }
 });
 
+
+
 router.post('/guardar-paciente', async (req, res) => {
     try {
-        const { dni, nombre, apellido, email, telefono, fecha_nacimiento, genero, embarazo, diagnostico } = req.body;
+        const { dni, nombre, apellido, direccion, email, telefono, fecha_nacimiento, genero, embarazo, diagnostico } = req.body;
 
         const existingPaciente = await Paciente.findOne({ where: { dni } });
 
@@ -84,6 +93,7 @@ router.post('/guardar-paciente', async (req, res) => {
                 apellido,
                 email,
                 telefono,
+                direccion,
                 fecha_nacimiento,
                 genero,
                 embarazo,
@@ -98,6 +108,7 @@ router.post('/guardar-paciente', async (req, res) => {
                 dni,
                 email,
                 telefono,
+                direccion,
                 fecha_nacimiento,
                 genero,
                 embarazo,
