@@ -1,0 +1,60 @@
+doctype html
+html
+  head
+    title Ingresar Datos del Paciente
+    link(rel="icon" href="../public/img/icon.png" type="image/png")  
+    link(rel="stylesheet", type="text/css", href="../public/css/style.css")
+  body
+    div#container
+      div#content
+        h2#titulo Ingresar Datos del Paciente
+        p(class="error-mensaje") #{mensaje}
+        form#guardar-form(action="/guardar-paciente", method="post")
+        
+          label(for="nombre") Nombre:
+          input(type="text", id="nombre", name="nombre", class="input-field", value=`${paciente ? paciente.nombre : ''}`, required)
+         
+
+          label(for="apellido") Apellido:
+          input(type="text", id="apellido", name="apellido", class="input-field", value=`${paciente ? paciente.apellido : ''}`, required)
+          
+
+          label(for="dni") DNI:
+          input(type="text", id="dni", name="dni", class="input-field", value=`${paciente ? paciente.dni : ''}`, required)
+          
+
+          label(for="fecha_nacimiento") Fecha de Nacimiento:
+          input(type="date", id="fecha_nacimiento", name="fecha_nacimiento", class="input-field", value=fechaNacimiento, required)
+
+
+
+
+
+          label(for="genero") Género:
+          select(id="genero", name="genero", class="select-field", required)
+            option(value="femenino", selected=(paciente && paciente.genero.toLowerCase() === "femenino")) Femenino
+            option(value="masculino", selected=(paciente && paciente.genero.toLowerCase() === "masculino")) Masculino
+
+          label(for="embarazo") ¿Embarazo?
+            select(id="embarazo", name="embarazo", class="select-field", required)
+              option(value=0, selected=(paciente && paciente.embarazo === 0)) No
+              option(value=1, selected=(paciente && paciente.embarazo === 1)) Sí
+          
+
+          label(for="direccion") Dirección:
+          input(type="text", id="direccion", name="direccion", class="input-field", value=`${paciente && paciente.direccion }`)
+          
+
+          label(for="telefono") Teléfono:
+          input(type="text", id="telefono", name="telefono", class="input-field", value=`${paciente ? paciente.telefono : ''}`)
+          
+
+          label(for="email") Correo Electrónico:
+          input(type="email", id="email", name="email", class="input-field", value=`${paciente ? paciente.email : ''}`)
+          
+
+          label(for="diagnostico") Diagnóstico (presuntivo o confirmado):
+          input(type="text", id="diagnostico", name="diagnostico", class="input-field", value=`${paciente ? paciente.diagnostico : ''}`)
+          
+
+          input(type="submit", id="guardar-btn", class="submit-button", value="Guardar Datos")

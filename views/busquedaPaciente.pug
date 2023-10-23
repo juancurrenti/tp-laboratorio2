@@ -1,0 +1,20 @@
+doctype html
+html
+  head
+    title Buscar Paciente por DNI, Apellido o Email
+    link(rel="stylesheet", type="text/css", href="../public/css/style.css")
+    link(rel="icon" href="/public/img/icon.png" type="image/png")
+  body
+    div#container
+      h2#titulo Buscar Paciente
+      form#buscar-form(action="/buscar-paciente", method="post")
+        label(for="searchType") Buscar por:
+        select(id="searchType", name="searchType", class="select-field", required)
+          option(value="dni") DNI
+          option(value="apellido") APELLIDO
+          option(value="email") EMAIL
+
+        label(for="searchTerm") Dato:
+        input(type="text", id="searchTerm", name="searchTerm", class="input-field", required)
+
+        input(type="submit", id="guardar-btn", class="submit-button", value="Buscar")
