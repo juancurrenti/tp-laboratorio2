@@ -1,0 +1,22 @@
+
+
+block content
+  h1 Crear Examen con Valores de Referencia
+  form(action="/examen/crear-examen" method="post")
+    label(for="nombre") Nombre del Examen:
+    input(type="text" name="nombre" required)
+    label(for="descripcion") Descripción del Examen:
+    textarea(name="descripcion")
+    label(for="codigo") Código del Examen:
+    input(type="text" name="codigo" required)
+    h2 Valores de Referencia
+    label(for="valoresReferencia") Valores de Referencia:
+    select(name="valoresReferencia", multiple="multiple")
+      - // Renderiza los valores de referencia disponibles en el menú desplegable
+      each valorRef in valoresReferencia
+        option(value=valorRef.id_valor_ref)= `${valorRef.edad_minima} - ${valorRef.edad_maxima}, ${valorRef.sexo}, ${valorRef.unidad_medida}`
+
+    // Botón para agregar nuevos valores de referencia
+    a(href="/examen/crear-valores" class="button") Agregar Nuevo Valor de Referencia
+
+    button(type="submit") Crear Examen

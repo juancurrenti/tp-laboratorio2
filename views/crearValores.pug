@@ -1,0 +1,19 @@
+
+block content
+  h1 Crear Valores de Referencia
+  form(action="/crear-valores" method="POST")
+    label(for="edad_minima") Edad Mínima:
+    input(type="number" name="edad_minima" required)
+    label(for="edad_maxima") Edad Máxima:
+    input(type="number" name="edad_maxima" required)
+    label(for="sexo") Sexo:
+    select(name="sexo" required)
+      option(value="M") Masculino
+      option(value="F") Femenino
+    label(for="valor_minimo") Valor Mínimo:
+    input(type="number" step="0.01" name="valor_minimo" required)
+    label(for="valor_maximo") Valor Máximo:
+    input(type="number" step="0.01" name="valor_maximo" required)
+    label(for="unidad_medida") Unidad de Medida:
+    input(type="text" name="unidad_medida" required)
+    button(type="submit") Crear Valores de Referencia
