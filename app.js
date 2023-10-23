@@ -20,26 +20,28 @@ app.use('/public', express.static(path.join(__dirname, 'public'), {
 
 app.use(express.urlencoded({ extended: true }));
 
-// Middleware para manejar rutas relacionadas con pacientes
-app.use('/pacientes', pacienteRuta);
-
-// Middleware para manejar rutas relacionadas con exámenes
-app.use('/examen', examenRuta);
-
-// Ruta para mostrar la página de selección de usuario
+// Nueva ruta para mostrar la vista de selección de tipo de usuario en la ruta raíz (http://localhost:3000)
 app.get('/', (req, res) => {
     res.render('inicio');
 });
 
-// Ruta para ingresar como paciente
-app.get('/ingresar-paciente', (req, res) => {
-    res.render('ingresarPaciente', { paciente: null, mensaje: null });
-});
-
 // Ruta para ingresar como administrativo
 app.get('/ingresar/administrativo', (req, res) => {
-    res.render('busquedaPaciente');
+    // Agrega el código para autenticar a los administrativos
+    res.render('busquedaPaciente'); // Redirige a la vista de búsqueda de pacientes
 });
+
+// Ruta para ingresar como personal de salud
+app.get('/ingresar/salud', (req, res) => {
+    // Agrega el código para autenticar al personal de salud
+    res.render('vistaPersonalSalud'); // Redirige a la vista de personal de salud
+});
+
+// Middleware para manejar rutas relacionadas con pacientes
+app.use('/', pacienteRuta);
+
+// Middleware para manejar rutas relacionadas con exámenes
+app.use('/examen', examenRuta);
 
 // Sincronización de modelos con la base de datos y arranque del servidor en el puerto 3000
 sequelize.sync()
