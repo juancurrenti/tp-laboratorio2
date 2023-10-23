@@ -6,7 +6,7 @@ const examenRuta = require('./routes/examenRuta'); // Importa las rutas relacion
 const Paciente = require('./models/paciente');
 const Examen = require('./models/examen');
 const path = require('path');
-
+//hola
 // Configuración de la vista
 app.set('view engine', 'pug');
 app.set('views', __dirname + '/views');
