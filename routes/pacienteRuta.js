@@ -1,8 +1,6 @@
 const express = require('express');
 const router = express.Router();
 const Paciente = require('../models/paciente');
-const { Sequelize } = require('sequelize');
-
 
 router.get('/ingresar-paciente', (req, res) => {
     res.render('ingresarPaciente', { paciente: null, mensaje: null }); // Renderiza el formulario de ingreso de pacientes

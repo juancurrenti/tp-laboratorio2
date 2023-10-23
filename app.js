@@ -21,14 +21,24 @@ app.use('/public', express.static(path.join(__dirname, 'public'), {
 app.use(express.urlencoded({ extended: true }));
 
 // Middleware para manejar rutas relacionadas con pacientes
-app.use('/', pacienteRuta);
+app.use('/pacientes', pacienteRuta);
 
 // Middleware para manejar rutas relacionadas con exámenes
 app.use('/examen', examenRuta);
 
-// Nueva ruta para mostrar la vista de vistaPrevia en la ruta raíz (http://localhost:3000)
+// Ruta para mostrar la página de selección de usuario
 app.get('/', (req, res) => {
-    res.render('preRegistro');
+    res.render('inicio');
+});
+
+// Ruta para ingresar como paciente
+app.get('/ingresar-paciente', (req, res) => {
+    res.render('ingresarPaciente', { paciente: null, mensaje: null });
+});
+
+// Ruta para ingresar como administrativo
+app.get('/ingresar/administrativo', (req, res) => {
+    res.render('busquedaPaciente');
 });
 
 // Sincronización de modelos con la base de datos y arranque del servidor en el puerto 3000

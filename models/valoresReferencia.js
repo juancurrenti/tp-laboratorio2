@@ -1,38 +1,37 @@
 const { DataTypes } = require('sequelize');
 const sequelize = require('../config/database');
 
-const ValoresReferencia = sequelize.define('valoresReferencia', {
-  id_valor_ref: {
-    type: DataTypes.INTEGER,
-    primaryKey: true,
-    autoIncrement: true,
-  },
-  edad_minima: {
-    type: DataTypes.INTEGER,
-    allowNull: false,
-  },
-  edad_maxima: {
-    type: DataTypes.INTEGER,
-    allowNull: false,
-  },
-  sexo: {
-    type: DataTypes.STRING,
-    allowNull: false,
-  },
-  valor_minimo: {
-    type: DataTypes.FLOAT,
-    allowNull: false,
-  },
-  valor_maximo: {
-    type: DataTypes.FLOAT,
-    allowNull: false,
-  },
-  unidad_medida: {
-    type: DataTypes.STRING,
-    allowNull: false,
-  },
-}, {
-  timestamps: false,
-});
-
-module.exports = ValoresReferencia;
+const ValoresReferencia = sequelize.define('ValoresReferencia', {
+    ID_ValorReferencia: {
+      type: DataTypes.INTEGER,
+      primaryKey: true,
+      autoIncrement: true
+    },
+    ID_Examen: {
+      type: DataTypes.INTEGER,
+      allowNull: false
+    },
+    Nombre_Determinacion: {
+      type: DataTypes.STRING
+    },
+    Valor_Referencia_Minimo: {
+      type: DataTypes.DECIMAL(10, 2)
+    },
+    Valor_Referencia_Maximo: {
+      type: DataTypes.DECIMAL(10, 2)
+    },
+    Sexo: {
+      type: DataTypes.STRING
+    },
+    Edad_Minima: {
+      type: DataTypes.INTEGER
+    },
+    Edad_Maxima: {
+      type: DataTypes.INTEGER
+    }
+  }, {
+    tableName: 'ValoresReferencia',
+    timestamps: false
+  });
+  
+  module.exports = ValoresReferencia;
