@@ -14,7 +14,8 @@ router.get('/crear-examen', async (req, res) => {
   }
 });
 
-// Ruta para procesar el formulario de creación de exámenes con valores de referencia
+// Ruta para procesar el formulario de creación de exámenes
+
 router.post('/crear-examen', async (req, res) => {
   try {
     const { nombre, descripcion, codigo, valoresReferencia } = req.body;
