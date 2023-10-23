@@ -26,8 +26,6 @@ router.post('/crear-examen', async (req, res) => {
       codigo,
     });
 
-    // Asocia los valores de referencia al examen
-    await examen.addValoresReferencia(valoresReferencia);
 
     console.log('Examen creado con éxito:', examen);
     res.redirect('/');
@@ -58,7 +56,7 @@ router.post('/crear-valores', async (req, res) => {
     });
 
     console.log('Valores de referencia creados con éxito.');
-    res.redirect('/crear-examen'); // Redirige a la página de creación de exámenes
+    res.redirect('/crear-valores'); // Redirige a la página de creación de valores de referencia
   } catch (error) {
     console.error(error);
     res.status(500).send('Error al crear los valores de referencia.');
