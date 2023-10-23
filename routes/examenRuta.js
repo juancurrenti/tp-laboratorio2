@@ -50,7 +50,6 @@ router.get('/crear-valores', async (req, res) => {
 router.post('/crear-valores', async (req, res) => {
   try {
     const { edad_minima, edad_maxima, sexo, valor_minimo, valor_maximo, unidad_medida} = req.body;
-    // Crea los valores de referencia incluyendo id_examen
     await ValoresReferencia.create({
       edad_minima,
       edad_maxima,
