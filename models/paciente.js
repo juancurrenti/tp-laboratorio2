@@ -23,7 +23,7 @@ const Paciente = sequelize.define('pacientes', {
         type: DataTypes.STRING,
     },
     telefono: {
-        type: DataTypes.INTEGER,
+        type: DataTypes.STRING,
     },
     direccion: {
         type: DataTypes.STRING,
