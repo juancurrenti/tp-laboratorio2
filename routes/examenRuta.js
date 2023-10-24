@@ -15,10 +15,10 @@ router.get('/crear-examen', async (req, res) => {
 
 router.post('/crear-examen', async (req, res) => {
   try {
-    const { nombre, descripcion, codigo, valoresReferencia } = req.body;
+    const { nombre_examen, descripcion, codigo } = req.body;
 
     const examen = await Examen.create({
-      nombre,
+      nombre_examen,
       descripcion,
       codigo,
     });
