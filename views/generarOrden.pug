@@ -25,7 +25,6 @@ body
           input(type="checkbox", name="tipos_muestra[]", value=tipo.value, id=tipo.value)
           label(for=tipo.value)= tipo.label
           select(name="estado_" + tipo.value, id="estado_" + tipo.value)
-            option(value="ingresada") Muestra ingresada
             option(value="esperando_toma_muestra") Esperando Toma de Muestra
             option(value="analitica") Analítica
     button(type="submit") Generar Orden de Trabajo

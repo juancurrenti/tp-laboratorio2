@@ -15,7 +15,7 @@ const OrdenesTrabajo = sequelize.define('OrdenesTrabajo', {
     type: DataTypes.DATE
   }
 }, {
-  tableName: 'Ordenes_Trabajo',
+  tableName: 'ordenes_trabajo',
   timestamps: false
 });
 
