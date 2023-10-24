@@ -8,7 +8,18 @@ const Examenes = sequelize.define('examen', {
     autoIncrement: true
   },
   nombre_examen: {
-    type: DataTypes.STRING
+    type: DataTypes.STRING,
+    allowNull: false,
+  },
+  descripcion:{
+    type: DataTypes.STRING,
+    allowNull: false,
+
+  },
+  codigo:{
+    type: DataTypes.STRING,
+    allowNull: false,
+
   }
 }, {
   tableName: 'examen',
