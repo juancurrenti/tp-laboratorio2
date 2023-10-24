@@ -1,14 +1,31 @@
 const { DataTypes } = require('sequelize');
 const sequelize = require('../config/database');
 
-const Determinacion = sequelize.define('Determinacion', {
-  nombreDeterminacion: {
-    type: DataTypes.STRING,
+const Determinaciones = sequelize.define('Determinaciones', {
+  ID_Determinacion: {
+    type: DataTypes.INTEGER,
+    primaryKey: true,
+    autoIncrement: true
   },
-  valor: {
-    type: DataTypes.DECIMAL(10, 2),
+  ID_Examen: {
+    type: DataTypes.INTEGER,
+    allowNull: false
   },
-  unidadMedida: {
-    type: DataTypes.STRING,
+  Nombre_Determinacion: {
+    type: DataTypes.STRING
   },
+  Valor: {
+    type: DataTypes.DECIMAL(10, 2)
+  },
+  Unidad_Medida: {
+    type: DataTypes.STRING
+  },
+  Sexo: {
+    type: DataTypes.STRING
+  }
+}, {
+  tableName: 'Determinaciones',
+  timestamps: false
 });
+
+module.exports = Determinaciones;

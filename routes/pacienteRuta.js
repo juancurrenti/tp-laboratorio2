@@ -118,7 +118,7 @@ router.post('/guardar-paciente', async (req, res) => {
             console.log('Datos del paciente guardados con éxito:', nombre, apellido, dni);
         }
 
-        res.redirect('/');
+        res.redirect('/generar-orden');
     } catch (error) {
         console.error(error);
         res.status(500).send('Error al guardar el paciente en la base de datos.');

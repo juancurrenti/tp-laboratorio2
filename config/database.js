@@ -6,7 +6,7 @@ const sequelize = new Sequelize({
   host: 'localhost', // Dirección del servidor de la base de datos
   username: 'root', // Nombre de usuario de la base de datos
   password: '', // Contraseña de la base de datos
-  database: 'laboratorio', // Nombre de la base de datos
+  database: 'clinica', // Nombre de la base de datos
 });
 
 // Prueba la conexión a la base de datos
