@@ -5,6 +5,8 @@ const pacienteRuta = require('./routes/pacienteRuta');
 const examenRuta = require('./routes/examenRuta'); // Importa las rutas relacionadas con exámenes
 const Paciente = require('./models/paciente');
 const Examen = require('./models/examen');
+const OrdenesTrabajoRuta = require('./routes/ordenes_trabajoRuta');
+const OrdenesTrabajo = require('./models/ordenes_trabajo');
 const tiposMuestra = require('./public/js/tiposMuestra');
 const path = require('path');
 
@@ -43,6 +45,7 @@ app.use('/', pacienteRuta);
 // Middleware para manejar rutas relacionadas con exámenes
 app.use('/examen', examenRuta);
 
+app.use('/generacion-orden', OrdenesTrabajoRuta);
 // Ruta para mostrar la vista de generación de orden
 app.get('/generar-orden/:id_paciente/:nombre/:apellido/:dni', (req, res) => {
     const tiposMuestra = [
@@ -58,7 +61,6 @@ app.get('/generar-orden/:id_paciente/:nombre/:apellido/:dni', (req, res) => {
 
     res.render('generarOrden', { tiposMuestra, id_paciente, nombre, apellido, dni }); 
 });
-
 // Sincronización de modelos con la base de datos y arranque del servidor en el puerto 3000
 sequelize.sync()
     .then(() => {
