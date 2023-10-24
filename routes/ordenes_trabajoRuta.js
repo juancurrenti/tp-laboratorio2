@@ -4,7 +4,7 @@ const OrdenTrabajo = require('../models/ordenes_trabajo');
 const Muestra = require('../models/muestra'); 
 
 // Esta ruta maneja el envío del formulario y crea la orden de trabajo y muestras en la base de datos
-router.post('/generar-orden', async (req, res) => {
+router.post('/generacion-orden', async (req, res) => {
   try {
     // Obtiene los datos del formulario
     const { paciente, estado, examenes, tipos_muestra } = req.body;

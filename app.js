@@ -44,7 +44,7 @@ app.use('/', pacienteRuta);
 app.use('/examen', examenRuta);
 
 // Ruta para mostrar la vista de generación de orden
-app.get('/generar-orden', (req, res) => {
+app.get('/generar-orden/:id_paciente/:nombre/:apellido/:dni', (req, res) => {
     const tiposMuestra = [
         { value: "sangre", label: "Sangre" },
         { value: "orina", label: "Orina" },
@@ -54,7 +54,9 @@ app.get('/generar-orden', (req, res) => {
         { value: "nasofaringea", label: "Secreción Nasofaríngea" }
     ];
 
-    res.render('generarOrden', { tiposMuestra }); // Pasa el arreglo a la vista
+    const { id_paciente, nombre, apellido, dni } = req.params; 
+
+    res.render('generarOrden', { tiposMuestra, id_paciente, nombre, apellido, dni }); 
 });
 
 // Sincronización de modelos con la base de datos y arranque del servidor en el puerto 3000
