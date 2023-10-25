@@ -1,0 +1,19 @@
+block content
+  h1 Crear Determinaciones
+  form(action="/determinacion/crear-determinacion" method="POST")
+    label(for="Nombre_Determinacion") Nombre de la Determinación:
+    input(type="text" name="Nombre_Determinacion" required)
+    label(for="Valor") Valor:
+    input(type="number" step="0.01" name="Valor" required)
+    label(for="Unidad_Medida") Unidad de Medida:
+    input(type="text" name="Unidad_Medida" required)
+    label(for="Sexo") Sexo:
+    select(name="Sexo" required)
+      option(value="M") Masculino
+      option(value="F") Femenino
+    label(for="id_examen") Examen:
+    select(name="id_examen" required)
+      each examen in examenes
+        option(value=examen.id_examen) #{examen.nombre_examen} COD: #{examen.codigo} ID: #{examen.id_examen}
+    
+    button(type="submit") Crear Determinación

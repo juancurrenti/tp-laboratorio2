@@ -2,12 +2,16 @@ const express = require('express');
 const app = express();
 const sequelize = require('./config/database');
 const pacienteRuta = require('./routes/pacienteRuta');
-const examenRuta = require('./routes/examenRuta'); // Importa las rutas relacionadas con exámenes
+const determinacionesRuta = require('./routes/determinacionesRuta');
+const examenRuta = require('./routes/examenRuta'); 
+const OrdenesTrabajoRuta = require('./routes/ordenes_trabajoRuta');
+const valoresRefRuta = require('./routes/valoresRefRuta');
+const tiposMuestra = require('./public/js/tiposMuestra');
 const Paciente = require('./models/paciente');
 const Examen = require('./models/examen');
-const OrdenesTrabajoRuta = require('./routes/ordenes_trabajoRuta');
 const OrdenesTrabajo = require('./models/ordenes_trabajo');
-const tiposMuestra = require('./public/js/tiposMuestra');
+const Determinacion = require('./models/determinacion');
+const ValoresReferencia = require ('./models/valoresReferencia');
 const path = require('path');
 
 // Configuración de la vista
@@ -44,7 +48,8 @@ app.use('/', pacienteRuta);
 
 // Middleware para manejar rutas relacionadas con exámenes
 app.use('/examen', examenRuta);
-
+app.use('/determinacion', determinacionesRuta);
+app.use('/valoresreferencia', valoresRefRuta);
 app.use('/generacion-orden', OrdenesTrabajoRuta);
 // Ruta para mostrar la vista de generación de orden
 app.get('/generar-orden/:id_paciente/:nombre/:apellido/:dni', (req, res) => {
