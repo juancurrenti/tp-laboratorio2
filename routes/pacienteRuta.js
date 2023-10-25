@@ -85,6 +85,7 @@ router.post('/guardar-paciente', async (req, res) => {
     try {
         const { dni, nombre, apellido, direccion, email, telefono, fecha_nacimiento, genero, embarazo, diagnostico } = req.body;
 
+        // Consultar si el paciente ya existe por su DNI
         const existingPaciente = await Paciente.findOne({ where: { dni } });
 
         if (existingPaciente) {
@@ -100,9 +101,10 @@ router.post('/guardar-paciente', async (req, res) => {
                 diagnostico,
             });
             console.log('Datos del paciente actualizados con éxito:', nombre, apellido, dni);
-        } else {
+            // Redirigir a la página de generación de orden con el id_paciente
+            res.redirect(`/generar-orden/${existingPaciente.id_paciente}/${nombre}/${apellido}/${dni}`);        } else {
             // Agregar fecha_registro al crear un nuevo paciente
-            await Paciente.create({
+            const newPaciente = await Paciente.create({
                 nombre,
                 apellido,
                 dni,
@@ -116,9 +118,8 @@ router.post('/guardar-paciente', async (req, res) => {
                 fecha_registro: new Date(), // La fecha de registro es la fecha y hora actual
             });
             console.log('Datos del paciente guardados con éxito:', nombre, apellido, dni);
-        }
-
-        res.redirect('/generar-orden');
+            // Redirigir a la página de generación de orden con el id_paciente
+            res.redirect(`/generar-orden/${newPaciente.id_paciente}/${nombre}/${apellido}/${dni}`);        }
     } catch (error) {
         console.error(error);
         res.status(500).send('Error al guardar el paciente en la base de datos.');
