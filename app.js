@@ -50,9 +50,9 @@ app.use('/', pacienteRuta);
 app.use('/examen', examenRuta);
 app.use('/determinacion', determinacionesRuta);
 app.use('/valoresreferencia', valoresRefRuta);
-app.use('/generacion-orden', OrdenesTrabajoRuta);
+app.use('/generar-orden', OrdenesTrabajoRuta);
 // Ruta para mostrar la vista de generación de orden
-app.get('/generar-orden/:id_paciente/:nombre/:apellido/:dni', (req, res) => {
+app.get('/generar-orden/:id_paciente/:nombre/:apellido/:dni', async (req, res) => {
     const tiposMuestra = [
         { value: "sangre", label: "Sangre" },
         { value: "orina", label: "Orina" },
@@ -61,10 +61,16 @@ app.get('/generar-orden/:id_paciente/:nombre/:apellido/:dni', (req, res) => {
         { value: "saliva", label: "Saliva" },
         { value: "nasofaringea", label: "Secreción Nasofaríngea" }
     ];
+    const { id_paciente, nombre, apellido, dni } = req.params;
 
-    const { id_paciente, nombre, apellido, dni } = req.params; 
-
-    res.render('generarOrden', { tiposMuestra, id_paciente, nombre, apellido, dni }); 
+    try {
+      // Obtén la lista de exámenes desde la base de datos
+      const examenes = await Examen.findAll();
+      res.render('generarOrden', { tiposMuestra, id_paciente, nombre, apellido, dni, examenes });
+    } catch (error) {
+      console.error(error);
+      res.status(500).send('Error al obtener la lista de exámenes.');
+    }
 });
 // Sincronización de modelos con la base de datos y arranque del servidor en el puerto 3000
 sequelize.sync()

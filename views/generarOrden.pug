@@ -1,8 +1,6 @@
-head
-  title Generación de Orden de Trabajo
-body
+block content
   h1 Generación de Orden de Trabajo
-  form(action="/generacion-orden", method="POST")
+  form(action="/generar-orden", method="POST")
     div
       label(for="paciente") Paciente:
       input(type="text", name="paciente", id="paciente", value=nombre + " " + apellido + " (DNI: " + dni + ")", readonly)
@@ -14,10 +12,11 @@ body
         option(value="analitica") Analítica
     div
       label(for="examenes") Exámenes:
-      select(name="examenes", id="examenes", multiple)
-        //- Aquí va un bucle para cargar los exámenes desde la base de datos
-        option(value="examen_id_1") Nombre del Examen 1
-        option(value="examen_id_2") Nombre del Examen 2
+      input(type="text", id="examSearch", placeholder="Buscar exámenes...")
+      div#examResults
+        // Aquí se mostrarán los resultados de búsqueda de exámenes
+      select(name="examenes", id="examenesSelect", multiple)
+        // Aquí se mostrarán los exámenes seleccionados
     div
       label Tipos de Muestra:
       each tipo in tiposMuestra
@@ -28,3 +27,52 @@ body
             option(value="esperando_toma_muestra") Esperando Toma de Muestra
             option(value="analitica") Analítica
     button(type="submit") Generar Orden de Trabajo
+
+  script.
+    // JavaScript para manejar la búsqueda, selección y eliminación de exámenes
+    const examSearchInput = document.getElementById("examSearch");
+    const examResults = document.getElementById("examResults");
+    const selectedExams = document.getElementById("examenesSelect");
+
+    // Lista de todos los exámenes (recibidos desde el servidor)
+    const exams = !{JSON.stringify(examenes)}; // Pasamos los exámenes como datos de JavaScript
+
+    examSearchInput.addEventListener("input", () => {
+        const searchTerm = examSearchInput.value.toLowerCase();
+        const filteredExams = exams.filter(exam => {
+            return exam.nombre_examen.toLowerCase().includes(searchTerm) || exam.codigo.toLowerCase().includes(searchTerm);
+        });
+
+        // Limpiar resultados anteriores
+        examResults.innerHTML = "";
+
+        filteredExams.forEach(exam => {
+            const option = document.createElement("option");
+            option.value = exam.id;
+            option.textContent = `${exam.nombre_examen} (Código: ${exam.codigo})`;
+            examResults.appendChild(option);
+        });
+    });
+
+    // Manejar la selección de exámenes
+    examResults.addEventListener("click", (event) => {
+        if (event.target.tagName === "OPTION") {
+            const selectedOption = event.target;
+            selectedExams.appendChild(selectedOption);
+        }
+    });
+
+    // Manejar la eliminación de exámenes al hacer doble clic
+    selectedExams.addEventListener("dblclick", (event) => {
+        if (event.target.tagName === "OPTION") {
+            const removedOption = event.target;
+            removedOption.remove();
+        }
+    });
+
+    // Ocultar la lista de resultados cuando se hace clic fuera del campo de búsqueda
+    document.addEventListener("click", (event) => {
+        if (event.target !== examSearchInput && event.target !== examResults) {
+            examResults.innerHTML = "";
+        }
+    });
