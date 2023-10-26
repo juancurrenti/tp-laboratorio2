@@ -1,6 +1,6 @@
 block content
   h1 Generación de Orden de Trabajo
-  form(action="/generar-orden", method="POST")
+  form(action="/generacion-orden/#{id_paciente}", method="POST")
     div
       label(for="paciente") Paciente:
       input(type="text", name="paciente", id="paciente", value=nombre + " " + apellido + " (DNI: " + dni + ")", readonly)
@@ -35,21 +35,21 @@ block content
     const selectedExams = document.getElementById("examenesSelect");
 
     // Lista de todos los exámenes (recibidos desde el servidor)
-    const exams = !{JSON.stringify(examenes)}; // Pasamos los exámenes como datos de JavaScript
+    const examenes = !{JSON.stringify(examenes)};
 
     examSearchInput.addEventListener("input", () => {
         const searchTerm = examSearchInput.value.toLowerCase();
-        const filteredExams = exams.filter(exam => {
-            return exam.nombre_examen.toLowerCase().includes(searchTerm) || exam.codigo.toLowerCase().includes(searchTerm);
+        const filteredExams = examenes.filter(examen => {
+            return examen.nombre_examen.toLowerCase().includes(searchTerm) || examen.codigo.toLowerCase().includes(searchTerm);
         });
 
         // Limpiar resultados anteriores
         examResults.innerHTML = "";
 
-        filteredExams.forEach(exam => {
+        filteredExams.forEach(examen => {
             const option = document.createElement("option");
-            option.value = exam.id;
-            option.textContent = `${exam.nombre_examen} (Código: ${exam.codigo})`;
+            option.value = examen.id;
+            option.textContent = `${examen.nombre_examen} (Código: ${examen.codigo})`;
             examResults.appendChild(option);
         });
     });
