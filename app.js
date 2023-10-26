@@ -51,7 +51,7 @@ app.use('/examen', examenRuta);
 app.use('/determinacion', determinacionesRuta);
 // Middleware para manejar rutas relacionadas con valores de referencia
 app.use('/valoresreferencia', valoresRefRuta);
-app.use('/generar-orden', OrdenesTrabajoRuta);
+app.use('/generacion-orden', OrdenesTrabajoRuta);
 // Ruta para mostrar la vista de generación de orden
 app.get('/generar-orden/:id_paciente/:nombre/:apellido/:dni', (req, res) => {
     const tiposMuestra = [
