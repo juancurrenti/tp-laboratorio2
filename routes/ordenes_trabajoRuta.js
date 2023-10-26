@@ -1,9 +1,9 @@
 const express = require('express');
 const router = express.Router();
-const OrdenTrabajo = require('../models/ordenes_trabajo');
-const Muestra = require('../models/muestra');
-const Examen = require('../models/examen');
+const OrdenTrabajo = require('../models/ordenes_trabajo'); 
+const Muestra = require('../models/muestra'); 
 
+<<<<<<< HEAD
 
 router.get(`/generar-orden`, async (req, res) => {
   try {
@@ -57,28 +57,38 @@ router.post('/generar-orden/:id_paciente', async (req, res) => {
     const nuevaOrden = await OrdenTrabajo.create({
       id_paciente: id_paciente,
       Fecha_Creacion: new Date(), // Asigna id_paciente en la creación de la orden
+=======
+// Esta ruta maneja el envío del formulario y crea la orden de trabajo y muestras en la base de datos
+router.post('/generacion-orden', async (req, res) => {
+  try {
+    // Obtiene los datos del formulario
+    const { paciente, estado, examenes, tipos_muestra } = req.body;
+
+    // Crea una nueva orden de trabajo
+    const nuevaOrden = await OrdenTrabajo.create({
+>>>>>>> parent of 30ec2f3 (1)
       paciente,
       estado,
     });
 
-    // Asocia los exámenes seleccionados a la orden de trabajo
-    for (const examenId of examenes) {
-      // Asumiendo que tienes un modelo para asociar exámenes a órdenes de trabajo
-      await nuevaOrden.addExamen(examenId);
-    }
-
-    // Para cada tipo de muestra seleccionado en el formulario...
+    // Para cada tipo de muestra seleccionado en el formulario
     for (const tipoMuestra of tipos_muestra) {
       await Muestra.create({
+<<<<<<< HEAD
         id_orden: nuevaOrden.id,
         id_paciente,
         tipoMuestra,
         Fecha_Recepcion:new Date(),
         estadoMuestra: estado,
+=======
+        idOrdenTrabajo: nuevaOrden.id, 
+        tipoMuestra,
+        estadoMuestra: estado, 
+>>>>>>> parent of 30ec2f3 (1)
       });
     }
 
-    res.redirect('/');
+    res.redirect('/ordenImprimir');
   } catch (error) {
     console.error('Error al procesar el formulario:', error);
     res.status(500).send('Error al procesar el formulario');
