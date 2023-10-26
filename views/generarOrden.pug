@@ -1,9 +1,8 @@
-doctype html
 html
   head
     title Generación de Orden de Trabajo
     link(rel="stylesheet", type="text/css", href="/public/css/style.css")
-    link(rel="icon" href="/public/img/icon.png" type="image/png")
+    link(rel="icon", href="/public/img/icon.png", type="image/png")
   body
     div#container
       h1 Generación de Orden de Trabajo
@@ -14,8 +13,8 @@ html
           div#pacienteResults
             // Aquí se mostrarán los resultados de búsqueda de pacientes
           input(type="hidden", name="id_paciente", id="selectedPaciente")
-          div#selectedPacienteContainer(style="display: none;")
-            span(id="selectedPacienteLabel")
+          div#selectedPacienteContainer
+            span#selectedPacienteLabel
             button(type="button", id="clearPacienteButton") Borrar
         div
           label(for="estado") Estado de la Orden:

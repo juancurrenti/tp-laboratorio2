@@ -31,8 +31,9 @@ router.get('/generacion-orden', async (req, res) => {
 router.post('/generacion-orden', async (req, res) => {
   try {
     // Obtiene los datos del formulario
-    const { estado, examenes, tipos_muestra, id_paciente } = req.body;
-    
+    const { estado,  tipos_muestra, id_paciente } = req.body;
+    const examenes = await Examen.findAll();
+    console.log(examenes); // Agrega esta línea para depurar
     // Verifica si id_paciente es null
     if (!id_paciente) {
       return res.status(400).send('El valor de id_paciente es nulo o no válido.');
@@ -45,13 +46,6 @@ router.post('/generacion-orden', async (req, res) => {
       estado,
     });
 
-    // Asocia los exámenes seleccionados a la orden de trabajo
-    for (const examenId of examenes) {
-      // Asumiendo que tienes un modelo para asociar exámenes a órdenes de trabajo
-      await nuevaOrden.addExamen(examenId);
-    }
-
-    // Para cada tipo de muestra seleccionado en el formulario...
     for (const tipoMuestra of tipos_muestra) {
       await Muestra.create({
         id_Orden: nuevaOrden.id, // Corregir el nombre del campo
@@ -61,6 +55,13 @@ router.post('/generacion-orden', async (req, res) => {
         estadoMuestra: estado,
       });
     }
+    // Asocia los exámenes seleccionados a la orden de trabajo
+    for (const examenId of examenes) {
+      // Asumiendo que tienes un modelo para asociar exámenes a órdenes de trabajo
+      await nuevaOrden.addExamen(examenId);
+    }
+
+    // Para cada tipo de muestra seleccionado en el formulario...
 
     res.redirect('/');
   } catch (error) {
