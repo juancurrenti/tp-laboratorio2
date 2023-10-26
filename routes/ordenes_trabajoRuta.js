@@ -9,19 +9,12 @@ const OrdenesExamenes = require('../models/ordenes_examen');
 // Ruta para mostrar la vista de generación de orden
 router.get('/generacion-orden', async (req, res) => {
     try {
-        const tiposMuestra = [
-            { value: "sangre", label: "Sangre" },
-            { value: "orina", label: "Orina" },
-            { value: "heces", label: "Heces" },
-            { value: "liquidoCefaloraquideo", label: "Líquido Cefalorraquídeo" },
-            { value: "saliva", label: "Saliva" },
-            { value: "nasofaringea", label: "Secreción Nasofaríngea" }
-        ];
-
         // Obtén la lista de exámenes y pacientes desde la base de datos
         const examenes = await Examen.findAll();
         const pacientes = await Paciente.findAll();
-        res.render('generarOrden', { tiposMuestra, examenes, pacientes });
+
+        // Renderiza la vista de generación de orden con los datos necesarios
+        res.render('generarOrden', { examenes, pacientes });
     } catch (error) {
         console.error(error);
         res.status(500).send('Error al obtener la lista de exámenes.');
@@ -40,7 +33,7 @@ router.post('/generacion-orden', async (req, res) => {
         }
 
         // Convierte examenesSelectedIds en un arreglo de IDs
-        const examenesSeleccionados = examenesSelectedIds.split(",").map(id => parseInt(id));
+        const examenesSeleccionados = examenesSelectedIds.split(',').map(id => parseInt(id));
 
         // Crea una nueva orden de trabajo
         const nuevaOrden = await OrdenTrabajo.create({
@@ -50,10 +43,13 @@ router.post('/generacion-orden', async (req, res) => {
         }, {
             returning: true,
         });
-        const nuevaOrdenId = nuevaOrden.id_Orden;
 
-        // Itera sobre los IDs de los exámenes seleccionados y crea las relaciones
+        const nuevaOrdenId = nuevaOrden.id_Orden;
+        console.log('Valor de examenesSelectedIds:', examenesSeleccionados);
+
+        // Itera sobre los IDs de los exámenes seleccionados y crea las relaciones en la tabla OrdenesExamenes
         for (const examenId of examenesSeleccionados) {
+          console.log("EXAMEN ID:",examenId)
             await OrdenesExamenes.create({
                 id_Orden: nuevaOrdenId,
                 id_Examen: examenId,
@@ -62,7 +58,7 @@ router.post('/generacion-orden', async (req, res) => {
 
         // Para cada tipo de muestra seleccionado en el formulario...
         for (const tipoMuestra of tipos_muestra) {
-            const estadoValue = req.body[`estado_${tipoMuestra}`];
+            const estadoValue = req.body[`estado_${tipoMuestra}${tipoMuestra}`];
             await Muestra.create({
                 id_Orden: nuevaOrdenId,
                 id_Paciente: id_paciente,
@@ -72,7 +68,7 @@ router.post('/generacion-orden', async (req, res) => {
             });
         }
 
-        res.redirect('/');
+        res.redirect('/'); // Redirige a la página principal o a donde desees después de procesar el formulario.
     } catch (error) {
         console.error('Error al procesar el formulario:', error);
         res.status(500).send('Error al procesar el formulario');
