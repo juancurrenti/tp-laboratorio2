@@ -1,9 +1,10 @@
 block content
   h1 Generación de Orden de Trabajo
-  form(action="/generacion-orden/#{id_paciente}", method="POST")
+  form(action="/generacion-orden", method="POST")
     div
       label(for="paciente") Paciente:
       input(type="text", name="paciente", id="paciente", value=nombre + " " + apellido + " (DNI: " + dni + ")", readonly)
+      input(type="hidden", name="id_paciente", value=id_paciente)
     div
       label(for="estado") Estado de la Orden:
       select(name="estado", id="estado")

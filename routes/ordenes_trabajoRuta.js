@@ -4,34 +4,13 @@ const OrdenTrabajo = require('../models/ordenes_trabajo');
 const Muestra = require('../models/muestra');
 const Examen = require('../models/examen');
 
-router.get('/generar-orden/:id_paciente/:nombre/:apellido/:dni', async (req, res) => {
-  try {
-    // Obtén la lista de exámenes desde la base de datos
-    const tiposMuestra = [
-      { value: "sangre", label: "Sangre" },
-      { value: "orina", label: "Orina" },
-      { value: "heces", label: "Heces" },
-      { value: "liquidoCefaloraquideo", label: "Líquido Cefalorraquídeo" },
-      { value: "saliva", label: "Saliva" },
-      { value: "nasofaringea", label: "Secreción Nasofaríngea" }
-    ];
-    
-    const { id_paciente, nombre, apellido, dni } = req.params;
 
-    // Obtén la lista de exámenes desde la base de datos
-    const examenes = await Examen.findAll();
-    res.render('generarOrden', { tiposMuestra, id_paciente, nombre, apellido, dni, examenes });
-  } catch (error) {
-    console.error(error);
-    res.status(500).send('Error al obtener la lista de exámenes.');
-  }
-});
 
-router.post('/generacion-orden/:id_paciente', async (req, res) => {
+router.post('/generacion-orden', async (req, res) => {
   try {
     // Obtiene los datos del formulario
     const { estado, examenes, tipos_muestra } = req.body;
-    const id_paciente = req.params.id_paciente;
+    const id_paciente = req.body;
     
     // Verifica si id_paciente es null
     if (!id_paciente) {
