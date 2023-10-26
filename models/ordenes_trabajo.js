@@ -1,13 +1,13 @@
 const { DataTypes } = require('sequelize');
 const sequelize = require('../config/database');
-
+const Muestra = require('../models/muestra')
 const OrdenesTrabajo = sequelize.define('OrdenesTrabajo', {
-  ID_Orden: {
+  id_Orden: {
     type: DataTypes.INTEGER,
     primaryKey: true,
     autoIncrement: true
   },
-  ID_Paciente: {
+  id_Paciente: {
     type: DataTypes.INTEGER,
     allowNull: false
   },
@@ -18,5 +18,5 @@ const OrdenesTrabajo = sequelize.define('OrdenesTrabajo', {
   tableName: 'ordenes_trabajo',
   timestamps: false
 });
-
+OrdenesTrabajo.hasMany(Muestra, { foreignKey: 'id_Orden' }); // Define la relación
 module.exports = OrdenesTrabajo;
