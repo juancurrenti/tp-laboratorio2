@@ -1,4 +1,5 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 head
   title Generación de Orden de Trabajo
@@ -6,6 +7,8 @@ body
 head
   title Generación de Orden de Trabajo
 body
+=======
+>>>>>>> parent of 30ec2f3 (1)
 =======
 >>>>>>> parent of 30ec2f3 (1)
 head
@@ -20,11 +23,10 @@ body
     div
       select(name="examenes", id="examenes", multiple)
       label(for="examenes") Exámenes:
-      input(type="text", id="examSearch", placeholder="Buscar exámenes...")
-      div#examResults
-        // Aquí se mostrarán los resultados de búsqueda de exámenes
-      select(name="examenes", id="examenesSelect", multiple)
-        // Aquí se mostrarán los exámenes seleccionados
+      select(name="examenes", id="examenes", multiple)
+        //- Aquí va un bucle para cargar los exámenes desde la base de datos
+        option(value="examen_id_1") Nombre del Examen 1
+        option(value="examen_id_2") Nombre del Examen 2
     div
       label Tipos de Muestra:
       each tipo in tiposMuestra
