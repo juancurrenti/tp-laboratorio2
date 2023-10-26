@@ -27,8 +27,10 @@ html
           input(type="text", id="examSearch", placeholder="Buscar exámenes...", class="input-field")
           div#examResults
             // Aquí se mostrarán los resultados de búsqueda de exámenes
-          select(name="examenes", id="examenesSelect", multiple, class="select-field")
+          
+          select(name="examenesSelect", id="examenesSelect", multiple, class="select-field")
             // Aquí se mostrarán los exámenes seleccionados
+          input(type="hidden", name="examenesSelectedIds", id="examenesSelectedIds")
         div
           label Tipos de Muestra:
           each tipo in tiposMuestra
@@ -45,6 +47,7 @@ html
       const examSearchInput = document.getElementById("examSearch");
       const examResults = document.getElementById("examResults");
       const selectedExams = document.getElementById("examenesSelect");
+      const examenesSelectedIdsInput = document.getElementById("examenesSelectedIds");
     
       // Lista de todos los exámenes (recibidos desde el servidor)
       const examenes = !{JSON.stringify(examenes)};
@@ -71,6 +74,10 @@ html
           if (event.target.tagName === "OPTION") {
               const selectedOption = event.target;
               selectedExams.appendChild(selectedOption);
+              
+              // Actualizar los IDs de exámenes seleccionados
+              const selectedExamIds = Array.from(selectedExams.selectedOptions).map(option => option.value);
+              examenesSelectedIdsInput.value = selectedExamIds.join(",");
           }
       });
     
@@ -79,6 +86,10 @@ html
           if (event.target.tagName === "OPTION") {
               const removedOption = event.target;
               removedOption.remove();
+              
+              // Actualizar los IDs de exámenes seleccionados
+              const selectedExamIds = Array.from(selectedExams.selectedOptions).map(option => option.value);
+              examenesSelectedIdsInput.value = selectedExamIds.join(",");
           }
       });
     
