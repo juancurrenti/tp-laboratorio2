@@ -51,12 +51,6 @@ app.use('/examen', examenRuta);
 app.use('/determinacion', determinacionesRuta);
 // Middleware para manejar rutas relacionadas con valores de referencia
 app.use('/valoresreferencia', valoresRefRuta);
-<<<<<<< HEAD
-// Middleware para manejar rutas relacionadas con generar ordenes
-app.use('/generar-orden', OrdenesTrabajoRuta);// Ruta para mostrar la vista de generación de orden
-
-=======
-app.use('/generacion-orden', OrdenesTrabajoRuta);
 // Ruta para mostrar la vista de generación de orden
 app.get('/generar-orden/:id_paciente/:nombre/:apellido/:dni', (req, res) => {
     const tiposMuestra = [
@@ -72,7 +66,6 @@ app.get('/generar-orden/:id_paciente/:nombre/:apellido/:dni', (req, res) => {
 
     res.render('generarOrden', { tiposMuestra, id_paciente, nombre, apellido, dni }); 
 });
->>>>>>> parent of 30ec2f3 (1)
 // Sincronización de modelos con la base de datos y arranque del servidor en el puerto 3000
 sequelize.sync()
     .then(() => {
