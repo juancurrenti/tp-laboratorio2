@@ -13,6 +13,11 @@ const OrdenesTrabajo = sequelize.define('OrdenesTrabajo', {
   },
   Fecha_Creacion: {
     type: DataTypes.DATE
+  },
+  estado: {
+    type: DataTypes.STRING,
+    allowNull: false,
+
   }
 }, {
   tableName: 'ordenes_trabajo',

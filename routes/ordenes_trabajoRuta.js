@@ -5,6 +5,7 @@ const OrdenTrabajo = require('../models/ordenes_trabajo');
 const Muestra = require('../models/muestra');
 const Examen = require('../models/examen');
 const Paciente = require('../models/paciente');
+const OrdenesExamenes = require('../models/ordenes_examen');
 // Ruta para mostrar la vista de generación de orden
 router.get('/generacion-orden', async (req, res) => {
     try {
@@ -31,9 +32,8 @@ router.get('/generacion-orden', async (req, res) => {
 router.post('/generacion-orden', async (req, res) => {
   try {
     // Obtiene los datos del formulario
-    const { estado,  tipos_muestra, id_paciente } = req.body;
-    const examenes = await Examen.findAll();
-    console.log(examenes); // Agrega esta línea para depurar
+    const { estado, tipos_muestra, id_paciente, examenes } = req.body; // Agrega examenes al desestructurar
+
     // Verifica si id_paciente es null
     if (!id_paciente) {
       return res.status(400).send('El valor de id_paciente es nulo o no válido.');
@@ -41,27 +41,34 @@ router.post('/generacion-orden', async (req, res) => {
 
     // Crea una nueva orden de trabajo
     const nuevaOrden = await OrdenTrabajo.create({
-      id_Paciente: id_paciente, // Corregir el nombre del campo
-      Fecha_Creacion: new Date(),
+      id_Paciente: id_paciente,
       estado,
+      Fecha_Creacion: new Date(),
+    }, {
+      returning: true,
     });
+    const nuevaOrdenId = nuevaOrden.id_Orden;
 
-    for (const tipoMuestra of tipos_muestra) {
-      await Muestra.create({
-        id_Orden: nuevaOrden.id, // Corregir el nombre del campo
-        id_Paciente: id_paciente, // Corregir el nombre del campo
-        tipoMuestra,
-        Fecha_Recepcion: new Date(),
-        estadoMuestra: estado,
+    // Itera sobre los IDs de los exámenes seleccionados y crea las relaciones
+    for (const examenId of examenes) {
+      await OrdenesExamenes.create({
+        id_Orden: nuevaOrdenId,
+        id_Examen: examenId,
       });
     }
-    // Asocia los exámenes seleccionados a la orden de trabajo
-    for (const examenId of examenes) {
-      // Asumiendo que tienes un modelo para asociar exámenes a órdenes de trabajo
-      await nuevaOrden.addExamen(examenId);
+    // Para cada tipo de muestra seleccionado en el formulario...
+    for (const tipoMuestra of tipos_muestra) {
+      const estadoValue = req.body[`estado_${tipoMuestra}`];
+      await Muestra.create({
+        id_Orden: nuevaOrdenId,
+        id_Paciente: id_paciente,
+        Fecha_Recepcion: new Date(),
+        Tipo_Muestra: tipoMuestra,
+        estado: estadoValue,
+      });
     }
 
-    // Para cada tipo de muestra seleccionado en el formulario...
+
 
     res.redirect('/');
   } catch (error) {
