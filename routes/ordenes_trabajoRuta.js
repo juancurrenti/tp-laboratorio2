@@ -1,10 +1,9 @@
 const express = require('express');
 const router = express.Router();
-const OrdenTrabajo = require('../models/ordenes_trabajo'); 
-const Muestra = require('../models/muestra'); 
+const OrdenTrabajo = require('../models/ordenes_trabajo');
+const Muestra = require('../models/muestra');
 const Examen = require('../models/examen');
 
-// Esta ruta maneja el envío del formulario y crea la orden de trabajo y muestras en la base de datos
 router.get('/generar-orden/:id_paciente/:nombre/:apellido/:dni', async (req, res) => {
   try {
     // Obtén la lista de exámenes desde la base de datos
@@ -31,7 +30,6 @@ router.get('/generar-orden/:id_paciente/:nombre/:apellido/:dni', async (req, res
 router.post('/generacion-orden/:id_paciente', async (req, res) => {
   try {
     // Obtiene los datos del formulario
-
     const { estado, examenes, tipos_muestra } = req.body;
     const id_paciente = req.params.id_paciente;
     
@@ -42,26 +40,17 @@ router.post('/generacion-orden/:id_paciente', async (req, res) => {
 
     // Crea una nueva orden de trabajo
     const nuevaOrden = await OrdenTrabajo.create({
-      paciente,
       id_Paciente: id_paciente, // Corregir el nombre del campo
       Fecha_Creacion: new Date(),
       estado,
     });
 
-    // Asocia los exámenes seleccionados a la orden de trabajo
-    for (const examenId of examenes) {
-      // Asumiendo que tienes un modelo para asociar exámenes a órdenes de trabajo
-      await nuevaOrden.addExamen(examenId);
-    }
-
-    // Para cada tipo de muestra seleccionado en el formulario...
+    // Para cada tipo de muestra seleccionado en el formulario
     for (const tipoMuestra of tipos_muestra) {
       await Muestra.create({
-
         id_Orden: nuevaOrden.id, // Corregir el nombre del campo
         id_Paciente: id_paciente, // Corregir el nombre del campo
         tipoMuestra,
-        estadoMuestra: estado, 
         Fecha_Recepcion: new Date(),
         estadoMuestra: estado,
       });
