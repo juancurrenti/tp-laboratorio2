@@ -31,7 +31,7 @@ router.post('/buscar-paciente', async (req, res) => {
                 // Si no se encuentra un paciente, mostrar un mensaje de error
                 res.render('ingresarPaciente', { paciente: null, mensaje: 'Paciente no encontrado. Ingrese los datos del paciente.' });
             }
-            return; // Importante: sal del controlador después de renderizar la lista o redirigir
+            return; // Importante: salir del controlador después de renderizar la lista o redirigir
         } else if (searchType === 'email') {
             whereCondition.email = searchTerm;
         }
@@ -78,8 +78,6 @@ router.get('/editar-paciente/:id', async (req, res) => {
         res.status(500).send('Error al seleccionar paciente para edición.');
     }
 });
-
-
 
 router.post('/guardar-paciente', async (req, res) => {
     try {

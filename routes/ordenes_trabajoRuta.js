@@ -4,7 +4,8 @@ const OrdenTrabajo = require('../models/ordenes_trabajo');
 const Muestra = require('../models/muestra');
 const Examen = require('../models/examen');
 
-router.get('/generar-orden/:id_paciente/:nombre/:apellido/:dni', async (req, res) => {
+
+router.get(`/generar-orden`, async (req, res) => {
   try {
     // Obtén la lista de exámenes desde la base de datos
     const tiposMuestra = [
@@ -15,24 +16,38 @@ router.get('/generar-orden/:id_paciente/:nombre/:apellido/:dni', async (req, res
       { value: "saliva", label: "Saliva" },
       { value: "nasofaringea", label: "Secreción Nasofaríngea" }
     ];
-    
     const { id_paciente, nombre, apellido, dni } = req.params;
+
+    // Obtén el valor de id_paciente desde los parámetros de la URL
 
     // Obtén la lista de exámenes desde la base de datos
     const examenes = await Examen.findAll();
-    res.render('generarOrden', { tiposMuestra, id_paciente, nombre, apellido, dni, examenes });
+    res.render('generarorden', { tiposMuestra, id_paciente, nombre, apellido, dni, examenes });
   } catch (error) {
     console.error(error);
     res.status(500).send('Error al obtener la lista de exámenes.');
   }
 });
 
-router.post('/generacion-orden/:id_paciente', async (req, res) => {
+// Esta ruta maneja el envío del formulario y crea la orden de trabajo y muestras en la base de datos
+router.post('/generar-orden/:id_paciente', async (req, res) => {
+
+    const { id_paciente, nombre, apellido, dni } = req.params;
+
+    try {
+      // Obtén la lista de exámenes desde la base de datos
+      const examenes = await Examen.findAll();
+      res.render('generarOrden', { tiposMuestra, id_paciente, nombre, apellido, dni, examenes });
+    } catch (error) {
+      console.error(error);
+      res.status(500).send('Error al obtener la lista de exámenes.');
+    }
+
   try {
     // Obtiene los datos del formulario
-    const { estado, examenes, tipos_muestra } = req.body;
-    const id_paciente = req.params.id_paciente;
-    
+    const { paciente, estado, examenes, tipos_muestra } = req.body;
+    const id_paciente = req.params.id_paciente; // Captura id_paciente desde la URL
+
     // Verifica si id_paciente es null
     if (!id_paciente) {
       return res.status(400).send('El valor de id_paciente es nulo o no válido.');
@@ -40,8 +55,9 @@ router.post('/generacion-orden/:id_paciente', async (req, res) => {
 
     // Crea una nueva orden de trabajo
     const nuevaOrden = await OrdenTrabajo.create({
-      id_Paciente: id_paciente, // Corregir el nombre del campo
-      Fecha_Creacion: new Date(),
+      id_paciente: id_paciente,
+      Fecha_Creacion: new Date(), // Asigna id_paciente en la creación de la orden
+      paciente,
       estado,
     });
 
@@ -54,10 +70,10 @@ router.post('/generacion-orden/:id_paciente', async (req, res) => {
     // Para cada tipo de muestra seleccionado en el formulario...
     for (const tipoMuestra of tipos_muestra) {
       await Muestra.create({
-        id_Orden: nuevaOrden.id, // Corregir el nombre del campo
-        id_Paciente: id_paciente, // Corregir el nombre del campo
+        id_orden: nuevaOrden.id,
+        id_paciente,
         tipoMuestra,
-        Fecha_Recepcion: new Date(),
+        Fecha_Recepcion:new Date(),
         estadoMuestra: estado,
       });
     }
