@@ -64,7 +64,7 @@ html
           filteredExams.forEach(examen => {
               const option = document.createElement("option");
               option.value = examen.id;
-              option.textContent = `${examen.nombre_examen} (Código: ${examen.codigo}, ID: ${examen.id})`;
+              option.textContent = `${examen.nombre_examen} (Código: ${examen.codigo})`;
               examResults.appendChild(option);
           });
       });
