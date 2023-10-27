@@ -2,7 +2,11 @@ const { DataTypes } = require('sequelize');
 const sequelize = require('../config/database');
 
 const OrdenesExamenes = sequelize.define('ordenes_examenes', {
-
+  id_OrdenExamen:{
+    type: DataTypes.INTEGER,
+    primaryKey: true,
+    autoIncrement: true
+  },
   id_Orden: {
     type: DataTypes.INTEGER,
     allowNull: false,
