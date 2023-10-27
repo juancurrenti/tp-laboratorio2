@@ -12,6 +12,8 @@ const Examen = require('./models/examen');
 const OrdenesTrabajo = require('./models/ordenes_trabajo');
 const Determinacion = require('./models/determinacion');
 const ValoresReferencia = require ('./models/valoresReferencia');
+const modificarExamenRuta = require('./routes/modificarExamenRuta');
+const modificarDeterminacionRuta = require('./routes/modificarDeterminacionRuta');
 const path = require('path');
 
 // Configuración de la vista
@@ -51,6 +53,8 @@ app.use('/examen', examenRuta);
 app.use('/determinacion', determinacionesRuta);
 app.use('/valoresreferencia', valoresRefRuta);
 app.use('/orden', OrdenesTrabajoRuta);
+app.use('/modificar-examen', modificarExamenRuta);
+app.use('/modificar-determinacion', modificarDeterminacionRuta);
 
 // Sincronización de modelos con la base de datos y arranque del servidor en el puerto 3000
 sequelize.sync()

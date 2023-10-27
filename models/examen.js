@@ -19,6 +19,10 @@ const Examen = sequelize.define('examen', {
   codigo: {
     type: DataTypes.STRING,
   },
+  estado: {
+    type: DataTypes.BOOLEAN,
+
+  },
 }, {
   timestamps: false,
 

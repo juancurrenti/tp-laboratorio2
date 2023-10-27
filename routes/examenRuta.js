@@ -3,6 +3,7 @@ const router = express.Router();
 const Examen = require('../models/examen');
 const ValoresReferencia = require('../models/valoresReferencia');
 
+
 // Ruta para mostrar el formulario de creación de exámenes con valores de referencia
 router.get('/crear-examen', async (req, res) => {
   try {
@@ -24,6 +25,7 @@ router.post('/crear-examen', async (req, res) => {
       nombre_examen,
       descripcion,
       codigo,
+      estado: true, // Establece el estado como true automáticamente
     });
 
 

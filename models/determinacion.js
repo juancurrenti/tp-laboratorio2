@@ -24,6 +24,10 @@ const Determinacion = sequelize.define('determinaciones', {
     type: DataTypes.INTEGER,
     allowNull: false,
   },
+  estado: {
+    type: DataTypes.BOOLEAN,
+    defaultValue: true, // Valor predeterminado: activado
+  },
 },{
   timestamps: false, // Deshabilita las columnas createdAt y updatedAt
 });

@@ -1,0 +1,44 @@
+
+// buscarModificarDeterminacion.pug
+block content
+  h1 Buscar y Modificar Determinaciones
+
+  // Formulario de búsqueda
+  form(action="/modificar-determinacion/buscar-modificar-determinacion" method="post")
+    label(for="id_determinacion") ID de la Determinación:
+    input(type="text" name="id_determinacion" required)
+    button(type="submit") Buscar Determinación
+
+  // Aquí mostrarías los resultados de la búsqueda si los hay
+  if determinaciones.length > 0
+    h2 Determinaciones Encontradas
+    table
+      thead
+        tr
+          th ID
+          th Nombre
+          th Valor
+          th Unidad de Medida
+          th Sexo
+          th Estado
+          th Acciones
+      tbody
+        each determinacion in determinaciones
+          tr
+            td= determinacion.id_Determinacion
+            td= determinacion.Nombre_Determinacion
+            td= determinacion.Valor
+            td= determinacion.Unidad_Medida
+            td= determinacion.Sexo
+            td= determinacion.estado ? 'Activa' : 'Inactiva'
+            td
+              // Formulario para modificar estado
+              form(action="/modificar-determinacion/buscar-modificar-determinacion" method="post")
+                input(type="hidden" name="id_determinacion" value=determinacion.id_Determinacion)
+                input(type="hidden" name="nuevo_estado" value=!determinacion.estado)
+                button(type="submit") Cambiar Estado
+
+  else
+    p No se encontraron determinaciones.
+
+
