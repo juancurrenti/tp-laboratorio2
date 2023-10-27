@@ -30,7 +30,7 @@ router.post('/crear-determinacion', async (req, res) => {
     });
 
     console.log('Determinación creada con éxito.');
-    res.redirect('/examen/crearValores');
+    res.redirect('/valoresreferencia/crear-valores');
   } catch (error) {
     console.error(error);
     res.status(500).send('Error al crear la determinación.');
