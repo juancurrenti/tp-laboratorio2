@@ -58,6 +58,13 @@ router.post('/generacion-orden', async (req, res) => {
         });
         const nuevaOrdenId = nuevaOrden.id_Orden;
 
+        for (const examenId of examenesSelectedIdsArray) {
+            console.log('Entre al for',examenId)
+          await OrdenesExamenes.create({
+            id_Orden: nuevaOrdenId,
+            id_examen: examenId,
+          });
+        }
         for (const tipoMuestra of tipos_muestra) {
           const estadoValue = req.body[`estado_${tipoMuestra}`];
           await Muestra.create({
@@ -69,12 +76,6 @@ router.post('/generacion-orden', async (req, res) => {
           });
         }
     // Itera sobre los IDs de los exámenes seleccionados y crea las relaciones
-    for (const examenId of examenes) {
-      await OrdenesExamenes.create({
-        id_Orden: nuevaOrdenId,
-        id_Examen: examenId,
-      });
-    }
     // Para cada tipo de muestra seleccionado en el formulario...
         res.redirect('/');
     } catch (error) {
