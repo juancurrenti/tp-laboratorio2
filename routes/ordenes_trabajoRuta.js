@@ -58,32 +58,30 @@ router.post('/generacion-orden', async (req, res) => {
         });
         const nuevaOrdenId = nuevaOrden.id_Orden;
 
-        // Itera sobre los IDs de los exámenes seleccionados y crea las relaciones
-        for (const examenId of examenesSelectedIdsArray) {
-              await OrdenesExamenes.create({
-                  id_Orden: nuevaOrdenId,
-                  id_examen: examenId,
-              });
-
-      }
-
-        // Para cada tipo de muestra seleccionado en el formulario...
         for (const tipoMuestra of tipos_muestra) {
-            const estadoValue = req.body[`estado_${tipoMuestra}`];
-            await Muestra.create({
-                id_Orden: nuevaOrdenId,
-                id_Paciente: id_paciente,
-                Fecha_Recepcion: new Date(),
-                Tipo_Muestra: tipoMuestra,
-                estado: estadoValue,
-            });
+          const estadoValue = req.body[`estado_${tipoMuestra}`];
+          await Muestra.create({
+            id_Orden: nuevaOrdenId,
+            id_Paciente: id_paciente,
+            Fecha_Recepcion: new Date(),
+            Tipo_Muestra: tipoMuestra,
+            estado: estadoValue,
+          });
         }
-
+    // Itera sobre los IDs de los exámenes seleccionados y crea las relaciones
+    for (const examenId of examenes) {
+      await OrdenesExamenes.create({
+        id_Orden: nuevaOrdenId,
+        id_Examen: examenId,
+      });
+    }
+    // Para cada tipo de muestra seleccionado en el formulario...
         res.redirect('/');
     } catch (error) {
         console.error('Error al procesar el formulario:', error);
         res.status(500).send('Error al procesar el formulario');
     }
-});
+
+  });
 
 module.exports = router;
