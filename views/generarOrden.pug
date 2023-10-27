@@ -1,19 +1,20 @@
+doctype html
 html
   head
     title Generación de Orden de Trabajo
     link(rel="stylesheet", type="text/css", href="/public/css/style.css")
     link(rel="icon", href="/public/img/icon.png", type="image/png")
   body
-    div#container
+    #container
       h1 Generación de Orden de Trabajo
       form(action="/orden/generacion-orden", method="POST")
         div
           label(for="paciente") Paciente:
           input(type="text", id="pacienteSearch", placeholder="Buscar paciente...", class="input-field")
-          div#pacienteResults
+          #pacienteResults
             // Aquí se mostrarán los resultados de búsqueda de pacientes
           input(type="hidden", name="id_paciente", id="selectedPaciente")
-          div#selectedPacienteContainer
+          #selectedPacienteContainer
             span#selectedPacienteLabel
             button(type="button", id="clearPacienteButton") Borrar
         div
@@ -25,7 +26,7 @@ html
         div
           label(for="examenes") Exámenes:
           input(type="text", id="examSearch", placeholder="Buscar exámenes...", class="input-field")
-          div#examResults
+          #examResults
             // Aquí se mostrarán los resultados de búsqueda de exámenes
           
           select(name="examenesSelect", id="examenesSelect", multiple, class="select-field")
@@ -37,7 +38,7 @@ html
             div
               input(type="checkbox", name="tipos_muestra[]", value=tipo.value, id=tipo.value)
               label(for=tipo.value)= tipo.label
-              select(name="estado_" + tipo.value + tipo.value,  class="select-field")
+              select(name="estado_" + tipo.value + tipo.value, class="select-field")
                 option(value="esperando_toma_muestra") Esperando Toma de Muestra
                 option(value="analitica") Analítica
         button(type="submit" class="submit-button") Generar Orden de Trabajo
@@ -47,11 +48,10 @@ html
       const examSearchInput = document.getElementById("examSearch");
       const examResults = document.getElementById("examResults");
       const selectedExams = document.getElementById("examenesSelect");
-      const examenesSelectedIdsInput = document.getElementById("examenesSelectedIds");
-    
+ 
       // Lista de todos los exámenes (recibidos desde el servidor)
       const examenes = !{JSON.stringify(examenes)};
-    
+
       examSearchInput.addEventListener("input", () => {
           const searchTerm = examSearchInput.value.toLowerCase();
           const filteredExams = examenes.filter(examen => {
@@ -63,8 +63,8 @@ html
     
           filteredExams.forEach(examen => {
               const option = document.createElement("option");
-              option.value = examen.id;
-              option.textContent = `${examen.nombre_examen} (Código: ${examen.codigo})`;
+              option.value = examen.id_examen;
+              option.textContent = `${examen.nombre_examen} (Código: ${examen.codigo}, ID: ${examen.id_examen})`;
               examResults.appendChild(option);
           });
       });
@@ -74,10 +74,7 @@ html
           if (event.target.tagName === "OPTION") {
               const selectedOption = event.target;
               selectedExams.appendChild(selectedOption);
-              
-              // Actualizar los IDs de exámenes seleccionados
-              const selectedExamIds = Array.from(selectedExams.selectedOptions).map(option => option.value);
-              examenesSelectedIdsInput.value = selectedExamIds.join(",");
+              updateSelectedExamIds();
           }
       });
     
@@ -86,13 +83,17 @@ html
           if (event.target.tagName === "OPTION") {
               const removedOption = event.target;
               removedOption.remove();
-              
-              // Actualizar los IDs de exámenes seleccionados
-              const selectedExamIds = Array.from(selectedExams.selectedOptions).map(option => option.value);
-              examenesSelectedIdsInput.value = selectedExamIds.join(",");
+              updateSelectedExamIds();
           }
       });
-    
+      
+      // Función para actualizar los IDs de exámenes seleccionados
+      function updateSelectedExamIds() {
+        const selectedOptions = selectedExams.querySelectorAll("option");
+        const selectedIds = Array.from(selectedOptions).map(option => option.value).join(",");
+        document.getElementById("examenesSelectedIds").value = selectedIds;
+      }
+
       // JavaScript para manejar la búsqueda en tiempo real de pacientes
       const pacienteSearchInput = document.getElementById("pacienteSearch");
       const pacienteResults = document.getElementById("pacienteResults");
@@ -116,7 +117,7 @@ html
           filteredPacientes.forEach(paciente => {
               const option = document.createElement("option");
               option.value = paciente.id_paciente;
-              option.textContent = `${paciente.nombre} ${paciente.apellido} (DNI: ${paciente.dni})`;
+              option.textContent = `${paciente.nombre} ${paciente.apellido} (DNI: ${paciente.dni}, id: ${paciente.id_paciente})`;
               pacienteResults.appendChild(option);
           });
       });

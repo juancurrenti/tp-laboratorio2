@@ -14,6 +14,7 @@ const OrdenesExamenes = sequelize.define('ordenes_examenes', {
 }, {
   timestamps: false,
   tableName: 'ordenes_examenes',
+  autoIncrement:false,
 });
 
 module.exports = OrdenesExamenes;

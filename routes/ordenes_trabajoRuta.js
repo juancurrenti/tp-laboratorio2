@@ -20,6 +20,11 @@ router.get('/generacion-orden', async (req, res) => {
 
         // Obtén la lista de exámenes y pacientes desde la base de datos
         const examenes = await Examen.findAll();
+        const idsExamen=[];
+        for (const examen of examenes) {
+          idsExamen.push(examen.id_examen);
+        }
+        console.log("Ids de los examenes: ", idsExamen)
         const pacientes = await Paciente.findAll();
         res.render('generarOrden', { tiposMuestra, examenes, pacientes });
     } catch (error) {
@@ -39,8 +44,9 @@ router.post('/generacion-orden', async (req, res) => {
             return res.status(400).send('El valor de id_paciente es nulo o no válido.');
         }
 
-        // Convierte examenesSelectedIds en un arreglo de IDs
-        const examenesSeleccionados = examenesSelectedIds.split(",").map(id => parseInt(id));
+        console.log('Examenes en el servidor',examenesSelectedIds);
+        const examenesSelectedIdsArray = examenesSelectedIds.split(',').map(id_examen => parseInt(id_examen));
+        console.log('Examenes en el servidor pero en un array',examenesSelectedIdsArray);
 
         // Crea una nueva orden de trabajo
         const nuevaOrden = await OrdenTrabajo.create({
@@ -53,12 +59,13 @@ router.post('/generacion-orden', async (req, res) => {
         const nuevaOrdenId = nuevaOrden.id_Orden;
 
         // Itera sobre los IDs de los exámenes seleccionados y crea las relaciones
-        for (const examenId of examenesSeleccionados) {
-            await OrdenesExamenes.create({
-                id_Orden: nuevaOrdenId,
-                id_Examen: examenId,
-            });
-        }
+        for (const examenId of examenesSelectedIdsArray) {
+              await OrdenesExamenes.create({
+                  id_Orden: nuevaOrdenId,
+                  id_examen: examenId,
+              });
+
+      }
 
         // Para cada tipo de muestra seleccionado en el formulario...
         for (const tipoMuestra of tipos_muestra) {
