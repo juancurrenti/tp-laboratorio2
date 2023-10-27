@@ -12,6 +12,8 @@ const Examen = require('./models/examen');
 const OrdenesTrabajo = require('./models/ordenes_trabajo');
 const Determinacion = require('./models/determinacion');
 const ValoresReferencia = require ('./models/valoresReferencia');
+const modificarExamenRuta = require('./routes/modificarExamenRuta');
+const modificarDeterminacionRuta = require('./routes/modificarDeterminacionRuta');
 const path = require('path');
 //hola
 // Configuración de la vista
@@ -50,22 +52,10 @@ app.use('/', pacienteRuta);
 app.use('/examen', examenRuta);
 app.use('/determinacion', determinacionesRuta);
 app.use('/valoresreferencia', valoresRefRuta);
-app.use('/generacion-orden', OrdenesTrabajoRuta);
-// Ruta para mostrar la vista de generación de orden
-app.get('/generar-orden/:id_paciente/:nombre/:apellido/:dni', (req, res) => {
-    const tiposMuestra = [
-        { value: "sangre", label: "Sangre" },
-        { value: "orina", label: "Orina" },
-        { value: "heces", label: "Heces" },
-        { value: "liquidoCefaloraquideo", label: "Líquido Cefalorraquídeo" },
-        { value: "saliva", label: "Saliva" },
-        { value: "nasofaringea", label: "Secreción Nasofaríngea" }
-    ];
+app.use('/orden', OrdenesTrabajoRuta);
+app.use('/modificar-examen', modificarExamenRuta);
+app.use('/modificar-determinacion', modificarDeterminacionRuta);
 
-    const { id_paciente, nombre, apellido, dni } = req.params; 
-
-    res.render('generarOrden', { tiposMuestra, id_paciente, nombre, apellido, dni }); 
-});
 // Sincronización de modelos con la base de datos y arranque del servidor en el puerto 3000
 sequelize.sync()
     .then(() => {

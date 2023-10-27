@@ -102,7 +102,7 @@ router.post('/guardar-paciente', async (req, res) => {
             });
             console.log('Datos del paciente actualizados con éxito:', nombre, apellido, dni);
             // Redirigir a la página de generación de orden con el id_paciente
-            res.redirect(`/generar-orden/${existingPaciente.id_paciente}/${nombre}/${apellido}/${dni}`);        } else {
+            res.redirect('/orden/generacion-orden');        } else {
             // Agregar fecha_registro al crear un nuevo paciente
             const newPaciente = await Paciente.create({
                 nombre,
@@ -119,7 +119,7 @@ router.post('/guardar-paciente', async (req, res) => {
             });
             console.log('Datos del paciente guardados con éxito:', nombre, apellido, dni);
             // Redirigir a la página de generación de orden con el id_paciente
-            res.redirect(`/generar-orden/${newPaciente.id_paciente}/${nombre}/${apellido}/${dni}`);        }
+            res.redirect('/orden/generacion-orden');        }
     } catch (error) {
         console.error(error);
         res.status(500).send('Error al guardar el paciente en la base de datos.');
