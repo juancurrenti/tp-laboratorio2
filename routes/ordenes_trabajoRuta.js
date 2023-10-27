@@ -67,7 +67,7 @@ router.post('/generacion-orden', async (req, res) => {
         }
         for (const tipoMuestra of tipos_muestra) {
             console.log(tipos_muestra);
-          const estadoValue = req.body[`estado_${tipos_muestra}`];
+          const estadoValue = req.body[`estado_${tipoMuestra}`];
           console.log('estado: ', estadoValue);
           await Muestra.create({
             id_Orden: nuevaOrdenId,
