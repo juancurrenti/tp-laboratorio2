@@ -38,7 +38,7 @@ html
             div
               input(type="checkbox", name="tipos_muestra[]", value=tipo.value, id=tipo.value)
               label(for=tipo.value)= tipo.label
-              select(name="estado_" + tipo.value + tipo.value, class="select-field")
+              select(name="estado_" + tipo.value, class="select-field")
                 option(value="esperando_toma_muestra") Esperando Toma de Muestra
                 option(value="analitica") Analítica
         button(type="submit" class="submit-button") Generar Orden de Trabajo
