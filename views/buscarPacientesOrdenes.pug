@@ -1,0 +1,74 @@
+block content
+  h1 Actualizar Orden de Trabajo
+
+  // Formulario de búsqueda de paciente
+  form(action="/ordenes", method="POST", id="searchForm")
+    label(for="idPaciente") Buscar Orden por ID de Paciente:
+    input(type="text", name="idPaciente", id="idPaciente", placeholder="ID del Paciente", class="input-field", required)
+    button(type="submit") Buscar
+
+  // Resultados de búsqueda de órdenes de trabajo
+  h2(id="resultHeading") Resultados:
+  table(id="resultTable")
+    thead
+      tr
+        th ID de Orden
+        th ID de Paciente
+        th Fecha de Creación
+        th Estado
+    tbody
+      if ordenesTrabajo
+        each orden in ordenesTrabajo 
+          tr 
+            td= orden.id_Orden 
+            td= orden.id_paciente 
+            td= orden.Fecha_Creacion
+            td= orden.estado
+      else
+        tr
+          td(colspan="4") No se encontraron ordenes de trabajo
+  // Script para manejar la respuesta
+  script.
+    document.getElementById("searchForm").addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const idPaciente = document.getElementById("idPaciente").value;
+      const resultHeading = document.getElementById("resultHeading");
+      const resultTable = document.getElementById("resultTable");
+
+      try {
+        const info = await fetch("/buscarOrdenes/ordenes", {  
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ idPaciente }),
+        });
+
+        const data = await info.json();
+        console.log(data);
+        resultTable.innerHTML = ""; // Limpia la tabla
+
+        if (data.length > 0) {
+          resultHeading.textContent = `Órdenes de Trabajo Asociadas al Paciente ${idPaciente}`;
+          const tbody = document.createElement("tbody");
+
+          data.forEach((orden) => {
+            const row = document.createElement("tr");
+            row.innerHTML = `
+              <td>${orden.id_Orden}</td>
+              <td>${orden.id_paciente}</td>
+              <td>${orden.Fecha_Creacion}</td>
+              <td>${orden.estado}</td>
+            `;
+            tbody.appendChild(row);
+          });
+
+          resultTable.appendChild(tbody);
+        } else {
+          resultHeading.textContent = `No se encontraron órdenes de trabajo para el paciente con ID ${idPaciente}.`;
+        }
+      } catch (error) {
+        console.error(error);
+        resultHeading.textContent = "Error al buscar órdenes de trabajo.";
+      }
+    })
