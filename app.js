@@ -20,7 +20,7 @@ app.use(router);
 // Middleware para servir archivos estáticos desde la carpeta '/public'
 app.use('/public', express.static(path.join(__dirname, 'public'), {
     setHeaders: (res, path, stat) => {
-        res.set('Content-Type', 'text/css/.js'); // Configura el tipo de contenido para archivos CSS
+        res.set('Content-Type', 'text/css'); // Configura el tipo de contenido para archivos CSS
     },
 }));
 app.use(bodyParser.urlencoded({ extended: false }));
