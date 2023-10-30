@@ -33,6 +33,9 @@ const ValoresReferencia = sequelize.define('valoresreferencia', {
     type: DataTypes.FLOAT,
     allowNull: false,
   },
+  estado: {
+    type: DataTypes.BOOLEAN,
+  },
 
 }, {
   timestamps: false,

@@ -1,0 +1,66 @@
+block content
+
+  h1 Actualizar Orden de Trabajo
+  
+  // Formulario de búsqueda de paciente
+  form(action="/ordenes", method="POST", id="searchForm")
+    label(for="idPaciente") Buscar Orden por ID de Paciente:
+    input(type="text", name="idPaciente", id="idPaciente", placeholder="ID del Paciente", class="input-field", required)
+    button(type="submit") Buscar
+
+  // Resultados de búsqueda de órdenes de trabajo
+  h2(id="resultHeading") Resultados:
+  #resultCards
+    if ordenesTrabajo
+      each orden in ordenesTrabajo 
+        .card
+          h3 Órden de Trabajo
+          p Orden: #{orden.id_Orden}
+          p Id Paciente: #{orden.id_Paciente}
+          p Fecha: #{orden.Fecha_Creacion}
+          p Estado: #{orden.estado}
+
+  // Script para manejar la respuesta
+  script.
+    document.getElementById("searchForm").addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const idPaciente = document.getElementById("idPaciente").value;
+      const resultHeading = document.getElementById("resultHeading");
+      const resultCards = document.getElementById("resultCards");
+
+      try {
+        const info = await fetch("/buscarOrdenes/ordenes", {  
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ idPaciente }),
+        });
+
+        const data = await info.json();
+        console.log(data);
+        resultCards.innerHTML = ""; // Limpia el contenedor de las cartas
+
+        if (data.length > 0) {
+          resultHeading.textContent = `Órdenes de Trabajo Asociadas al Paciente ${idPaciente}`;
+
+          data.forEach((orden) => {
+            const card = document.createElement("div");
+            card.className = "card";
+            card.innerHTML = `
+              <h3>Órden de Trabajo</h3>
+              <p>Orden: ${orden.id_Orden}</p>
+              <p>Id Paciente: ${orden.id_Paciente}</p>
+              <p>Fecha: ${orden.Fecha_Creacion}</p>
+              <p>Estado: ${orden.estado}</p>
+            `;
+            resultCards.appendChild(card);
+          });
+        } else {
+          resultHeading.textContent = `No se encontraron órdenes de trabajo para el paciente con ID ${idPaciente}.`;
+        }
+      } catch (error) {
+        console.error(error);
+        resultHeading.textContent = "Error al buscar órdenes de trabajo.";
+      }
+    })

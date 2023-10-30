@@ -1,16 +1,15 @@
-
 // buscarModificarDeterminacion.pug
 block content
-  h1 Buscar y Modificar Determinaciones
+  h1 Buscar y Modificar Determinación
 
-  // Formulario de búsqueda
-  form(action="/modificar-determinacion/buscar-modificar-determinacion" method="post")
-    label(for="id_determinacion") ID de la Determinación:
-    input(type="text" name="id_determinacion" required)
-    button(type="submit") Buscar Determinación
+  // Formulario de búsqueda por id_examen
+  form(action="/modificar-determinacion/buscar-determinacion" method="post")
+    label(for="id_examen") ID del Examen:
+    input(type="text" name="id_examen" required)
+    button(type="submit") Buscar Determinaciones
 
-  // Aquí mostrarías los resultados de la búsqueda si los hay
-  if determinaciones.length > 0
+  // Mostrar resultados de búsqueda si los hay
+  if determinacionesEncontradas
     h2 Determinaciones Encontradas
     table
       thead
@@ -23,7 +22,7 @@ block content
           th Estado
           th Acciones
       tbody
-        each determinacion in determinaciones
+        each determinacion in determinacionesEncontradas
           tr
             td= determinacion.id_Determinacion
             td= determinacion.Nombre_Determinacion
@@ -33,12 +32,13 @@ block content
             td= determinacion.estado ? 'Activa' : 'Inactiva'
             td
               // Formulario para modificar estado
-              form(action="/modificar-determinacion/buscar-modificar-determinacion" method="post")
-                input(type="hidden" name="id_determinacion" value=determinacion.id_Determinacion)
-                input(type="hidden" name="nuevo_estado" value=!determinacion.estado)
+              form(action="/modificar-determinacion/modificar-estado" method="post")
+                input(type="hidden" name="id_Determinacion" value=determinacion.id_Determinacion)
+                label(for="estado") Modificar Estado:
+                select(name="estado")
+                  option(value="1" selected=determinacion.estado === 1) Activo
+                  option(value="0" selected=determinacion.estado === 0) Inactivo
                 button(type="submit") Cambiar Estado
 
   else
-    p No se encontraron determinaciones.
-
-
+    p No se encontraron determinaciones para el ID de examen proporcionado.

@@ -3,7 +3,6 @@ const router = express.Router();
 const ValoresReferencia = require('../models/valoresReferencia');
 const Determinacion = require('../models/determinacion');
 // Ruta para mostrar el formulario de creación de valores de referencia
-// Ruta para mostrar el formulario de creación de valores de referencia
 router.get('/crear-valores', async (req, res) => {
     try {
       const determinaciones = await Determinacion.findAll();
@@ -25,6 +24,7 @@ router.get('/crear-valores', async (req, res) => {
         Sexo,
         Valor_Referencia_Minimo,
         Valor_Referencia_Maximo,
+        estado: true, // Establece el estado como true automáticamente
       });
   
       console.log('Valores de referencia creados con éxito.');
