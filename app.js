@@ -3,6 +3,15 @@ const app = express();
 const router = express.Router();
 const bodyParser = require('body-parser');
 const sequelize = require('./config/database');
+const pacienteRuta = require('./routes/pacienteRuta');
+const determinacionesRuta = require('./routes/determinacionesRuta');
+const examenRuta = require('./routes/examenRuta'); 
+const OrdenesTrabajoRuta = require('./routes/ordenes_trabajoRuta');
+const valoresRefRuta = require('./routes/valoresRefRuta');
+const modificarExamenRuta = require('./routes/modificarExamenRuta');
+const modificarDeterminacionRuta = require('./routes/modificarDeterminacionRuta');
+const buscarOrdenesRuta = require('./routes/buscarOrdenesRuta');
+const modificarValrefRuta = require('./routes/modificarValrefRuta');
 const passport = require('passport');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
@@ -14,6 +23,7 @@ const path = require('path');
 // Configuración de la vista
 app.set('view engine', 'pug');
 app.set('views', __dirname + '/views');
+app.use(router);
 
 // Middleware para servir archivos estáticos desde la carpeta '/public'
 app.use('/public', express.static(path.join(__dirname, 'public'), {
@@ -22,19 +32,20 @@ app.use('/public', express.static(path.join(__dirname, 'public'), {
     },
 }));
 
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.json());
+app.use(express.urlencoded({ extended: true }));
+
 // Configuración de express-session
 app.use(session({
     secret: 'corva',
     resave: false,
     saveUninitialized: true
 }));
+
 // Middleware para inicializar Passport después de la sesión
 app.use(passport.initialize());
 app.use(passport.session());
-// Middleware para procesar datos del formulario
-app.use(bodyParser.urlencoded({ extended: false }));
-app.use(bodyParser.json());
-
 
 // Passport.js configuración de estrategia local
 passport.use(new LocalStrategy(
@@ -85,37 +96,39 @@ passport.deserializeUser(async (id_Usuario, done) => {
     }
 });
 
-
 // Ruta para la vista de inicio de sesión
-app.get('/login', (req, res) => {
+app.get('/', (req, res) => {
     res.render('login');
 });
 
-// Ruta para procesar el inicio de sesión y generar el token JWT
 app.post('/login', passport.authenticate('local', { session: true }), (req, res) => {
     const user = req.user;
     const token = jwt.sign({ id: user.id_Usuario, rol: user.rol }, 'messicrack'); 
     if (user.rol === 'recepcionista') {
         res.redirect('/recepcionista');
     } else if (user.rol === 'tecnico' || user.rol === 'bioquimico') {
-        res.redirect('/tecnico-bioquimico');
+        res.redirect('/tecnico');
     } else if (user.rol === 'admin') {
         res.redirect('/crear-usuario');
     }
 });
 
+app.get('/ingresar/administrativo', (req, res) => {
+    res.render('busquedaPaciente'); // Redirige a la vista de búsqueda de pacientes
+});
+
 // Rutas protegidas
 app.get('/recepcionista', (req, res) => {
-    if (req.isAuthenticated() && (req.user.rol === 'recepcionista' || req.user.rol === 'tecnico' || req.user.rol === 'bioquimico')) {
+    if (req.isAuthenticated() && (req.user.rol === 'recepcionista' || req.user.rol === 'tecnico' || req.user.rol === 'bioquimico' || req.user.rol === 'admin')) {
         res.render('recepcionista');
     } else {
         res.status(403).send('Acceso no autorizado');
     }
 });
 
-app.get('/tecnico-bioquimico', (req, res) => {
-    if (req.isAuthenticated() && (req.user.rol === 'tecnico' || req.user.rol === 'bioquimico')) {
-        res.render('tecnico-bioquimico');
+app.get('/tecnico', (req, res) => {
+    if (req.isAuthenticated() && (req.user.rol === 'tecnico' || req.user.rol === 'bioquimico' || req.user.rol==='admin')) {
+        res.render('tecnico');
     } else {
         res.status(403).send('Acceso no autorizado');
     }
@@ -127,7 +140,7 @@ app.get('/crear-usuario', (req, res) => {
     } else {
         res.status(403).send('Acceso no autorizado');
     }
-}); 
+});
 
 app.post('/admin/crear-usuario', async (req, res) => {
     if (req.isAuthenticated() && req.user.rol === 'admin') {
@@ -147,7 +160,7 @@ app.post('/admin/crear-usuario', async (req, res) => {
                     password: hashedPassword,
                     rol,
                 });
-                res.redirect('/admin/crear-usuario');
+                res.redirect('/crear-usuario');
             }
         } catch (error) {
             console.error('Error al crear el usuario:', error);
@@ -157,8 +170,28 @@ app.post('/admin/crear-usuario', async (req, res) => {
         res.status(403).send('Acceso no autorizado');
     }
 });
+// Middleware para verificar el acceso de roles
+function checkRole(roles) {
+    return (req, res, next) => {
+        if (req.isAuthenticated() && (roles.includes(req.user.rol) || req.user.rol === 'admin')) {
+            // Si el usuario tiene uno de los roles específicos o es un admin, permite el acceso.
+            next();
+        } else {
+            res.status(403).send('Acceso no autorizado');
+        }
+    };
+}
+// Middleware para manejar rutas relacionadas con pacientes
+app.use('/', pacienteRuta);
+app.use('/buscarOrdenes', buscarOrdenesRuta);
+app.use('/orden', OrdenesTrabajoRuta);
 
-
+app.use('/examen',checkRole(['tecnico', 'bioquimico', 'admin']), examenRuta);
+app.use('/determinacion', checkRole(['tecnico', 'bioquimico', 'admin']), determinacionesRuta);
+app.use('/valoresreferencia', checkRole(['tecnico', 'bioquimico', 'admin']), valoresRefRuta);
+app.use('/modificar-examen', checkRole(['tecnico', 'bioquimico', 'admin']), modificarExamenRuta);
+app.use('/modificar-determinacion', checkRole(['tecnico', 'bioquimico', 'admin']), modificarDeterminacionRuta);
+app.use('/buscar-valores', checkRole(['tecnico', 'bioquimico', 'admin']), modificarValrefRuta);
 
 // Sincronización de modelos con la base de datos y arranque del servidor en el puerto 3000
 sequelize.sync()
