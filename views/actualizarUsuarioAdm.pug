@@ -1,0 +1,20 @@
+doctype html
+html
+  head
+    title Actualizar Usuario
+  body
+    h1 Actualizar Usuario
+    form(action="/admin/actualizar-usuario", method="POST")
+      label(for="nombre") Nombre:
+      input(type="text", name="nombre")
+      label(for="correo_electronico") Correo Electrónico:
+      input(type="text", name="correo_electronico")
+      label(for="password") Contraseña:
+      input(type="password", name="password")
+      label(for="rol") Rol:
+      select(name="rol")
+        option(value="recepcionista") Recepcionista
+        option(value="tecnico") Técnico
+        option(value="bioquimico") Bioquímico
+        option(value="admin") Administrador
+      button(type="submit") Actualizar Usuario

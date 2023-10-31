@@ -109,7 +109,7 @@ app.post('/login', passport.authenticate('local', { session: true }), (req, res)
     } else if (user.rol === 'tecnico' || user.rol === 'bioquimico') {
         res.redirect('/tecnico');
     } else if (user.rol === 'admin') {
-        res.redirect('/crear-usuario');
+        res.redirect('/admin');
     }
 });
 
@@ -133,10 +133,26 @@ app.get('/tecnico', (req, res) => {
         res.status(403).send('Acceso no autorizado');
     }
 });
-
-app.get('/crear-usuario', (req, res) => {
+//vista admin principal
+app.get('/admin', (req, res) => {
+    if (req.isAuthenticated() && req.user.rol === 'admin') {
+        res.render('admin');
+    } else {
+        res.status(403).send('Acceso no autorizado');
+    }
+});
+//vista admin para crear un usuario
+app.get('/admin/crear-usuario', (req, res) => {
     if (req.isAuthenticated() && req.user.rol === 'admin') {
         res.render('crear-usuario');
+    } else {
+        res.status(403).send('Acceso no autorizado');
+    }
+});
+//vista admin para actualizar un usuario
+app.get('/admin/actualizarUsuarioAdm', (req, res) => {
+    if (req.isAuthenticated() && req.user.rol === 'admin') {
+        res.render('actualizarUsuarioAdm');
     } else {
         res.status(403).send('Acceso no autorizado');
     }
