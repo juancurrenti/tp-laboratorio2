@@ -3,59 +3,161 @@ const app = express();
 const router = express.Router();
 const bodyParser = require('body-parser');
 const sequelize = require('./config/database');
-const pacienteRuta = require('./routes/pacienteRuta');
-const determinacionesRuta = require('./routes/determinacionesRuta');
-const examenRuta = require('./routes/examenRuta'); 
-const OrdenesTrabajoRuta = require('./routes/ordenes_trabajoRuta');
-const valoresRefRuta = require('./routes/valoresRefRuta');
-const modificarExamenRuta = require('./routes/modificarExamenRuta');
-const modificarDeterminacionRuta = require('./routes/modificarDeterminacionRuta');
-const buscarOrdenesRuta = require('./routes/buscarOrdenesRuta');
-const modificarValrefRuta = require ('./routes/modificarValrefRuta');
+const passport = require('passport');
+const jwt = require('jsonwebtoken');
+const bcrypt = require('bcrypt');
+const session = require('express-session');
+const LocalStrategy = require('passport-local').Strategy;
+const User = require('./models/User');
 const path = require('path');
 
 // Configuración de la vista
 app.set('view engine', 'pug');
 app.set('views', __dirname + '/views');
-app.use(router);
+
 // Middleware para servir archivos estáticos desde la carpeta '/public'
 app.use('/public', express.static(path.join(__dirname, 'public'), {
     setHeaders: (res, path, stat) => {
         res.set('Content-Type', 'text/css'); // Configura el tipo de contenido para archivos CSS
     },
 }));
+
+// Configuración de express-session
+app.use(session({
+    secret: 'corva',
+    resave: false,
+    saveUninitialized: true
+}));
+// Middleware para inicializar Passport después de la sesión
+app.use(passport.initialize());
+app.use(passport.session());
+// Middleware para procesar datos del formulario
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
-app.use(express.urlencoded({ extended: true }));
 
-// Nueva ruta para mostrar la vista de selección de tipo de usuario en la ruta raíz (http://localhost:3000)
-app.get('/', (req, res) => {
-    res.render('inicio');
+
+// Passport.js configuración de estrategia local
+passport.use(new LocalStrategy(
+    {
+        usernameField: 'correo_electronico',
+        passwordField: 'password',
+    },
+    async (username, password, done) => {
+        try {
+            if (!username || !password) {
+                return done(null, false, { message: 'Credenciales incorrectas' });
+            }
+
+            const user = await User.findOne({ where: { correo_electronico: username } });
+
+            if (!user) {
+                return done(null, false, { message: 'Credenciales incorrectas' });
+            }
+
+            const passwordMatch = await bcrypt.compare(password, user.password);
+            if (!passwordMatch) {
+                return done(null, false, { message: 'Credenciales incorrectas' });
+            }
+
+            return done(null, user);
+        } catch (error) {
+            console.error('Error de autenticación:', error);
+            return done(error);
+        }
+    }
+));
+
+// Passport.js serialización y deserialización de usuarios
+passport.serializeUser((user, done) => {
+    done(null, user.id_Usuario); 
 });
 
-// Ruta para ingresar como administrativo
-app.get('/ingresar/administrativo', (req, res) => {
-    res.render('busquedaPaciente'); // Redirige a la vista de búsqueda de pacientes
+passport.deserializeUser(async (id_Usuario, done) => {
+    try {
+        const user = await User.findByPk(id_Usuario);
+        if (!user) {
+            done(null, false); 
+        } else {
+            done(null, user);
+        }
+    } catch (error) {
+        done(error);
+    }
 });
 
-// Ruta para ingresar como personal de salud
-app.get('/ingresar/salud', (req, res) => {
-    // Agrega el código para autenticar al personal de salud
-    res.render('crearExamen'); // Redirige a la vista de personal de salud
+
+// Ruta para la vista de inicio de sesión
+app.get('/login', (req, res) => {
+    res.render('login');
 });
 
-// Middleware para manejar rutas relacionadas con pacientes
-app.use('/', pacienteRuta);
-app.use('/buscarOrdenes', buscarOrdenesRuta);
+// Ruta para procesar el inicio de sesión y generar el token JWT
+app.post('/login', passport.authenticate('local', { session: true }), (req, res) => {
+    const user = req.user;
+    const token = jwt.sign({ id: user.id_Usuario, rol: user.rol }, 'messicrack'); 
+    if (user.rol === 'recepcionista') {
+        res.redirect('/recepcionista');
+    } else if (user.rol === 'tecnico' || user.rol === 'bioquimico') {
+        res.redirect('/tecnico-bioquimico');
+    } else if (user.rol === 'admin') {
+        res.redirect('/crear-usuario');
+    }
+});
 
-// Middleware para manejar rutas relacionadas con exámenes
-app.use('/examen', examenRuta);
-app.use('/determinacion', determinacionesRuta);
-app.use('/valoresreferencia', valoresRefRuta);
-app.use('/orden', OrdenesTrabajoRuta);
-app.use('/modificar-examen', modificarExamenRuta);
-app.use('/modificar-determinacion', modificarDeterminacionRuta);
-app.use('/buscar-valores', modificarValrefRuta);
+// Rutas protegidas
+app.get('/recepcionista', (req, res) => {
+    if (req.isAuthenticated() && (req.user.rol === 'recepcionista' || req.user.rol === 'tecnico' || req.user.rol === 'bioquimico')) {
+        res.render('recepcionista');
+    } else {
+        res.status(403).send('Acceso no autorizado');
+    }
+});
+
+app.get('/tecnico-bioquimico', (req, res) => {
+    if (req.isAuthenticated() && (req.user.rol === 'tecnico' || req.user.rol === 'bioquimico')) {
+        res.render('tecnico-bioquimico');
+    } else {
+        res.status(403).send('Acceso no autorizado');
+    }
+});
+
+app.get('/crear-usuario', (req, res) => {
+    if (req.isAuthenticated() && req.user.rol === 'admin') {
+        res.render('crear-usuario');
+    } else {
+        res.status(403).send('Acceso no autorizado');
+    }
+}); 
+
+app.post('/admin/crear-usuario', async (req, res) => {
+    if (req.isAuthenticated() && req.user.rol === 'admin') {
+        const { nombre, correo_electronico, password, rol } = req.body;
+
+        try {
+            const existingUser = await User.findOne({ where: { correo_electronico } });
+
+            if (existingUser) {
+                // Si el usuario ya existe, muestra un mensaje en la vista Pug
+                res.render('crear-usuario', { error: 'El correo electrónico ya está en uso. Ingrese otro.' });
+            } else {
+                const hashedPassword = bcrypt.hashSync(password, 10);
+                await User.create({
+                    nombre_usuario: nombre, // Asegúrate de usar el nombre de columna correcto
+                    correo_electronico,
+                    password: hashedPassword,
+                    rol,
+                });
+                res.redirect('/admin/crear-usuario');
+            }
+        } catch (error) {
+            console.error('Error al crear el usuario:', error);
+            res.status(500).send('Error al crear el usuario');
+        }
+    } else {
+        res.status(403).send('Acceso no autorizado');
+    }
+});
+
 
 
 // Sincronización de modelos con la base de datos y arranque del servidor en el puerto 3000

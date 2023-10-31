@@ -1,0 +1,12 @@
+block content
+  h1 Iniciar Sesión
+  if message
+    p(class='error-message')= message
+  form(action='/login', METHOD='POST')
+    label(for='correo_electronico') Correo Electrónico
+    input(type='text', name='correo_electronico', id='correo_electronico', required)
+    br
+    label(for='password') Contraseña
+    input(type='password', name='password', id='password', required)
+    br
+    button(type='submit') Iniciar Sesión
