@@ -157,6 +157,29 @@ app.get('/admin/actualizarUsuarioAdm', (req, res) => {
         res.status(403).send('Acceso no autorizado');
     }
 });
+app.get('/admin/actualizarUsuarioAdm/:nombre', async (req, res) => {
+    if (req.isAuthenticated() && req.user.rol === 'admin') {
+        try {
+            const nombreBusqueda = req.params.nombre;
+            const usuario = await User.findOne({ where: { nombre_usuario: nombreBusqueda } });
+
+            if (usuario) {
+                // Encontraste al usuario, envía la respuesta JSON
+                res.json({ usuario });
+            } else {
+                // Usuario no encontrado, envía un mensaje como respuesta JSON
+                res.json({ mensaje: 'Usuario no encontrado' });
+            }
+        } catch (error) {
+            console.error('Error en la búsqueda:', error);
+            res.status(500).json({ error: 'Error en la búsqueda' });
+        }
+    } else {
+        res.status(403).send('Acceso no autorizado');
+    }
+});
+
+
 
 app.post('/admin/crear-usuario', async (req, res) => {
     if (req.isAuthenticated() && req.user.rol === 'admin') {

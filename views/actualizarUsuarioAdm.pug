@@ -1,20 +1,47 @@
-doctype html
-html
-  head
-    title Actualizar Usuario
-  body
-    h1 Actualizar Usuario
-    form(action="/admin/actualizar-usuario", method="POST")
-      label(for="nombre") Nombre:
-      input(type="text", name="nombre")
-      label(for="correo_electronico") Correo Electrónico:
-      input(type="text", name="correo_electronico")
-      label(for="password") Contraseña:
-      input(type="password", name="password")
-      label(for="rol") Rol:
-      select(name="rol")
-        option(value="recepcionista") Recepcionista
-        option(value="tecnico") Técnico
-        option(value="bioquimico") Bioquímico
-        option(value="admin") Administrador
-      button(type="submit") Actualizar Usuario
+h1 Actualizar Usuario
+form(action="/admin/actualizar-usuario", method="POST")
+  label(for="nombreBusqueda") Buscar Usuario por Nombre:
+  input(type="text", name="nombreBusqueda", id="nombreBusqueda")
+  button(type="button", onclick="buscarUsuario()") Buscar
+
+  - if (usuario)
+    input(type="hidden", name="id_usuario", id="idUsuario", value=usuario.id_usuario)
+    label(for="nombre") Nombre:
+    input(type="text", name="nombre", id="nombre", value=usuario.nombre_usuario)
+    label(for="correo_electronico") Correo Electrónico:
+    input(type="text", name="correo_electronico", id="correoElectronico", value=usuario.correo_electronico)
+    label(for="password") Contraseña:
+    input(type="password", name="password", id="password")
+    label(for="rol") Rol:
+    select(name="rol", id="rol")
+      option(value="recepcionista", selected=usuario.rol === 'recepcionista') Recepcionista
+      option(value="tecnico", selected=usuario.rol === 'tecnico') Técnico
+      option(value="bioquimico", selected=usuario.rol === 'bioquimico') Bioquímico
+      option(value="admin", selected=usuario.rol === 'admin') Administrador
+    button(type="submit") Actualizar Usuario
+
+
+script.
+  function buscarUsuario() {
+    const nombreBusqueda = document.getElementById("nombreBusqueda").value;
+    // Realiza una solicitud AJAX al servidor para buscar el usuario por nombre
+    fetch(`/admin/actualizarUsuarioAdm/${nombreBusqueda}`)
+      .then(response => response.json())
+      .then(data => {
+        if (data.usuario) {
+          const usuario = data.usuario;
+          document.getElementById("idUsuario").value = usuario.id_usuario;
+          document.getElementById("nombre").value = usuario.nombre_usuario;
+          document.getElementById("correoElectronico").value = usuario.correo_electronico;
+          document.getElementById("rol").value = usuario.rol;
+        } else if (data.mensaje) {
+          alert(data.mensaje);
+        } else {
+          alert("Error en la búsqueda");
+        }
+      })
+      .catch(error => {
+        console.error("Error en la búsqueda: ", error);
+      });
+  }
+
