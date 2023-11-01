@@ -1,47 +1,58 @@
-h1 Actualizar Usuario
-form(action="/admin/actualizar-usuario", method="POST")
-  label(for="nombreBusqueda") Buscar Usuario por Nombre:
-  input(type="text", name="nombreBusqueda", id="nombreBusqueda")
-  button(type="button", onclick="buscarUsuario()") Buscar
+block content
+  head
+    title Actualizar Usuario
+    link(rel="icon", href="/public/img/icon.png", type="image/png")
+  h1 Actualizar Usuario
 
-  - if (usuario)
-    input(type="hidden", name="id_usuario", id="idUsuario", value=usuario.id_usuario)
+  form(action="/admin/actualizar-usuario", method="POST")
+    label(for="nombreBusqueda") Buscar Usuario por Nombre:
+    input(type="text", name="nombreBusqueda", id="nombreBusqueda", required)
+    button(type="button", onclick="buscarUsuario()") Buscar
+
     label(for="nombre") Nombre:
-    input(type="text", name="nombre", id="nombre", value=usuario.nombre_usuario)
+    input(type="text", name="nombre", id="nombre", required)
+
     label(for="correo_electronico") Correo Electrónico:
-    input(type="text", name="correo_electronico", id="correoElectronico", value=usuario.correo_electronico)
+    input(type="text", name="correo_electronico", id="correoElectronico", required)
+
     label(for="password") Contraseña:
-    input(type="password", name="password", id="password")
+    input(type="password", name="password", id="password", required)
+
     label(for="rol") Rol:
     select(name="rol", id="rol")
-      option(value="recepcionista", selected=usuario.rol === 'recepcionista') Recepcionista
-      option(value="tecnico", selected=usuario.rol === 'tecnico') Técnico
-      option(value="bioquimico", selected=usuario.rol === 'bioquimico') Bioquímico
-      option(value="admin", selected=usuario.rol === 'admin') Administrador
+      option(value="recepcionista") Recepcionista
+      option(value="tecnico") Técnico
+      option(value="bioquimico") Bioquímico
+      option(value="admin") Administrador
+
     button(type="submit") Actualizar Usuario
 
+  // Mostrar mensaje de actualización
+  div(id="mensaje")
 
-script.
-  function buscarUsuario() {
-    const nombreBusqueda = document.getElementById("nombreBusqueda").value;
-    // Realiza una solicitud AJAX al servidor para buscar el usuario por nombre
-    fetch(`/admin/actualizarUsuarioAdm/${nombreBusqueda}`)
-      .then(response => response.json())
-      .then(data => {
-        if (data.usuario) {
-          const usuario = data.usuario;
-          document.getElementById("idUsuario").value = usuario.id_usuario;
-          document.getElementById("nombre").value = usuario.nombre_usuario;
-          document.getElementById("correoElectronico").value = usuario.correo_electronico;
-          document.getElementById("rol").value = usuario.rol;
-        } else if (data.mensaje) {
-          alert(data.mensaje);
-        } else {
-          alert("Error en la búsqueda");
-        }
-      })
-      .catch(error => {
-        console.error("Error en la búsqueda: ", error);
-      });
-  }
+  script.
+    function buscarUsuario() {
+      const nombreBusqueda = document.getElementById("nombreBusqueda").value;
+      if (!nombreBusqueda) {
+        // Si el campo de búsqueda está vacío, muestra un mensaje de error
+        document.getElementById("mensaje").innerHTML = "Debes completar el campo de búsqueda";
+        return;
+      }
 
+      // Realiza una solicitud AJAX al servidor para buscar el usuario por nombre
+      fetch(`/admin/actualizarUsuarioAdm/${nombreBusqueda}`)
+        .then(response => response.json())
+        .then(data => {
+          if (data.usuario) {
+            document.getElementById('nombre').value = data.usuario.nombre_usuario;
+            document.getElementById("correoElectronico").value = data.usuario.correo_electronico;
+            document.getElementById("rol").value = data.usuario.rol;
+          } else if (data.mensaje) {
+            alert(data.mensaje);
+          } else {
+            document.getElementById("mensaje").innerHTML = "Usuario no encontrado";
+          }
+        })
+        .catch(error => {
+          console.error("Error en la búsqueda: ", error);
+        });

@@ -1,6 +1,7 @@
-// buscarModificarExamen.pug
-
 block content
+  head
+    title Buscar y Modificar Examen
+    link(rel="icon", href="/public/img/icon.png", type="image/png")
   h1 Buscar y Modificar Examen
 
   // Formulario de búsqueda
@@ -37,5 +38,3 @@ block content
         option(value="0" selected=examen.estado === 0) Inactivo
 
       button(type="submit") Modificar Examen
-
-

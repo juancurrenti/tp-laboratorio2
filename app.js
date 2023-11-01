@@ -178,8 +178,42 @@ app.get('/admin/actualizarUsuarioAdm/:nombre', async (req, res) => {
         res.status(403).send('Acceso no autorizado');
     }
 });
-
-
+app.post('/admin/actualizar-usuario', async (req, res) => {
+    try {
+      // Obtén los datos del formulario enviado por el cliente
+      const nombreBusqueda = req.body.nombreBusqueda;
+      const nombre = req.body.nombre;
+      const correoElectronico = req.body.correo_electronico;
+      const password = req.body.password; // Contraseña sin cifrar
+      const rol = req.body.rol;
+      const usuarioExistente = await User.findOne({ where: { nombre_usuario: nombreBusqueda } });
+  
+      if (usuarioExistente) {
+        // Actualiza los datos del usuario existente
+        usuarioExistente.nombre_usuario = nombre;
+        usuarioExistente.correo_electronico = correoElectronico;
+  
+        // Cifra la nueva contraseña si se proporcionó
+        if (password) {
+          const hashedPassword = bcrypt.hashSync(password, 10);
+          usuarioExistente.password = hashedPassword;
+        }
+  
+        usuarioExistente.rol = rol;
+  
+        await usuarioExistente.save();
+  
+        console.log('Usuario actualizado exitosamente');
+        res.render('actualizarUsuarioAdm', { mensaje: `Usuario ${nombre} actualizado exitosamente` });
+      } else {
+        res.render('actualizarUsuarioAdm', { mensaje: 'Usuario no encontrado' });
+      }
+    } catch (error) {
+      console.error('Error en el servidor: ' + error);
+      res.status(500).send('Error en el servidor');
+    }
+  });
+  
 
 app.post('/admin/crear-usuario', async (req, res) => {
     if (req.isAuthenticated() && req.user.rol === 'admin') {

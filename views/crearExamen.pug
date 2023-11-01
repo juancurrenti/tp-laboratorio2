@@ -1,4 +1,7 @@
 block content
+  head
+    title Crear Examen
+    link(rel="icon", href="/public/img/icon.png", type="image/png")
   h1 Crear Examen 
   form(action="/examen/crear-examen" method="post")
     label(for="nombre_examen") Nombre del Examen:
@@ -10,4 +13,3 @@ block content
     a(href="/examen/crear-valores" class="button") Agregar Nuevo Valor de Referencia
 
     button(type="submit") Crear Examen
-
