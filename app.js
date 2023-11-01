@@ -31,16 +31,7 @@ app.use('/public', express.static(path.join(__dirname, 'public'), {
         res.set('Content-Type', 'text/css'); // Configura el tipo de contenido para archivos CSS
     },
 }));
-// Middlewares para manejar rutas relacionadas
-app.use('/', pacienteRuta);
-app.use('/buscarOrdenes', buscarOrdenesRuta);
-app.use('/orden', OrdenesTrabajoRuta);
-app.use('/examen',checkRole(['tecnico', 'bioquimico', 'admin']), examenRuta);
-app.use('/determinacion', checkRole(['tecnico', 'bioquimico', 'admin']), determinacionesRuta);
-app.use('/valoresreferencia', checkRole(['tecnico', 'bioquimico', 'admin']), valoresRefRuta);
-app.use('/modificar-examen', checkRole(['tecnico', 'bioquimico', 'admin']), modificarExamenRuta);
-app.use('/modificar-determinacion', checkRole(['tecnico', 'bioquimico', 'admin']), modificarDeterminacionRuta);
-app.use('/buscar-valores', checkRole(['tecnico', 'bioquimico', 'admin']), modificarValrefRuta);
+
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 app.use(express.urlencoded({ extended: true }));
@@ -121,6 +112,7 @@ app.post('/login', passport.authenticate('local', { session: true }), (req, res)
         res.redirect('/admin');
     }
 });
+
 app.get('/ingresar/administrativo', (req, res) => {
     res.render('busquedaPaciente'); // Redirige a la vista de búsqueda de pacientes
 });
@@ -149,18 +141,6 @@ app.get('/admin', (req, res) => {
         res.status(403).send('Acceso no autorizado');
     }
 });
-//Cierre de sesion.
-app.get('/logout', (req, res) => {
-    req.logout(function(err) {
-        if (err) {
-            console.error('Error al cerrar sesión:', err);
-            return res.status(500).send('Error al cerrar sesión');
-        }
-        console.log('sesion cerrada');
-        res.redirect('/'); // Redirige al usuario a la página de inicio o a otra página deseada
-    });
-});
-
 //vista admin para crear un usuario
 app.get('/admin/crear-usuario', (req, res) => {
     if (req.isAuthenticated() && req.user.rol === 'admin') {
@@ -170,36 +150,6 @@ app.get('/admin/crear-usuario', (req, res) => {
     }
 });
 //vista admin para actualizar un usuario
-
-app.post('/admin/crear-usuario', async (req, res) => {
-    if (req.isAuthenticated() && req.user.rol === 'admin') {
-        const { nombre, correo_electronico, password, rol } = req.body;
-        
-        try {
-            const existingUser = await User.findOne({ where: { correo_electronico } });
-            
-            if (existingUser) {
-                // Si el usuario ya existe, muestra un mensaje en la vista Pug
-                res.render('crear-usuario', { mensaje: null, error: 'El correo electrónico ya está en uso. Ingrese otro.' });
-            } else {
-                const hashedPassword = bcrypt.hashSync(password, 10);
-                await User.create({
-                    nombre_usuario: nombre, // Asegúrate de usar el nombre de columna correcto
-                    correo_electronico,
-                    password: hashedPassword,
-                    rol,
-                });
-                // Establece el mensaje y redirige a la misma página para mostrarlo
-                res.render('crear-usuario', { mensaje: 'Usuario creado exitosamente', error: null });
-            }
-        } catch (error) {
-            console.error('Error al crear el usuario:', error);
-            res.status(500).send('Error al crear el usuario');
-        }
-    } else {
-        res.status(403).send('Acceso no autorizado');
-    }
-});
 app.get('/admin/actualizarUsuarioAdm', (req, res) => {
     if (req.isAuthenticated() && req.user.rol === 'admin') {
         res.render('actualizarUsuarioAdm');
@@ -282,6 +232,36 @@ app.post('/admin/actualizar-usuario', async (req, res) => {
       res.status(500).json({ error: 'Error en el servidor' });
     }
   });
+
+  app.post('/admin/crear-usuario', async (req, res) => {
+    if (req.isAuthenticated() && req.user.rol === 'admin') {
+        const { nombre, correo_electronico, password, rol } = req.body;
+
+        try {
+            const existingUser = await User.findOne({ where: { correo_electronico } });
+
+            if (existingUser) {
+                // Si el usuario ya existe, muestra un mensaje en la vista Pug
+                res.render('crear-usuario', { mensaje: null, error: 'El correo electrónico ya está en uso. Ingrese otro.' });
+            } else {
+                const hashedPassword = bcrypt.hashSync(password, 10);
+                await User.create({
+                    nombre_usuario: nombre, // Asegúrate de usar el nombre de columna correcto
+                    correo_electronico,
+                    password: hashedPassword,
+                    rol,
+                });
+                // Establece el mensaje y redirige a la misma página para mostrarlo
+                res.render('crear-usuario', { mensaje: 'Usuario creado exitosamente', error: null });
+            }
+        } catch (error) {
+            console.error('Error al crear el usuario:', error);
+            res.status(500).send('Error al crear el usuario');
+        }
+    } else {
+        res.status(403).send('Acceso no autorizado');
+    }
+});
 // Middleware para verificar el acceso de roles
 function checkRole(roles) {
     return (req, res, next) => {
@@ -293,7 +273,28 @@ function checkRole(roles) {
         }
     };
 }
+// Middleware para manejar rutas relacionadas con pacientes
+app.use('/', pacienteRuta);
+app.use('/buscarOrdenes', buscarOrdenesRuta);
+app.use('/orden', OrdenesTrabajoRuta);
 
+app.use('/examen',checkRole(['tecnico', 'bioquimico', 'admin']), examenRuta);
+app.use('/determinacion', checkRole(['tecnico', 'bioquimico', 'admin']), determinacionesRuta);
+app.use('/valoresreferencia', checkRole(['tecnico', 'bioquimico', 'admin']), valoresRefRuta);
+app.use('/modificar-examen', checkRole(['tecnico', 'bioquimico', 'admin']), modificarExamenRuta);
+app.use('/modificar-determinacion', checkRole(['tecnico', 'bioquimico', 'admin']), modificarDeterminacionRuta);
+app.use('/buscar-valores', checkRole(['tecnico', 'bioquimico', 'admin']), modificarValrefRuta);
+//Cierre de sesion.
+app.get('/logout', (req, res) => {
+    req.logout(function(err) {
+        if (err) {
+            console.error('Error al cerrar sesión:', err);
+            return res.status(500).send('Error al cerrar sesión');
+        }
+        console.log('sesion cerrada');
+        res.redirect('/'); // Redirige al usuario a la página de inicio o a otra página deseada
+    });
+});
 // Sincronización de modelos con la base de datos y arranque del servidor en el puerto 3000
 sequelize.sync()
     .then(() => {
