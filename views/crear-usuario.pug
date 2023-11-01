@@ -19,6 +19,7 @@ html
         option(value="bioquimico") Bioquímico
         option(value="admin") Administrador
       button(type="submit") Crear Usuario
+      if mensaje
+        p(style="color: green;") #{mensaje}
       if error
         p(style="color: red;") #{error}
-        

@@ -213,9 +213,27 @@ app.post('/admin/actualizar-usuario', async (req, res) => {
       res.status(500).send('Error en el servidor');
     }
   });
+  app.delete('/admin/eliminarUsuarioAdm/:nombre', async (req, res) => {
+    const nombreUsuario = req.params.nombre;
   
+    // Agregar lógica para buscar y eliminar el usuario en la base de datos
+    try {
+      const usuario = await User.findOne({ where: { nombre_usuario: nombreUsuario } });
+  
+      if (usuario) {
+        // Elimina el usuario de la base de datos
+        await usuario.destroy();
+        res.status(200).json({ mensaje: 'Usuario eliminado exitosamente' });
+      } else {
+        res.status(404).json({ mensaje: 'Usuario no encontrado' });
+      }
+    } catch (error) {
+      console.error('Error en el servidor: ' + error);
+      res.status(500).json({ error: 'Error en el servidor' });
+    }
+  });
 
-app.post('/admin/crear-usuario', async (req, res) => {
+  app.post('/admin/crear-usuario', async (req, res) => {
     if (req.isAuthenticated() && req.user.rol === 'admin') {
         const { nombre, correo_electronico, password, rol } = req.body;
 
@@ -224,7 +242,7 @@ app.post('/admin/crear-usuario', async (req, res) => {
 
             if (existingUser) {
                 // Si el usuario ya existe, muestra un mensaje en la vista Pug
-                res.render('crear-usuario', { error: 'El correo electrónico ya está en uso. Ingrese otro.' });
+                res.render('crear-usuario', { mensaje: null, error: 'El correo electrónico ya está en uso. Ingrese otro.' });
             } else {
                 const hashedPassword = bcrypt.hashSync(password, 10);
                 await User.create({
@@ -233,7 +251,8 @@ app.post('/admin/crear-usuario', async (req, res) => {
                     password: hashedPassword,
                     rol,
                 });
-                res.redirect('/crear-usuario');
+                // Establece el mensaje y redirige a la misma página para mostrarlo
+                res.render('crear-usuario', { mensaje: 'Usuario creado exitosamente', error: null });
             }
         } catch (error) {
             console.error('Error al crear el usuario:', error);
