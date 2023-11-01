@@ -106,9 +106,11 @@ app.post('/login', passport.authenticate('local', { session: true }), (req, res)
     const token = jwt.sign({ id: user.id_Usuario, rol: user.rol }, 'messicrack'); 
     if (user.rol === 'recepcionista') {
         res.redirect('/recepcionista');
-    } else if (user.rol === 'tecnico' || user.rol === 'bioquimico') {
+    } else if (user.rol === 'tecnico' ) {
         res.redirect('/tecnico');
-    } else if (user.rol === 'admin') {
+    } else if(user.rol === 'bioquimico'){
+        res.redirect('/bioquimico');
+    }else if (user.rol === 'admin') {
         res.redirect('/admin');
     }
 });
@@ -126,6 +128,7 @@ app.get('/recepcionista', (req, res) => {
     }
 });
 
+
 app.get('/tecnico', (req, res) => {
     if (req.isAuthenticated() && (req.user.rol === 'tecnico' || req.user.rol === 'bioquimico' || req.user.rol==='admin')) {
         res.render('tecnico');
@@ -133,6 +136,13 @@ app.get('/tecnico', (req, res) => {
         res.status(403).send('Acceso no autorizado');
     }
 });
+app.get('/bioquimico', (req, res) => {
+    if(req.isAuthenticated() && (req.user.rol === 'bioquimico' || req.user.rol === 'admin')){
+        res.render('bioquimico');
+    }else{
+        res.status(403).send('Acceso no autorizado');
+    }
+})
 //vista admin principal
 app.get('/admin', (req, res) => {
     if (req.isAuthenticated() && req.user.rol === 'admin') {
