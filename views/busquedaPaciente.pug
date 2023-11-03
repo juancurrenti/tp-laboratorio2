@@ -1,23 +1,24 @@
-doctype html
-html
+extends layout
+
+block content
   head
     title Buscar Paciente por DNI, Apellido o Email
-    link(rel="stylesheet", type="text/css", href="/public/css/style.css")
-    link(rel="icon" href="/public/img/icon.png" type="image/png")
+    link(rel="icon", href="/public/img/icon.png", type="image/png")
   body
     div#container
       h2#titulo Buscar Paciente
       form#buscar-form(action="/buscar-paciente", method="post")
-        label(for="searchType") Buscar por:
-        select(id="searchType", name="searchType", class="select-field", required)
-          option(value="dni") DNI
-          option(value="apellido") APELLIDO
-          option(value="email") EMAIL
+        div.form-group
+          label(for="searchType") Buscar por:
+          select#searchType(name="searchType" class="form-control" required)
+            option(value="dni") DNI
+            option(value="apellido") APELLIDO
+            option(value="email") EMAIL
+        div.form-group
+          label(for="searchTerm") Dato:
+          input#searchTerm(type="text" name="searchTerm" class="form-control" required)
+        button#guardar-btn(type="submit" class="btn btn-primary") Buscar
 
-        label(for="searchTerm") Dato:
-        input(type="text", id="searchTerm", name="searchTerm", class="input-field", required)
-
-        input(type="submit", id="guardar-btn", class="submit-button", value="Buscar")
-
-        // Botón "Ordenes" que redirige a la página de generación de órdenes
-        a(href="/orden/generacion-orden", class="button") Ordenes
+      // Botón "Ordenes" que redirige a la página de generación de órdenes
+      h2 Ordenes de trabajo
+      a.btn.btn-primary(href="/orden/generacion-orden") Ordenes

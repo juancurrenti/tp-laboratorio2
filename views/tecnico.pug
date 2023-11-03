@@ -1,25 +1,34 @@
-html
+extends layout
+
+block content
   head
-    link(rel="icon", href="/public/img/icon.png", type="image/png")
     title Técnico
+    link(rel="icon", href="/public/img/icon.png", type="image/png")
+    link(rel="stylesheet", href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css")
+
   body
-    a(href="/logout") Cerrar Sesión
-    h1 Bienvenido Técnico
-    div
-      a(href="/ingresar/administrativo") Registrar/Buscar Paciente
-    div
-      a(href="/orden/generacion-orden") Generar Orden
-    div
-      a(href="/BuscarOrdenes/ordenes") Actualizar Orden
-    div
-      a(href="/examen/crear-examen") Generar Examen
-    div
-      a(href="/modificar-examen/buscar-modificar-examen") Actualizar Examen
-    div
-      a(href="/determinacion/crear-determinacion") Generar Determinación
-    div
-      a(href="/modificar-determinacion/modificar-determinacion") Actualizar Determinación
-    div
-      a(href="/valoresreferencia/crear-valores") Generar Valor de Referencia
-    div
-      a(href="/buscar-valores/buscar-valores-referencia") Actualizar Valor de Referencia
+    nav.navbar.navbar-expand-lg.navbar-light.bg-light
+      a.navbar-brand(href="/logout") Cerrar Sesión
+    div.container
+      h1(class="mt-4") Bienvenido Técnico
+      div.row.mt-4
+        div.col-md-4
+          a.btn.btn-primary.btn-lg.btn-block.mb-2(href="/ingresar/administrativo") Registrar/Buscar Paciente
+        div.col-md-4
+          a.btn.btn-primary.btn-lg.btn-block.mb-2(href="/orden/generacion-orden") Generar Orden
+        div.col-md-4
+          a.btn.btn-primary.btn-lg.btn-block.mb-2(href="/BuscarOrdenes/ordenes") Actualizar Orden
+      div.row.mt-4
+        div.col-md-4
+          a.btn.btn-primary.btn-lg.btn-block.mb-2(href="/examen/crear-examen") Generar Examen
+        div.col-md-4
+          a.btn.btn-primary.btn-lg.btn-block.mb-2(href="/modificar-examen/buscar-modificar-examen") Actualizar Examen
+        div.col-md-4
+          a.btn.btn-primary.btn-lg.btn-block.mb-2(href="/determinacion/crear-determinacion") Generar Determinación
+      div.row.mt-4
+        div.col-md-4
+          a.btn.btn-primary.btn-lg.btn-block.mb-2(href="/modificar-determinacion/modificar-determinacion") Actualizar Determinación
+        div.col-md-4
+          a.btn.btn-primary.btn-lg.btn-block.mb-2(href="/valoresreferencia/crear-valores") Generar Valor de Referencia
+        div.col-md-4
+          a.btn.btn-primary.btn-lg.btn-block.mb-2(href="/buscar-valores/buscar-valores-referencia") Actualizar Valor de Referencia

@@ -1,17 +1,18 @@
-doctype html
-html
-  head
-    title Ingresar Datos del Paciente
-    link(rel="icon" href="../public/img/icon.png" type="image/png")
-    link(rel="stylesheet", type="text/css", href="../public/css/style.css")
-  body
-    div#container
-      div#content
-        block content
-          h1 Seleccionar Paciente
-          p Elige un paciente de la lista:
+extends layout
 
-          ul
-            each paciente in pacientes
-              li
-                a(href=`/editar-paciente/${paciente.id_paciente}?searchTerm=${searchTerm}&searchType=${searchType}`) #{paciente.apellido}, #{paciente.nombre}
+block content
+  head
+    title Seleccionar Paciente
+    link(rel="icon", href="../public/img/icon.png", type="image/png")
+    link(rel="stylesheet", href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css")
+
+  body
+    div.container
+      div#content
+        h1(class="mt-5") Seleccionar Paciente
+        p Elige un paciente de la lista:
+
+        ul(class="list-group")
+          each paciente in pacientes
+            li(class="list-group-item")
+              a(href=`/editar-paciente/${paciente.id_paciente}?searchTerm=${searchTerm}&searchType=${searchType}`) #{paciente.apellido}, #{paciente.nombre}

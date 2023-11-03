@@ -1,32 +1,40 @@
+extends layout
+
 block content
   head
     title Actualizar Usuario
-    link(rel="icon", href="/public/img/icon.png", type="image/png")
   h1 Actualizar Usuario
 
   form(action="/admin/actualizar-usuario", method="POST")
-    label(for="nombreBusqueda") Buscar Usuario por Nombre:
-    input(type="text", name="nombreBusqueda", id="nombreBusqueda", required)
-    button(type="button", onclick="buscarUsuario()") Buscar
+    .container
+      .form-group
+        label(for="nombreBusqueda") Buscar Usuario por Nombre:
+        input(type="text", name="nombreBusqueda", id="nombreBusqueda", class="form-control", required)
+        button(type="button", onclick="buscarUsuario()", class="btn btn-primary") Buscar
 
-    label(for="nombre") Nombre:
-    input(type="text", name="nombre", id="nombre", required)
+      .form-group
+        label(for="nombre") Nombre:
+        input(type="text", name="nombre", id="nombre", class="form-control", required)
 
-    label(for="correo_electronico") Correo Electrónico:
-    input(type="text", name="correo_electronico", id="correoElectronico", required)
+      .form-group
+        label(for="correo_electronico") Correo Electrónico:
+        input(type="text", name="correo_electronico", id="correoElectronico", class="form-control", required)
 
-    label(for="password") Contraseña:
-    input(type="password", name="password", id="password", required)
+      .form-group
+        label(for="password") Contraseña:
+        input(type="password", name="password", id="password", class="form-control", required)
 
-    label(for="rol") Rol:
-    select(name="rol", id="rol")
-      option(value="recepcionista") Recepcionista
-      option(value="tecnico") Técnico
-      option(value="bioquimico") Bioquímico
-      option(value="admin") Administrador
+      .form-group
+        label(for="rol") Rol:
+        select(name="rol", id="rol", class="form-control")
+          option(value="recepcionista") Recepcionista
+          option(value="tecnico") Técnico
+          option(value="bioquímico") Bioquímico
+          option(value="admin") Administrador
 
-    button(type="submit") Actualizar Usuario
-    button(type="button", onclick="eliminarUsuario()") Eliminar Usuario
+      .form-group
+        button(type="submit", class="btn btn-success") Actualizar Usuario
+        button(type="button", onclick="eliminarUsuario()", class="btn btn-danger") Eliminar Usuario
 
   // Mostrar mensaje de actualización
   div(id="mensaje")

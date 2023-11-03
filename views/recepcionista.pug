@@ -1,13 +1,20 @@
-doctype html
-html
-  head
-    link(rel="icon", href="/public/img/icon.png", type="image/png")
+extends layout
 
+block content
+  head
     title Recepcionista
+    link(rel="icon", href="/public/img/icon.png", type="image/png")
+    link(rel="stylesheet", href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css")
+
   body
-    a(href="/logout") Cerrar Sesión
-    h1 Bienvenido Recepcionista
-    .buttons
-      a(href="/ingresar/administrativo") Registrar/Buscar Paciente
-      a(href="/orden/generacion-orden") Generar Orden
-      a(href="/BuscarOrdenes/ordenes") Actualizar Orden
+    nav(class="navbar navbar-expand-lg navbar-light bg-light")
+      a(href="/logout", class="navbar-brand") Cerrar Sesión
+
+    .container
+      h1(class="mt-5 text-center") Bienvenido Recepcionista
+      div(class="buttons")
+        a(href="/ingresar/administrativo", class="btn btn-primary mt-3") Registrar/Buscar Paciente
+      div(class="buttons")
+        a(href="/orden/generacion-orden", class="btn btn-primary mt-3") Generar Orden
+      div(class="buttons")
+        a(href="/BuscarOrdenes/ordenes", class="btn btn-primary mt-3") Actualizar Orden

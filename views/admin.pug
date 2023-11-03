@@ -1,11 +1,22 @@
-html
+extends layout
+
+block content
   head
-    link(rel="icon", href="/public/img/icon.png", type="image/png")
-    title Vista del Administrador
+    title Administrador
   body
-    a(href="/logout") Cerrar Sesión
-    h1 Vista del Administrador
-    div
-      a(href="/admin/crear-usuario") Crear Usuario
-    div
-      a(href="/admin/actualizarUsuarioAdm") Actualizar Usuario
+    nav.navbar.navbar-expand-lg.navbar-light.bg-light
+      a.navbar-brand(href="/") Inicio
+      button.navbar-toggler(type="button", data-toggle="collapse", data-target="#navbarNav", aria-controls="navbarNav", aria-expanded="false", aria-label="Toggle navigation")
+        span.navbar-toggler-icon
+      div.collapse.navbar-collapse#navbarNav
+        ul.navbar-nav
+          li.nav-item
+            a.nav-link(href="/logout") Cerrar Sesión
+
+    div.container
+    h1 Bienvenido Administrador
+      div.row
+        div.col
+          a(href="/admin/crear-usuario", class="btn btn-primary") Crear Usuario
+        div.col
+          a(href="/admin/actualizarUsuarioAdm", class="btn btn-success") Actualizar Usuario

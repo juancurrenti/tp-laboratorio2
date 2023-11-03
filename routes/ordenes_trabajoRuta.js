@@ -6,6 +6,13 @@ const Examen = require('../models/examen');
 const Paciente = require('../models/paciente');
 const OrdenesExamenes = require('../models/ordenes_examen');
 
+// Función para sumar días a una fecha
+function sumarDias(fecha, dias) {
+  const resultado = new Date(fecha);
+  resultado.setDate(resultado.getDate() + dias);
+  return resultado;
+}
+
 // Ruta para mostrar la vista de generación de orden
 router.get('/generacion-orden', async (req, res) => {
     try {
@@ -20,11 +27,6 @@ router.get('/generacion-orden', async (req, res) => {
 
         // Obtén la lista de exámenes y pacientes desde la base de datos
         const examenes = await Examen.findAll();
-        const idsExamen=[];
-        for (const examen of examenes) {
-          idsExamen.push(examen.id_examen);
-        }
-        console.log("Ids de los examenes: ", idsExamen)
         const pacientes = await Paciente.findAll();
         res.render('generarOrden', { tiposMuestra, examenes, pacientes });
     } catch (error) {
@@ -44,31 +46,29 @@ router.post('/generacion-orden', async (req, res) => {
             return res.status(400).send('El valor de id_paciente es nulo o no válido.');
         }
 
-        console.log('Examenes en el servidor',examenesSelectedIds);
         const examenesSelectedIdsArray = examenesSelectedIds.split(',').map(id_examen => parseInt(id_examen));
-        console.log('Examenes en el servidor pero en un array',examenesSelectedIdsArray);
 
         // Crea una nueva orden de trabajo
         const nuevaOrden = await OrdenTrabajo.create({
             id_Paciente: id_paciente,
             estado,
             Fecha_Creacion: new Date(),
+            // Calcula la Fecha_Entrega sumando 7 días a la Fecha_Creacion
+            Fecha_Entrega: sumarDias(new Date(), 7),
         }, {
             returning: true,
         });
         const nuevaOrdenId = nuevaOrden.id_Orden;
 
         for (const examenId of examenesSelectedIdsArray) {
-            console.log('Entre al for',examenId)
           await OrdenesExamenes.create({
             id_Orden: nuevaOrdenId,
             id_examen: examenId,
           });
         }
+
         for (const tipoMuestra of tipos_muestra) {
-            console.log(tipos_muestra);
           const estadoValue = req.body[`estado_${tipoMuestra}`];
-          console.log('estado: ', estadoValue);
           await Muestra.create({
             id_Orden: nuevaOrdenId,
             id_Paciente: id_paciente,
@@ -77,14 +77,12 @@ router.post('/generacion-orden', async (req, res) => {
             estado: estadoValue,
           });
         }
-    // Itera sobre los IDs de los exámenes seleccionados y crea las relaciones
-    // Para cada tipo de muestra seleccionado en el formulario...
+
         res.redirect('/');
     } catch (error) {
         console.error('Error al procesar el formulario:', error);
         res.status(500).send('Error al procesar el formulario');
     }
-
-  });
+});
 
 module.exports = router;

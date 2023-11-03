@@ -100,19 +100,31 @@ passport.deserializeUser(async (id_Usuario, done) => {
 app.get('/', (req, res) => {
     res.render('login');
 });
-
-app.post('/login', passport.authenticate('local', { session: true }), (req, res) => {
-    const user = req.user;
-    const token = jwt.sign({ id: user.id_Usuario, rol: user.rol }, 'messicrack'); 
-    if (user.rol === 'recepcionista') {
-        res.redirect('/recepcionista');
-    } else if (user.rol === 'tecnico' ) {
-        res.redirect('/tecnico');
-    } else if(user.rol === 'bioquimico'){
-        res.redirect('/bioquimico');
-    }else if (user.rol === 'admin') {
-        res.redirect('/admin');
-    }
+app.post('/login', (req, res, next) => {
+    passport.authenticate('local', { session: true }, (err, user, info) => {
+        if (err) {
+            return next(err);
+        }
+        if (!user) {
+            const errorMessage = 'Email o contraseña incorrectos. Intente nuevamente.';
+            return res.render('login', { message: errorMessage });
+        }
+        req.logIn(user, (err) => {
+            if (err) {
+                return next(err);
+            }
+            const token = jwt.sign({ id: user.id_Usuario, rol: user.rol }, 'messicrack');
+            if (user.rol === 'recepcionista') {
+                return res.redirect('/recepcionista');
+            } else if (user.rol === 'tecnico') {
+                return res.redirect('/tecnico');
+            } else if (user.rol === 'bioquimico') {
+                return res.redirect('/bioquimico');
+            } else if (user.rol === 'admin') {
+                return res.redirect('/admin');
+            }
+        });
+    })(req, res, next);
 });
 
 app.get('/ingresar/administrativo', (req, res) => {

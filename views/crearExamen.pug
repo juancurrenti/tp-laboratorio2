@@ -1,15 +1,21 @@
+extends layout
+
 block content
   head
     title Crear Examen
     link(rel="icon", href="/public/img/icon.png", type="image/png")
-  h1 Crear Examen 
-  form(action="/examen/crear-examen" method="post")
-    label(for="nombre_examen") Nombre del Examen:
-    input(type="text" name="nombre_examen" required)
-    label(for="descripcion") Descripción del Examen:
-    textarea(name="descripcion")
-    label(for="codigo") Código del Examen:
-    input(type="text" name="codigo" required)
-    a(href="/examen/crear-valores" class="button") Agregar Nuevo Valor de Referencia
+  body
+    h1 Crear Examen
+    form#crear-examen-form(action="/examen/crear-examen", method="post")
+      div.form-group
+        label(for="nombre_examen") Nombre del Examen:
+        input#nombre_examen(type="text", name="nombre_examen" class="form-control" required)
+      div.form-group
+        label(for="descripcion") Descripción del Examen:
+        textarea#descripcion(name="descripcion" class="form-control")
+      div.form-group
+        label(for="codigo") Código del Examen:
+        input#codigo(type="text", name="codigo" class="form-control" required)
+      a.btn.btn-primary(href="/examen/crear-valores") Agregar Nuevo Valor de Referencia
 
-    button(type="submit") Crear Examen
+      button.btn.btn-primary(type="submit") Crear Examen

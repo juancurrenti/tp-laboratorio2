@@ -1,25 +1,54 @@
-html
+extends layout
+
+block content
   head
-    link(rel="icon", href="/public/img/icon.png", type="image/png")
     title Bioquímico
+
   body
-    a(href="/logout") Cerrar Sesión
+    nav.navbar.navbar-expand-lg.navbar-light.bg-light
+      a.navbar-brand(href="/") Inicio
+      button.navbar-toggler(type="button", data-toggle="collapse", data-target="#navbarNav", aria-controls="navbarNav", aria-expanded="false", aria-label="Toggle navigation")
+        span.navbar-toggler-icon
+      div.collapse.navbar-collapse#navbarNav
+        ul.navbar-nav
+          li.nav-item
+            a.nav-link(href="/logout") Cerrar Sesión
+
     h1 Bienvenido Bioquímico
-    div
-      a(href="/ingresar/administrativo") Registrar/Buscar Paciente
-    div
-      a(href="/orden/generacion-orden") Generar Orden
-    div
-      a(href="/BuscarOrdenes/ordenes") Actualizar Orden
-    div
-      a(href="/examen/crear-examen") Generar Examen
-    div
-      a(href="/modificar-examen/buscar-modificar-examen") Actualizar Examen
-    div
-      a(href="/determinacion/crear-determinacion") Generar Determinación
-    div
-      a(href="/modificar-determinacion/modificar-determinacion") Actualizar Determinación
-    div
-      a(href="/valoresreferencia/crear-valores") Generar Valor de Referencia
-    div
-      a(href="/buscar-valores/buscar-valores-referencia") Actualizar Valor de Referencia
+    .container
+      h2 Paciente
+      .row
+        .col-lg-12
+          a(href="/ingresar/administrativo", class="btn btn-primary btn-block mt-3") Registrar/Buscar Paciente
+
+      h2 Órdenes
+      .row
+        .col-lg-12
+          a(href="/orden/generacion-orden", class="btn btn-success btn-block mt-3") Generar Orden
+      .row
+        .col-lg-12
+          a(href="/BuscarOrdenes/ordenes", class="btn btn-primary btn-block mt-3") Actualizar Orden
+
+      h2 Exámenes
+      .row
+        .col-lg-12
+          a(href="/examen/crear-examen", class="btn btn-success btn-block mt-3") Generar Examen
+      .row
+        .col-lg-12
+          a(href="/modificar-examen/buscar-modificar-examen", class="btn btn-primary btn-block mt-3") Actualizar Examen
+
+      h2 Determinaciones
+      .row
+        .col-lg-12
+          a(href="/determinacion/crear-determinacion", class="btn btn-success btn-block mt-3") Generar Determinación
+      .row
+        .col-lg-12
+          a(href="/modificar-determinacion/modificar-determinacion", class="btn btn-primary btn-block mt-3") Actualizar Determinación
+
+      h2 Valores de Referencia
+      .row
+        .col-lg-12
+          a(href="/valoresreferencia/crear-valores", class="btn btn-success btn-block mt-3") Generar Valor de Referencia
+      .row
+        .col-lg-12
+          a(href="/buscar-valores/buscar-valores-referencia", class="btn btn-primary btn-block mt-3") Actualizar Valor de Referencia

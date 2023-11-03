@@ -1,30 +1,32 @@
+extends layout
+
 block content
   head
     title Actualizar Orden de Trabajo
     link(rel="icon", href="/public/img/icon.png", type="image/png")
   h1 Actualizar Orden de Trabajo
   
-  // Formulario de búsqueda de paciente
-  form(action="/ordenes", method="POST", id="searchForm")
-    label(for="idPaciente") Buscar Orden por ID de Paciente:
-    input(type="text", name="idPaciente", id="idPaciente", placeholder="ID del Paciente", class="input-field", required)
-    button(type="submit") Buscar
+  div.container
+    form(action="/ordenes", method="POST", id="searchForm", class="mb-4")
+      div.form-group
+        label(for="idPaciente") Buscar Orden por ID de Paciente:
+        input(type="text", name="idPaciente", id="idPaciente", placeholder="ID del Paciente", class="form-control", required)
+      button(type="submit", class="btn btn-primary") Buscar
 
-  // Resultados de búsqueda de órdenes de trabajo
-  h2(id="resultHeading") Resultados:
-  #resultCards
-    if ordenesTrabajo
-      each orden in ordenesTrabajo 
-        .card
-          h3 Órden de Trabajo
-          p Orden: #{orden.id_Orden}
-          p Id Paciente: #{orden.id_Paciente}
-          p Fecha: #{orden.Fecha_Creacion}
-          p Estado: #{orden.estado}
+    h2#resultHeading Resultados:
+    #resultCards
+      if ordenesTrabajo
+        each orden in ordenesTrabajo 
+          div.card
+            h3 Órden de Trabajo
+            p Orden: #{orden.id_Orden}
+            p Id Paciente: #{orden.id_Paciente}
+            p Fecha: #{orden.Fecha_Creacion}
+            p Estado: #{orden.estado}
 
-  // Script para manejar la respuesta
   script.
     document.getElementById("searchForm").addEventListener("submit", async (e) => {
       e.preventDefault();
       const idPaciente = document.getElementById("idPaciente").value;
       const resultHeading = document.getElementById("resultHeading");
+    })

@@ -1,47 +1,45 @@
-doctype html
-html
+extends layout
+
+block content
   head
     title Generación de Orden de Trabajo
-    link(rel="stylesheet", type="text/css", href="/public/css/style.css")
+    link(rel="stylesheet", href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css")
     link(rel="icon", href="/public/img/icon.png", type="image/png")
   body
-    #container
-      h1 Generación de Orden de Trabajo
-      form(action="/orden/generacion-orden", method="POST")
-        div
+    .container
+      h1.mb-4 Generación de Orden de Trabajo
+      form#generar-orden-form(action="/orden/generacion-orden", method="POST")
+        .form-group
           label(for="paciente") Paciente:
-          input(type="text", id="pacienteSearch", placeholder="Buscar paciente...", class="input-field")
+          input#pacienteSearch.form-control(type="text", placeholder="Buscar paciente...")
           #pacienteResults
-            // Aquí se mostrarán los resultados de búsqueda de pacientes
-          input(type="hidden", name="id_paciente", id="selectedPaciente")
+          input#selectedPaciente(name="id_paciente", type="hidden")
           #selectedPacienteContainer
-            span#selectedPacienteLabel
-            button(type="button", id="clearPacienteButton") Borrar
-        div
+            p#selectedPacienteLabel
+            button#clearPacienteButton.btn.btn-secondary(type="button") Borrar
+        .form-group
           label(for="estado") Estado de la Orden:
-          select(name="estado", id="estado", class="select-field")
+          select#estado.form-control(name="estado")
             option(value="ingresada") Ingresada
             option(value="esperando-toma-muestra") Esperando Toma de Muestra
             option(value="analitica") Analítica
-        div
+        .form-group
           label(for="examenes") Exámenes:
-          input(type="text", id="examSearch", placeholder="Buscar exámenes...", class="input-field")
+          input#examSearch.form-control(type="text", placeholder="Buscar exámenes...")
           #examResults
-            // Aquí se mostrarán los resultados de búsqueda de exámenes
           label(for="examenes") Examenes seleccionados:
-          select(name="examenesSelect", id="examenesSelect", multiple, class="select-field")
-            // Aquí se mostrarán los exámenes seleccionados
-          input(type="hidden", name="examenesSelectedIds", id="examenesSelectedIds")
-        div
+          select#examenesSelect.form-control(name="examenesSelect", multiple)
+          input#examenesSelectedIds(name="examenesSelectedIds", type="hidden")
+        .form-group
           label Tipos de Muestra:
           each tipo in tiposMuestra
-            div
-              input(type="checkbox", name="tipos_muestra", value=tipo.value, id=tipo.value)
-              label(for=tipo.value)= tipo.label
-                select(name="estado_" + tipo.value, class="select-field")
+            .form-check
+              input.form-check-input(type="checkbox", name="tipos_muestra", value=tipo.value, id=tipo.value)
+              label.form-check-label(for=tipo.value)= tipo.label
+                select.form-control(name="estado_" + tipo.value)
                   option(value="esperando_toma_muestra") Esperando Toma de Muestra
                   option(value="analitica") Analítica
-        button(type="submit" class="submit-button") Generar Orden de Trabajo
+        button.btn.btn-primary(type="submit") Generar Orden de Trabajo
 
     script.
       // JavaScript para manejar la búsqueda, selección y eliminación de exámenes

@@ -1,60 +1,58 @@
-doctype html
-html
+extends layout
+
+block content
   head
     title Ingresar Datos del Paciente
-    link(rel="icon" href="../public/img/icon.png" type="image/png")  
-    link(rel="stylesheet", type="text/css", href="../public/css/style.css")
+    link(rel="stylesheet", href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css")
+    link(rel="icon", href="../public/img/icon.png", type="image/png")  
   body
-    div#container
-      div#content
+    .container
+      #content
         h2#titulo Ingresar Datos del Paciente
-        p(class="error-mensaje") #{mensaje}
+        p.error-mensaje(class="text-danger") #{mensaje}
         form#guardar-form(action="/guardar-paciente", method="post")
-        
-          label(for="nombre") Nombre:
-          input(type="text", id="nombre", name="nombre", class="input-field", value=`${paciente ? paciente.nombre : ''}`, required)
-         
+          .form-group
+            label(for="nombre") Nombre:
+            input#nombre.form-control(type="text", name="nombre", value=`${paciente ? paciente.nombre : ''}`, required)
 
-          label(for="apellido") Apellido:
-          input(type="text", id="apellido", name="apellido", class="input-field", value=`${paciente ? paciente.apellido : ''}`, required)
-          
+          .form-group
+            label(for="apellido") Apellido:
+            input#apellido.form-control(type="text", name="apellido", value=`${paciente ? paciente.apellido : ''}`, required)
 
-          label(for="dni") DNI:
-          input(type="text", id="dni", name="dni", class="input-field", value=`${paciente ? paciente.dni : ''}`, required)
-          
+          .form-group
+            label(for="dni") DNI:
+            input#dni.form-control(type="text", name="dni", value=`${paciente ? paciente.dni : ''}`, required)
 
-          label(for="fecha_nacimiento") Fecha de Nacimiento:
-          input(type="date", id="fecha_nacimiento", name="fecha_nacimiento", class="input-field", value=fechaNacimiento, required)
+          .form-group
+            label(for="fecha_nacimiento") Fecha de Nacimiento:
+            input#fecha_nacimiento.form-control(type="date", name="fecha_nacimiento", value=fechaNacimiento, required)
 
+          .form-group
+            label(for="genero") Género:
+            select#genero.form-control(name="genero", required)
+              option(value="femenino", selected=(paciente && paciente.genero.toLowerCase() === "femenino")) Femenino
+              option(value="masculino", selected=(paciente && paciente.genero.toLowerCase() === "masculino")) Masculino
 
-
-
-
-          label(for="genero") Género:
-          select(id="genero", name="genero", class="select-field", required)
-            option(value="femenino", selected=(paciente && paciente.genero.toLowerCase() === "femenino")) Femenino
-            option(value="masculino", selected=(paciente && paciente.genero.toLowerCase() === "masculino")) Masculino
-
-          label(for="embarazo") ¿Embarazo?
-            select(id="embarazo", name="embarazo", class="select-field", required)
+          .form-group
+            label(for="embarazo") ¿Embarazo?
+            select#embarazo.form-control(name="embarazo", required)
               option(value=0, selected=(paciente && paciente.embarazo === 0)) No
               option(value=1, selected=(paciente && paciente.embarazo === 1)) Sí
-          
 
-          label(for="direccion") Dirección:
-          input(type="text", id="direccion", name="direccion", class="input-field", value=`${paciente && paciente.direccion }`)
-          
+          .form-group
+            label(for="direccion") Dirección:
+            input#direccion.form-control(type="text", name="direccion", value=`${paciente && paciente.direccion }`)
 
-          label(for="telefono") Teléfono:
-          input(type="text", id="telefono", name="telefono", class="input-field", value=`${paciente ? paciente.telefono : ''}`)
-          
+          .form-group
+            label(for="telefono") Teléfono:
+            input#telefono.form-control(type="text", name="telefono", value=`${paciente ? paciente.telefono : ''}`)
 
-          label(for="email") Correo Electrónico:
-          input(type="email", id="email", name="email", class="input-field", value=`${paciente ? paciente.email : ''}`)
-          
+          .form-group
+            label(for="email") Correo Electrónico:
+            input#email.form-control(type="email", name="email", value=`${paciente ? paciente.email : ''}`)
 
-          label(for="diagnostico") Diagnóstico (presuntivo o confirmado):
-          input(type="text", id="diagnostico", name="diagnostico", class="input-field", value=`${paciente ? paciente.diagnostico : ''}`)
-          
+          .form-group
+            label(for="diagnostico") Diagnóstico (presuntivo o confirmado):
+            input#diagnostico.form-control(type="text", name="diagnostico", value=`${paciente ? paciente.diagnostico : ''}`)
 
-          input(type="submit", id="guardar-btn", class="submit-button", value="Guardar Datos")
+          button#guardar-btn.btn.btn-primary(type="submit") Guardar Datos

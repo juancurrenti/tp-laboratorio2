@@ -1,40 +1,50 @@
+extends layout
+
 block content
   head
     title Buscar y Modificar Examen
     link(rel="icon", href="/public/img/icon.png", type="image/png")
   h1 Buscar y Modificar Examen
 
-  // Formulario de búsqueda
-  form(action="/modificar-examen/buscar-modificar-examen" method="post")
-    label(for="id_examen") ID del Examen:
-    input(type="text" name="id_examen" required)
-    button(type="submit") Buscar Examen
+  div.container
+    form(action="/modificar-examen/buscar-modificar-examen", method="post", class="mb-4")
+      div.form-group
+        label(for="id_examen") ID del Examen:
+        input(type="text", name="id_examen", required, class="form-control")
+      button(type="submit", class="btn btn-primary") Buscar Examen
 
-  // Aquí mostrarías los resultados de la búsqueda si los hay
-  if examen
-    h2 Examen Encontrado
-    p
-      | ID: #{examen.id_examen}
-      | Nombre: #{examen.nombre_examen}
-      | Descripción: #{examen.descripcion}
-      | Código: #{examen.codigo}
-      | Estado: #{examen.estado === 1 ? 'Activo' : 'Inactivo'}
+    if examen
+      h2 Examen Encontrado
+      p
+        | ID: #{examen.id_examen}
+      p
+        | Nombre: #{examen.nombre_examen}
+      p
+        | Descripción: #{examen.descripcion}
+      p
+        | Código: #{examen.codigo}
+      p
+        | Estado: #{examen.estado ? 'Activo' : 'Inactivo'}
 
-    // Formulario de modificación
-    form(action="/modificar-examen/modificar" method="post")
-      input(type="hidden" name="id_examen" value=examen.id_examen)
-      label(for="nombre_examen") Nuevo Nombre del Examen:
-      input(type="text" name="nombre_examen" value=examen.nombre_examen required)
 
-      label(for="descripcion") Nueva Descripción del Examen:
-      textarea(name="descripcion" rows="3") #{examen.descripcion}
+      form(action="/modificar-examen/modificar", method="post", class="mt-4")
+        input(type="hidden", name="id_examen", value=examen.id_examen)
+        div.form-group
+          label(for="nombre_examen") Nuevo Nombre del Examen:
+          input(type="text", name="nombre_examen", value=examen.nombre_examen, required, class="form-control")
 
-      label(for="codigo") Nuevo Código del Examen:
-      input(type="text" name="codigo" value=examen.codigo required)
+        div.form-group
+          label(for="descripcion") Nueva Descripción del Examen:
+          textarea(name="descripcion", rows="3", class="form-control") #{examen.descripcion}
 
-      label(for="estado") Estado:
-      select(name="estado")
-        option(value="1" selected=examen.estado === 1) Activo
-        option(value="0" selected=examen.estado === 0) Inactivo
+        div.form-group
+          label(for="codigo") Nuevo Código del Examen:
+          input(type="text", name="codigo", value=examen.codigo, required, class="form-control")
 
-      button(type="submit") Modificar Examen
+        div.form-group
+          label(for="estado") Estado:
+          select(name="estado", class="form-control")
+            option(value="1", selected=examen.estado === 1) Activo
+            option(value="0", selected=examen.estado === 0) Inactivo
+
+        button(type="submit", class="btn btn-primary") Modificar Examen

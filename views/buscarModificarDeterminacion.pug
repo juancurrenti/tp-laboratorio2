@@ -1,19 +1,24 @@
+extends layout
+
 block content
   head
     title Buscar y Modificar Determinación
     link(rel="icon", href="/public/img/icon.png", type="image/png")
-  h1 Buscar y Modificar Determinación
+    link(rel="stylesheet", href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css")
+
+  h1(class="mt-4") Buscar y Modificar Determinación
 
   // Formulario de búsqueda por id_examen
-  form(action="/modificar-determinacion/buscar-determinacion" method="post")
-    label(for="id_examen") ID del Examen:
-    input(type="text" name="id_examen" required)
-    button(type="submit") Buscar Determinaciones
+  form(action="/modificar-determinacion/buscar-determinacion", method="post" class="mt-4")
+    div.form-group
+      label(for="id_examen") ID del Examen:
+      input(type="text", name="id_examen", class="form-control", required)
+    button(type="submit", class="btn btn-primary") Buscar Determinaciones
 
   // Mostrar resultados de búsqueda si los hay
   if determinacionesEncontradas
-    h2 Determinaciones Encontradas
-    table
+    h2(class="mt-4") Determinaciones Encontradas
+    table.table.table-striped
       thead
         tr
           th ID
@@ -34,13 +39,14 @@ block content
             td= determinacion.estado ? 'Activa' : 'Inactiva'
             td
               // Formulario para modificar estado
-              form(action="/modificar-determinacion/modificar-estado" method="post")
+              form(action="/modificar-determinacion/modificar-estado", method="post")
                 input(type="hidden" name="id_Determinacion" value=determinacion.id_Determinacion)
-                label(for="estado") Modificar Estado:
-                select(name="estado")
-                  option(value="1" selected=determinacion.estado === 1) Activo
-                  option(value="0" selected=determinacion.estado === 0) Inactivo
-                button(type="submit") Cambiar Estado
+                div.form-group
+                  label(for="estado") Modificar Estado:
+                  select(name="estado", class="form-control")
+                    option(value="1", selected=determinacion.estado === 1) Activo
+                    option(value="0", selected=determinacion.estado === 0) Inactivo
+                button(type="submit", class="btn btn-primary") Cambiar Estado
 
   else
-    p No se encontraron determinaciones para el ID de examen proporcionado.
+    p(class="mt-4") No se encontraron determinaciones para el ID de examen proporcionado.
