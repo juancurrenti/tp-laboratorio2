@@ -28,7 +28,7 @@ router.get('/crear-valores', async (req, res) => {
       });
   
       console.log('Valores de referencia creados con éxito.');
-      res.redirect('/'); // Redirige a la página de inicio o a la que desees
+      res.redirect('/tecnico'); // Redirige a la página de inicio o a la que desees
     } catch (error) {
       console.error(error);
       res.status(500).send('Error al crear los valores de referencia.');

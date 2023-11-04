@@ -61,46 +61,42 @@ router.get('/crear-modificar-orden/:idOrden', async (req, res) => {
 });
 
 
-// Ruta para procesar la modificación de órdenes de trabajo
+// Ruta para procesar la creación/modificación de órdenes de trabajo
 router.post('/crear-modificar-orden/:idOrden', async (req, res) => {
   try {
     const { idOrden } = req.params;
     const { estado, muestras } = req.body;
 
-    // Buscar la orden de trabajo existente
-    const ordenTrabajoExistente = await OrdenTrabajo.findByPk(idOrden, {
-      include: [Muestra], // Asegúrate de incluir el modelo Muestra
-    });
-
+    // Procesar la orden de trabajo y guardarla en la base de datos
+    const ordenTrabajoExistente = await OrdenTrabajo.findByPk(idOrden);
     if (ordenTrabajoExistente) {
-      // Si existe, actualiza el estado
       ordenTrabajoExistente.estado = estado;
       await ordenTrabajoExistente.save();
-    // Actualiza las muestras según la información del formulario
-    if (muestras && muestras.length > 0) {
-      const muestrasActualizadas = JSON.parse(muestras);
-      for (const muestra of muestrasActualizadas) {
-        const muestraExistente = await Muestra.findByPk(muestra.id_Muestra);
-        if (muestraExistente) {
-          muestraExistente.Resultado = muestra.Resultado;
-          // Ajusta otros campos según tus necesidades
-          await muestraExistente.save();
-        }
-      }
-    }
-
-      console.log('Estado de la orden de trabajo y muestras modificados con éxito.');
     } else {
       // Si no existe, devuelve un mensaje de error
       return res.status(404).send('Orden de Trabajo no encontrada');
     }
 
+    // Procesar las muestras y guardarlas en la base de datos
+    if (muestras && muestras.length > 0) {
+      const muestrasArray = JSON.parse(muestras);
+      await Muestra.bulkCreate(muestrasArray.map((muestra) => ({
+        Tipo_Muestra: muestra.Tipo_Muestra,
+        estado: muestra.estado,
+        id_Orden: ordenTrabajoExistente.id_Orden,
+        id_Paciente: ordenTrabajoExistente.id_Paciente,
+      })));
+    }
+
+    console.log('Estado de la orden de trabajo y nuevas muestras modificados con éxito.');
+
     res.redirect('/buscarOrdenes/ordenes');
   } catch (error) {
     console.error(error);
-    res.status(500).send('Error al procesar la modificación de la orden de trabajo y las muestras.');
+    res.status(500).send('Error al procesar la modificación de la orden de trabajo y las nuevas muestras.');
   }
 });
+
 
 // Ruta para cancelar una orden de trabajo
 router.get('/cancelar-orden/:idOrden', async (req, res) => {

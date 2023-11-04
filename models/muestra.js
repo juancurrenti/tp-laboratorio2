@@ -28,5 +28,7 @@ const Muestra = sequelize.define('Muestra', {
   estado: {
     type: DataTypes.STRING,
   },
+},{
+  timestamps: false,
 });
 module.exports = Muestra;

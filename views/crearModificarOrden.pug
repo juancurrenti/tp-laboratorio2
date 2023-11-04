@@ -1,0 +1,104 @@
+extends layout
+
+block content
+  h1 Crear/Modificar Orden de Trabajo
+
+  // Formulario de creación/modificación de órdenes de trabajo
+  form(action=`/buscarOrdenes/crear-modificar-orden/${ordenTrabajoExistente.id_Orden}`, method="POST")
+    .form-group
+      label(for="id_Paciente") ID del Paciente:
+      input(type="text", name="id_Paciente", value=ordenTrabajoExistente.id_Paciente, class="form-control", required)
+    .form-group
+      label(for="Fecha_Creacion") Fecha de Creación:
+      input(type="text", name="Fecha_Creacion", value=ordenTrabajoExistente.Fecha_Creacion, class="form-control", required)
+    .form-group
+      label(for="estado") Estado:
+      input(type="text", name="estado", value=ordenTrabajoExistente.estado, class="form-control", required)
+
+    h2 Muestras Asociadas
+    if ordenTrabajoExistente.Muestras && ordenTrabajoExistente.Muestras.length > 0
+      each muestra in ordenTrabajoExistente.Muestras
+        p
+          | Muestra #{muestra.id_Muestra}:
+          span Tipo: #{muestra.Tipo_Muestra}
+    else
+      p No hay muestras asociadas a esta orden de trabajo.
+
+    // Botón para añadir muestras
+    button(type="button" id="agregarMuestra" class="btn btn-primary") Añadir Muestra
+
+    // Contenedor para las muestras dinámicas
+    div#muestrasContainer
+      // Campo oculto para almacenar la información de las muestras
+      input(type="hidden", name="muestras", id="muestras")
+
+    // Botones para guardar la orden de trabajo y cancelar
+    button(type="submit" class="btn btn-primary") Guardar Orden de Trabajo
+    a(href=`/buscarOrdenes/cancelar-orden/${ordenTrabajoExistente.id_Orden}`, class="btn btn-danger") Cancelar Orden
+
+  // Agrega este script al final del archivo pug
+  script.
+    function borrarMuestra(button) {
+      const divMuestra = button.parentElement;
+      muestrasContainer.removeChild(divMuestra);
+      actualizarCampoMuestras();
+    }
+
+    function actualizarCampoMuestras() {
+      const muestraDivs = document.querySelectorAll('div[id^="muestra"]');
+      const muestras = [];
+
+      muestraDivs.forEach((div) => {
+        const tipoMuestra = div.querySelector('select[name^="tipoMuestra"]').value;
+        const estado = div.querySelector('select[name^="estadoMuestra"]').value;
+
+        if (tipoMuestra && estado) {
+          muestras.push({
+            Tipo_Muestra: tipoMuestra,
+            estado: estado,
+          });
+        }
+      });
+
+      document.getElementById('muestras').value = JSON.stringify(muestras);
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+      const muestrasContainer = document.getElementById('muestrasContainer');
+      const agregarMuestraButton = document.getElementById('agregarMuestra');
+      let muestraCount = 0;
+
+      agregarMuestraButton.addEventListener('click', function() {
+        muestraCount++;
+        const muestraDiv = document.createElement('div');
+        muestraDiv.id = `muestra${muestraCount}`;
+        muestraDiv.innerHTML = `
+          <div class="form-group" style="display: flex; justify-content: space-between;">
+            <div style="flex: 1;">
+              <label for="tipoMuestra${muestraCount}">Tipo de Muestra:</label>
+              <select name="tipoMuestra" class="form-control">
+                <option value="Sangre">Sangre</option>
+                <option value="Orina">Orina</option>
+                <option value="Heces">Heces</option>
+                <option value="Liquido cefalorraquideo">Liquido cefalorraquideo</option>
+                <option value="Saliva">Saliva</option>
+                <option value="Secrecion Nasofaringea">Secrecion Nasofaringea</option>
+              </select>
+            </div>
+            <div style="flex: 1;">
+              <label for="estadoMuestra${muestraCount}">Estado de Muestra:</label>
+              <select name="estadoMuestra" class="form-control">
+                <option value="Analitica">Analitica</option>
+                <option value="esperando-toma-muestra">Esperando toma de muestra</option>
+                <!-- Agrega más opciones según sea necesario -->
+              </select>
+            </div>
+            <button type="button" class="btn btn-danger" onclick="borrarMuestra(this)">Eliminar</button>
+          </div>
+        `;
+        muestrasContainer.appendChild(muestraDiv);
+
+        // Actualizar el campo oculto de muestras cuando se agrega o elimina una muestra
+        actualizarCampoMuestras();
+      });
+    });

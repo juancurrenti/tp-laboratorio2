@@ -299,7 +299,6 @@ function checkRole(roles) {
 app.use('/', pacienteRuta);
 app.use('/buscarOrdenes', buscarOrdenesRuta);
 app.use('/orden', OrdenesTrabajoRuta);
-
 app.use('/examen',checkRole(['tecnico', 'bioquimico', 'admin']), examenRuta);
 app.use('/determinacion', checkRole(['tecnico', 'bioquimico', 'admin']), determinacionesRuta);
 app.use('/valoresreferencia', checkRole(['tecnico', 'bioquimico', 'admin']), valoresRefRuta);
