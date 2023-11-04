@@ -65,48 +65,44 @@ router.get('/crear-modificar-orden/:idOrden', async (req, res) => {
 router.post('/crear-modificar-orden/:idOrden', async (req, res) => {
   try {
     const { idOrden } = req.params;
-    const { estado } = req.body;
-    const { idPaciente}=req.body;
-    console.log('aca estoy parado', idOrden, estado, idPaciente);
+    const { estado, idPaciente, muestrasData } = req.body; // Obtén muestrasData del cuerpo de la solicitud
+
     // Procesar la orden de trabajo y guardarla en la base de datos
     const ordenTrabajoExistente = await OrdenTrabajo.findByPk(idOrden);
-    
+
     if (ordenTrabajoExistente) {
       ordenTrabajoExistente.estado = estado;
       await ordenTrabajoExistente.save();
-          // Procesar las muestras y guardarlas en la base de datos
-    const muestrasKeys = Object.keys(req.body).filter(key => key.startsWith('tipoMuestra_'));
-    muestrasKeys.forEach(muestraKey => {
-    const idMuestra = muestraKey.replace('tipoMuestra_', '');
-    const tipoMuestra = req.body[muestraKey];
-    const estadoMuestra = req.body[`estadoMuestra_${idMuestra}`];
 
-    Muestra.create({ // Utiliza el modelo Muestra para crear una nueva muestra
-      id_Orden: idOrden,
-      id_Paciente: idPaciente,
-      Tipo_Muestra: tipoMuestra,
-      estado: estadoMuestra,
-    }).then((muestra) => {
-      console.log('Muestra creada:', muestra);
-    }).catch((error) => {
-      console.error('Error al crear la muestra:', error);
-    });
-    });
+      // Procesar las muestras a partir de los datos almacenados en muestrasData
+      const muestras = JSON.parse(muestrasData); // Analiza el JSON
+      console.log('muestras que existen: ',muestras);
+      for (const muestraData of muestras) {
+        // Los datos de la muestra incluyen tipoMuestra y estadoMuestra
+        const tipoMuestra = muestraData.tipoMuestra;
+        const estadoMuestra = muestraData.estadoMuestra;
+
+        // Aquí puedes crear y guardar las muestras en la base de datos
+        const nuevaMuestra = await Muestra.create({
+          id_Orden: idOrden,
+          id_Paciente: idPaciente,
+          Tipo_Muestra: tipoMuestra,
+          estado: estadoMuestra,
+        });
+
+        console.log('Muestra creada:', nuevaMuestra);
+      }
+
+      res.send('Orden de trabajo y muestras procesadas con éxito.');
     } else {
-      // Si no existe, devuelve un mensaje de error
-      return res.status(404).send('Orden de Trabajo no encontrada');
+      res.status(404).send('Orden de trabajo no encontrada.');
     }
-
-
-
-    console.log('Estado de la orden de trabajo y nuevas muestras modificados con éxito.');
-
-    res.redirect('/buscarOrdenes/ordenes');
   } catch (error) {
-    console.error(error);
-    res.status(500).send('Error al procesar la modificación de la orden de trabajo y las nuevas muestras.');
+    console.error('Error al procesar la orden de trabajo y las muestras:', error);
+    res.status(500).send('Error interno del servidor');
   }
 });
+
 
 
 // Ruta para cancelar una orden de trabajo

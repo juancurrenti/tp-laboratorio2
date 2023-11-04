@@ -19,7 +19,6 @@ block content
     if ordenTrabajoExistente.Muestras && ordenTrabajoExistente.Muestras.length > 0
       each muestra in ordenTrabajoExistente.Muestras
         p
-          | Muestra #{muestra.id_Muestra}:
           span Tipo: #{muestra.Tipo_Muestra}
           select.form-control(name=`estadoMuestra_${muestra.id_Muestra}`)
             option(value="esperando_toma_muestra", selected=muestra.estado === 'esperando_toma_muestra') Esperando Toma de Muestra
@@ -33,44 +32,59 @@ block content
     // Contenedor para las muestras dinámicas
     div#muestrasContainer
 
-    // Botones para guardar la orden de trabajo y cancelar
+    // Campo oculto para almacenar la información de las muestras en formato JSON
+    input(type="hidden", id="muestrasData", name="muestrasData")
+
+    // Botón para guardar la orden de trabajo
     button(type="submit" class="btn btn-primary") Guardar Orden de Trabajo
     a(href=`/buscarOrdenes/cancelar-orden/${ordenTrabajoExistente.id_Orden}`, class="btn btn-danger") Cancelar Orden
+    script.
+      function borrarMuestra(button) {
+        const divMuestra = button.parentElement;
+        muestrasContainer.removeChild(divMuestra);
 
-  script.
-    document.addEventListener('DOMContentLoaded', function() {
-      const agregarMuestraButton = document.getElementById('agregarMuestra');
-      agregarMuestraButton.addEventListener('click', function() {
+        // Actualizar el campo oculto con la información de las muestras en formato JSON
+        const muestras = Array.from(muestrasContainer.getElementsByClassName('form-group')).map(muestraDiv => ({
+          tipoMuestra: muestraDiv.querySelector('[name="tipoMuestra"]').value,
+          estadoMuestra: muestraDiv.querySelector('[name="estadoMuestra"]').value
+        }));
+        muestrasDataInput.value = JSON.stringify(muestras);
+      }
+
+      document.addEventListener('DOMContentLoaded', function() {
         const muestrasContainer = document.getElementById('muestrasContainer');
+        const agregarMuestraButton = document.getElementById('agregarMuestra');
+        const muestrasDataInput = document.getElementById('muestrasData');
 
-        const muestraDiv = document.createElement('div');
-        muestraDiv.className = 'form-group';
+        agregarMuestraButton.addEventListener('click', function() {
+          const muestraDiv = document.createElement('div');
+          muestraDiv.className = 'form-group';
 
-        const muestraId = new Date().getTime(); // Genera un ID único para la muestra
+          muestraDiv.innerHTML = `
+            <label for="tipoMuestra">Tipo de Muestra:</label>
+            <select name="tipoMuestra" class="form-control">
+              <option value="Sangre">Sangre</option>
+              <option value="Orina">Orina</option>
+              <option value="Heces">Heces</option>
+              <option value="Liquido cefalorraquideo">Liquido cefalorraquideo</option>
+              <option value="Saliva">Saliva</option>
+              <option value="Secrecion Nasofaringea">Secrecion Nasofaringea</option>
+            </select>
+            <label for="estadoMuestra">Estado de Muestra:</label>
+            <select name="estadoMuestra" class="form-control">
+              <option value="esperando_toma_muestra">Esperando Toma de Muestra</option>
+              <option value="analitica">Analítica</option>
+            </select>
+            <button type="button" class="btn btn-danger" onclick="borrarMuestra(this)">Eliminar</button>
+          `;
 
-        muestraDiv.innerHTML = `
-          <label for="tipoMuestra${muestraId}">Tipo de Muestra:</label>
-          <select name="tipoMuestra_${muestraId}" class="form-control">
-            <option value="Sangre">Sangre</option>
-            <option value="Orina">Orina</option>
-            <option value="Heces">Heces</option>
-            <option value="Liquido cefalorraquideo">Liquido cefalorraquideo</option>
-            <option value="Saliva">Saliva</option>
-            <option value="Secrecion Nasofaringea">Secrecion Nasofaringea</option>
-          </select>
-          <label for="estadoMuestra${muestraId}">Estado de Muestra:</label>
-          <select name="estadoMuestra_${muestraId}" class="form-control">
-            <option value="esperando_toma_muestra">Esperando Toma de Muestra</option>
-            <option value="analitica">Analítica</option>
-          </select>
-          <button type="button" class="btn btn-danger" onclick="borrarMuestra(this)">Eliminar</button>
-        `;
+          muestrasContainer.appendChild(muestraDiv);
 
-        muestrasContainer.appendChild(muestraDiv);
+          // Actualizar el campo oculto con la información de las muestras en formato JSON
+          const muestras = Array.from(muestrasContainer.getElementsByClassName('form-group')).map(muestraDiv => ({
+            tipoMuestra: muestraDiv.querySelector('[name="tipoMuestra"]').value,
+            estadoMuestra: muestraDiv.querySelector('[name="estadoMuestra"]').value
+          }));
+          muestrasDataInput.value = JSON.stringify(muestras);
+        });
       });
-    });
-
-    function borrarMuestra(button) {
-      const divMuestra = button.parentElement;
-      divMuestra.parentNode.removeChild(divMuestra);
-    }
