@@ -65,28 +65,39 @@ router.get('/crear-modificar-orden/:idOrden', async (req, res) => {
 router.post('/crear-modificar-orden/:idOrden', async (req, res) => {
   try {
     const { idOrden } = req.params;
-    const { estado, muestras } = req.body;
-
+    const { estado } = req.body;
+    const { idPaciente}=req.body;
+    console.log('aca estoy parado', idOrden, estado, idPaciente);
     // Procesar la orden de trabajo y guardarla en la base de datos
     const ordenTrabajoExistente = await OrdenTrabajo.findByPk(idOrden);
+    
     if (ordenTrabajoExistente) {
       ordenTrabajoExistente.estado = estado;
       await ordenTrabajoExistente.save();
+          // Procesar las muestras y guardarlas en la base de datos
+    const muestrasKeys = Object.keys(req.body).filter(key => key.startsWith('tipoMuestra_'));
+    muestrasKeys.forEach(muestraKey => {
+    const idMuestra = muestraKey.replace('tipoMuestra_', '');
+    const tipoMuestra = req.body[muestraKey];
+    const estadoMuestra = req.body[`estadoMuestra_${idMuestra}`];
+
+    Muestra.create({ // Utiliza el modelo Muestra para crear una nueva muestra
+      id_Orden: idOrden,
+      id_Paciente: idPaciente,
+      Tipo_Muestra: tipoMuestra,
+      estado: estadoMuestra,
+    }).then((muestra) => {
+      console.log('Muestra creada:', muestra);
+    }).catch((error) => {
+      console.error('Error al crear la muestra:', error);
+    });
+    });
     } else {
       // Si no existe, devuelve un mensaje de error
       return res.status(404).send('Orden de Trabajo no encontrada');
     }
 
-    // Procesar las muestras y guardarlas en la base de datos
-    if (muestras && muestras.length > 0) {
-      const muestrasArray = JSON.parse(muestras);
-      await Muestra.bulkCreate(muestrasArray.map((muestra) => ({
-        Tipo_Muestra: muestra.Tipo_Muestra,
-        estado: muestra.estado,
-        id_Orden: ordenTrabajoExistente.id_Orden,
-        id_Paciente: ordenTrabajoExistente.id_Paciente,
-      })));
-    }
+
 
     console.log('Estado de la orden de trabajo y nuevas muestras modificados con éxito.');
 
