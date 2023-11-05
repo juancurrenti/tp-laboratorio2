@@ -2,33 +2,40 @@ extends layout
 
 block content
   head
-    title Técnico
-    link(rel="icon", href="/public/img/icon.png", type="image/png")
-    link(rel="stylesheet", href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css")
+    title Bioquímico
 
   body
-    nav.navbar.navbar-expand-lg.navbar-light.bg-light
-      a.navbar-brand(href="/logout") Cerrar Sesión
-    div.container
-      h1(class="mt-4") Bienvenido Técnico
-      div.row.mt-4
-        div.col-md-4
-          a.btn.btn-primary.btn-lg.btn-block.mb-2(href="/ingresar/administrativo") Registrar/Buscar Paciente
-        div.col-md-4
-          a.btn.btn-primary.btn-lg.btn-block.mb-2(href="/orden/generacion-orden") Generar Orden
-        div.col-md-4
-          a.btn.btn-primary.btn-lg.btn-block.mb-2(href="/BuscarOrdenes/ordenes") Actualizar Orden
-      div.row.mt-4
-        div.col-md-4
-          a.btn.btn-primary.btn-lg.btn-block.mb-2(href="/examen/crear-examen") Generar Examen
-        div.col-md-4
-          a.btn.btn-primary.btn-lg.btn-block.mb-2(href="/modificar-examen/buscar-modificar-examen") Actualizar Examen
-        div.col-md-4
-          a.btn.btn-primary.btn-lg.btn-block.mb-2(href="/determinacion/crear-determinacion") Generar Determinación
-      div.row.mt-4
-        div.col-md-4
-          a.btn.btn-primary.btn-lg.btn-block.mb-2(href="/modificar-determinacion/modificar-determinacion") Actualizar Determinación
-        div.col-md-4
-          a.btn.btn-primary.btn-lg.btn-block.mb-2(href="/valoresreferencia/crear-valores") Generar Valor de Referencia
-        div.col-md-4
-          a.btn.btn-primary.btn-lg.btn-block.mb-2(href="/buscar-valores/buscar-valores-referencia") Actualizar Valor de Referencia
+    .container
+      h1 Bienvenido Tecnico
+      .row
+        .col-lg-12
+          h2 Paciente
+          a(href="/ingresar/administrativo", class="btn btn-primary btn-block mt-3") Registrar/Buscar Paciente
+
+      .row
+        .col-lg-12
+          h2 Órdenes
+          a(href="/orden/generacion-orden", class="btn btn-success btn-block mt-3") Generar Orden
+        .col-lg-12
+          a(href="/BuscarOrdenes/ordenes", class="btn btn-primary btn-block mt-3") Actualizar Orden
+
+      .row
+        .col-lg-12
+          h2 Exámenes
+          a(href="/examen/crear-examen", class="btn btn-success btn-block mt-3") Generar Examen
+        .col-lg-12
+          a(href="/modificar-examen/buscar-modificar-examen", class="btn btn-primary btn-block mt-3") Actualizar Examen
+
+      .row
+        .col-lg-12
+          h2 Determinaciones
+          a(href="/determinacion/crear-determinacion", class="btn btn-success btn-block mt-3") Generar Determinación
+        .col-lg-12
+          a(href="/modificar-determinacion/modificar-determinacion", class="btn btn-primary btn-block mt-3") Actualizar Determinación
+
+      .row
+        .col-lg-12
+          h2 Valores de Referencia
+          a(href="/valoresreferencia/crear-valores", class="btn btn-success btn-block mt-3") Generar Valor de Referencia
+        .col-lg-12
+          a(href="/buscar-valores/buscar-valores-referencia", class="btn btn-primary btn-block mt-3") Actualizar Valor de Referencia

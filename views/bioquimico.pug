@@ -5,50 +5,37 @@ block content
     title Bioquímico
 
   body
-    nav.navbar.navbar-expand-lg.navbar-light.bg-light
-      a.navbar-brand(href="/") Inicio
-      button.navbar-toggler(type="button", data-toggle="collapse", data-target="#navbarNav", aria-controls="navbarNav", aria-expanded="false", aria-label="Toggle navigation")
-        span.navbar-toggler-icon
-      div.collapse.navbar-collapse#navbarNav
-        ul.navbar-nav
-          li.nav-item
-            a.nav-link(href="/logout") Cerrar Sesión
-
-    h1 Bienvenido Bioquímico
     .container
-      h2 Paciente
+      h1 Bienvenido Bioquímico
       .row
         .col-lg-12
+          h2 Paciente
           a(href="/ingresar/administrativo", class="btn btn-primary btn-block mt-3") Registrar/Buscar Paciente
 
-      h2 Órdenes
       .row
         .col-lg-12
+          h2 Órdenes
           a(href="/orden/generacion-orden", class="btn btn-success btn-block mt-3") Generar Orden
-      .row
         .col-lg-12
           a(href="/BuscarOrdenes/ordenes", class="btn btn-primary btn-block mt-3") Actualizar Orden
 
-      h2 Exámenes
       .row
         .col-lg-12
+          h2 Exámenes
           a(href="/examen/crear-examen", class="btn btn-success btn-block mt-3") Generar Examen
-      .row
         .col-lg-12
           a(href="/modificar-examen/buscar-modificar-examen", class="btn btn-primary btn-block mt-3") Actualizar Examen
 
-      h2 Determinaciones
       .row
         .col-lg-12
+          h2 Determinaciones
           a(href="/determinacion/crear-determinacion", class="btn btn-success btn-block mt-3") Generar Determinación
-      .row
         .col-lg-12
           a(href="/modificar-determinacion/modificar-determinacion", class="btn btn-primary btn-block mt-3") Actualizar Determinación
 
-      h2 Valores de Referencia
       .row
         .col-lg-12
+          h2 Valores de Referencia
           a(href="/valoresreferencia/crear-valores", class="btn btn-success btn-block mt-3") Generar Valor de Referencia
-      .row
         .col-lg-12
           a(href="/buscar-valores/buscar-valores-referencia", class="btn btn-primary btn-block mt-3") Actualizar Valor de Referencia

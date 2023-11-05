@@ -7,14 +7,12 @@ block content
     link(rel="stylesheet", href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css")
 
   body
-    nav(class="navbar navbar-expand-lg navbar-light bg-light")
-      a(href="/logout", class="navbar-brand") Cerrar Sesión
-
     .container
       h1(class="mt-5 text-center") Bienvenido Recepcionista
-      div(class="buttons")
-        a(href="/ingresar/administrativo", class="btn btn-primary mt-3") Registrar/Buscar Paciente
-      div(class="buttons")
-        a(href="/orden/generacion-orden", class="btn btn-primary mt-3") Generar Orden
-      div(class="buttons")
-        a(href="/BuscarOrdenes/ordenes", class="btn btn-primary mt-3") Actualizar Orden
+      div.buttons-container
+        div.buttons
+          a(href="/ingresar/administrativo", class="btn btn-primary mt-3") Registrar/Buscar Paciente
+        div.buttons
+          a(href="/orden/generacion-orden", class="btn btn-primary mt-3") Generar Orden
+        div.buttons
+          a(href="/BuscarOrdenes/ordenes", class="btn btn-primary mt-3") Actualizar Orden
