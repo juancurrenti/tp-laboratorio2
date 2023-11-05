@@ -2,7 +2,8 @@ const express = require("express");
 const router = express.Router();
 const OrdenTrabajo = require("../models/ordenes_trabajo");
 const Muestra = require("../models/muestra");
-
+const Examen = require("../models/examen");
+const OrdenesExamenes = require("../models/ordenes_examen");
 // Ruta para buscar un paciente y mostrar sus órdenes de trabajo
 router.get("/ordenes", (req, res) => {
   res.render("buscarPacientesOrdenes"); // Renderiza la vista inicial para buscar paciente y órdenes
@@ -51,6 +52,7 @@ router.get("/crear-modificar-orden/:idOrden", async (req, res) => {
       { value: "saliva", label: "Saliva" },
       { value: "nasofaringea", label: "Secreción Nasofaríngea" },
     ];
+    const examenes = await Examen.findAll();
     const { idOrden } = req.params;
     // Buscar la orden de trabajo específica incluyendo las muestras sin las marcas de tiempo
     const ordenTrabajoExistente = await OrdenTrabajo.findByPk(idOrden, {
@@ -58,17 +60,18 @@ router.get("/crear-modificar-orden/:idOrden", async (req, res) => {
         {
           model: Muestra,
           attributes: ["id_Muestra", "Tipo_Muestra"],
-        },
+        },{
+          model: OrdenesExamenes,
+          attributes: ["id_OrdenExamen", "id_examen",],
+        }
       ],
     });
-    
+    console.log('Las ordenes de trabajo asociadas son:',ordenTrabajoExistente.OrdenesExamenes);
     // Si la orden de trabajo no existe, devuelve un mensaje de error
     if (!ordenTrabajoExistente) {
       return res.status(404).send("Orden de Trabajo no encontrada");
     }
-    res.render("crearModificarOrden", {tiposMuestra, ordenTrabajoExistente });
-
-    
+    res.render("crearModificarOrden", { tiposMuestra, ordenTrabajoExistente, examenes });
   } catch (error) {
     console.error(error);
     res.status(500).send("Error al obtener la orden de trabajo.");
@@ -79,39 +82,54 @@ router.get("/crear-modificar-orden/:idOrden", async (req, res) => {
 router.post("/crear-modificar-orden/:idOrden", async (req, res) => {
   try {
     const { idOrden } = req.params;
-    const { estado, idPaciente, tipos_muestra } = req.body;
+    const { estado, idPaciente, tipos_muestra, examenesSelectedIds } = req.body;
 
     const ordenTrabajoExistente = await OrdenTrabajo.findByPk(idOrden);
+    const examenesSelectedIdsArray = examenesSelectedIds
+      .split(",")
+      .map((id_examen) => parseInt(id_examen));
 
     if (ordenTrabajoExistente) {
       ordenTrabajoExistente.estado = estado;
       await ordenTrabajoExistente.save();
 
-      for (const tipoMuestra of tipos_muestra) {
-        const estadoValue = req.body[`estado_${tipoMuestra}`];
-
-        // Crear y guardar la muestra en la base de datos
-        const nuevaMuestra = await Muestra.create({
-          id_Orden: idOrden,
-          id_Paciente: idPaciente,
-          Fecha_Recepcion: new Date(),
-          Tipo_Muestra: tipoMuestra,
-          estado: estadoValue,
-        });
-
-        console.log("Muestra creada:", nuevaMuestra);
+      // Verificar si se han seleccionado tipos de muestra
+      if (Array.isArray(tipos_muestra) && tipos_muestra.length > 0) {
+        for (const tipoMuestra of tipos_muestra) {
+          const estadoValue = req.body[`estado_${tipoMuestra}`];
+          // Crear y guardar la muestra en la base de datos
+          const nuevaMuestra = await Muestra.create({
+            id_Orden: idOrden,
+            id_Paciente: idPaciente,
+            Fecha_Recepcion: new Date(),
+            Tipo_Muestra: tipoMuestra,
+            estado: estadoValue,
+          });
+          console.log("Muestra creada:", nuevaMuestra);
+        }
+      } else {
+        console.log("No se seleccionaron tipos de muestra.");
       }
 
+      // Continúa con el procesamiento de exámenes
+      for (const examenId of examenesSelectedIdsArray) {
+        await OrdenesExamenes.create({
+          id_Orden: idOrden,
+          id_examen: examenId,
+        });
+      }
       res.send("Orden de trabajo y muestras procesadas con éxito.");
     } else {
       res.status(404).send("Orden de trabajo no encontrada.");
     }
   } catch (error) {
-    console.error("Error al procesar la orden de trabajo y las muestras:", error);
+    console.error(
+      "Error al procesar la orden de trabajo y las muestras:",
+      error
+    );
     res.status(500).send("Error interno del servidor");
   }
 });
-
 
 // Ruta para cancelar una orden de trabajo
 router.get("/cancelar-orden/:idOrden", async (req, res) => {
