@@ -12,15 +12,16 @@ router.get("/ordenes", (req, res) => {
 // Ruta para manejar la búsqueda de órdenes de trabajo por id_paciente
 router.post("/ordenes", async (req, res) => {
   try {
-    const idPaciente = req.body.idPaciente;
-    console.log("ID del Paciente:", idPaciente);
+    const dniPaciente = req.body.dniPaciente;
+    console.log("ID del Paciente:", dniPaciente);
 
     // Buscar órdenes de trabajo por id_paciente
     const ordenesTrabajo = await OrdenTrabajo.findAll({
-      where: { id_paciente: idPaciente },
+      where: { dni: dniPaciente },
       attributes: [
         "id_Orden",
         "id_Paciente",
+        "dni",
         "Fecha_Creacion",
         "Fecha_Entrega",
         "estado",

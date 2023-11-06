@@ -6,8 +6,9 @@ block content
   // Formulario de búsqueda de paciente
   form(action="/ordenes", method="POST", id="searchForm")
     .form-group
-      label(for="idPaciente") Buscar Orden por ID de Paciente:
-      input(type="text", name="idPaciente", id="idPaciente", placeholder="ID del Paciente", class="form-control", required)
+      label(for="dniPaciente") Buscar Orden por DNI del Paciente:
+      input(type="text", name="dniPaciente", id="dniPaciente", placeholder="DNI del Paciente", class="form-control", required)
+
     button(type="submit" class="btn btn-primary") Buscar
 
   // Resultados de búsqueda de órdenes de trabajo
@@ -22,7 +23,7 @@ block content
               li Id Paciente: #{orden.id_Paciente}
               li Fecha de Creación: #{orden.Fecha_Creacion}
               li Fecha de Entrega: #{orden.Fecha_Entrega}
-              li Estado: #{orden.estado === 1 ? 'Activo' : 'Inactivo'}
+              li Estado: #{orden.estado}
               li
                 // Enlace para modificar la orden de trabajo individualmente
                 a.btn.btn-secondary(href=`/buscarOrdenes/crear-modificar-orden/${orden.id_Orden}`) Modificar Orden
@@ -31,7 +32,7 @@ block content
   script.
     document.getElementById("searchForm").addEventListener("submit", async (e) => {
       e.preventDefault();
-      const idPaciente = document.getElementById("idPaciente").value;
+      const dniPaciente = document.getElementById("dniPaciente").value;
       const resultHeading = document.getElementById("resultHeading");
       const resultList = document.getElementById("resultList");
 
@@ -41,7 +42,7 @@ block content
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify({ idPaciente }),
+          body: JSON.stringify({ dniPaciente }),
         });
 
         if (!info.ok) {
@@ -53,7 +54,7 @@ block content
         resultList.innerHTML = ""; // Limpia el contenedor de la lista
 
         if (data.length > 0) {
-          resultHeading.textContent = `Órdenes de Trabajo Asociadas al Paciente ${idPaciente}`;
+          resultHeading.textContent = `Órdenes de trabajo asociadas al paciente con DNI: ${dniPaciente}`;
 
           data.forEach((orden) => {
             const listItem = document.createElement("div");
@@ -65,7 +66,7 @@ block content
                   <li>Id Paciente: ${orden.id_Paciente}</li>
                   <li>Fecha de Creación: ${orden.Fecha_Creacion}</li>
                   <li>Fecha de Entrega: ${orden.Fecha_Entrega}</li>
-                  <li>Estado: ${orden.estado === 1 ? 'Activo' : 'Inactivo'}</li>
+                  <li>Estado: ${orden.estado}</li>
                   <li>
                     <a class="btn btn-secondary" href="/buscarOrdenes/crear-modificar-orden/${orden.id_Orden}">Modificar Orden</a>
                   </li>
@@ -75,7 +76,7 @@ block content
             resultList.appendChild(listItem);
           });
         } else {
-          resultHeading.textContent = `No se encontraron órdenes de trabajo para el paciente con ID ${idPaciente}.`;
+          resultHeading.textContent = `No se encontraron órdenes de trabajo para el paciente con DNI ${dniPaciente}.`;
         }
       } catch (error) {
         console.error('Error al buscar órdenes de trabajo:', error);

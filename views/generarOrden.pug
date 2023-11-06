@@ -14,6 +14,9 @@ block content
           input#pacienteSearch.form-control(type="text", placeholder="Buscar paciente...")
           #pacienteResults
           input#selectedPaciente(name="id_paciente", type="hidden")
+          input#selectedPacienteDNI(name="dni_paciente", type="hidden")
+          p Paciente seleccionado:
+
           #selectedPacienteContainer
             p#selectedPacienteLabel
             button#clearPacienteButton.btn.btn-secondary(type="button") Borrar
@@ -30,15 +33,22 @@ block content
           label(for="examenes") Examenes seleccionados:
           select#examenesSelect.form-control(name="examenesSelect", multiple)
           input#examenesSelectedIds(name="examenesSelectedIds", type="hidden")
+          p  Doble click para deseleccionar
+
         .form-group
-          label Tipos de Muestra:
-          each tipo in tiposMuestra
-            .form-check
-              input.form-check-input(type="checkbox", name="tipos_muestra", value=tipo.value, id=tipo.value)
-              label.form-check-label(for=tipo.value)= tipo.label
-                select.form-control(name="estado_" + tipo.value)
-                  option(value="esperando_toma_muestra") Esperando Toma de Muestra
-                  option(value="analitica") Analítica
+          .form-check 
+            label(for="tiposMuestra") Tipos de Muestra:
+            each tipo in tiposMuestra
+              .form-check
+                input.form-check-input(type="checkbox", name="tipos_muestra", value=tipo.value, id=tipo.value)
+                label.form-check-label(for=tipo.value)= tipo.label
+                br
+              select.form-control(name="estado_" + tipo.value)
+                option(value="esperando_toma_muestra") Esperando Toma de Muestra
+                option(value="analitica") Analítica
+                option(value="faltante-de-muestra") Faltante de muestra
+
+
         button.btn.btn-primary(type="submit") Generar Orden de Trabajo
 
     script.
@@ -121,16 +131,18 @@ block content
       });
     
       // Manejar la selección de pacientes
+
       pacienteResults.addEventListener("click", (event) => {
           if (event.target.tagName === "OPTION") {
               const selectedOption = event.target;
               selectedPaciente.value = selectedOption.value;
+              selectedPacienteDNI.value = selectedOption.textContent.match(/\(DNI: ([0-9]+),/)[1]; // Extraer el DNI del texto
               selectedPacienteLabel.textContent = selectedOption.textContent;
               selectedPacienteContainer.style.display = "block";
               pacienteSearchInput.value = ""; // Limpiar el campo de búsqueda
           }
       });
-    
+          
       // Manejar la eliminación de pacientes al hacer clic en el botón "Borrar"
       clearPacienteButton.addEventListener("click", () => {
           selectedPaciente.value = "";
