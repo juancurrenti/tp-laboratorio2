@@ -108,6 +108,7 @@ router.post("/guardar-paciente", async (req, res) => {
       await existingPaciente.update({
         nombre,
         apellido,
+        dni,
         email,
         telefono,
         direccion,
