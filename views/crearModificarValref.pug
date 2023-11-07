@@ -3,7 +3,6 @@ extends layout
 block content
   head
     title Crear/Modificar Valores de Referencia
-    link(rel="icon", href="/public/img/icon.png", type="image/png")
   body
     h1 Crear/Modificar Valores de Referencia
 
@@ -30,4 +29,4 @@ block content
         select#estado(name="estado" class="form-control" required)
           option(value="1" selected=valorReferenciaExistente.estado) Activo
           option(value="0" selected=!valorReferenciaExistente.estado) Inactivo
-      button.btn.btn-primary(type="submit") Guardar Valores de Referencia
+      button.btn.btn-primary(type="submit", onclick="return confirm('¿Estás seguro de guardar los cambios en el valor de referencia?')") Guardar Valores de Referencia

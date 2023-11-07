@@ -2,9 +2,6 @@ extends layout
 block content
   head
     title Cancelar Orden de Trabajo
-    link(rel="icon", href="/public/img/icon.png", type="image/png")
-    link(rel="stylesheet", href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css")
-
   body
     nav.navbar.navbar-expand-lg.navbar-light.bg-light
 
@@ -13,5 +10,5 @@ block content
       form(action=`/buscarOrdenes/cancelar-orden/${ordenTrabajoExistente.id_Orden}`, method="POST" class="mt-4")
         div.form-group
           label(for="razonCancelacion") Razón de Cancelación:
-          input(type="text", name="razonCancelacion", class="form-control" required)
-        button(type="submit" class="btn btn-danger") Cancelar Orden
+          input(type="text", name="razonCancelacion", class="form-control", required)
+        button(type="submit", class="btn btn-danger", onclick="return confirm('¿Estás seguro de cancelar la orden?')") Cancelar Orden

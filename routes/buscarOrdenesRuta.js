@@ -121,7 +121,7 @@ router.post("/crear-modificar-orden/:idOrden", async (req, res) => {
 
       // Continúa con el procesamiento de exámenes
       for (const examenId of examenesSelectedIdsArray) {
-        await OrdenesExamenes.create({
+        await OrdenesExamen.create({
           id_Orden: idOrden,
           id_examen: examenId,
         });

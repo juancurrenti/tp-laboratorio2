@@ -3,16 +3,23 @@ extends layout
 block content
   head
     title Recepcionista
-    link(rel="icon", href="/public/img/icon.png", type="image/png")
-    link(rel="stylesheet", href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css")
 
   body
     .container
       h1(class="mt-5 text-center") Bienvenido Recepcionista
-      div.buttons-container
-        div.buttons
-          a(href="/ingresar/administrativo", class="btn btn-primary mt-3") Registrar/Buscar Paciente
-        div.buttons
-          a(href="/orden/generacion-orden", class="btn btn-primary mt-3") Generar Orden
-        div.buttons
-          a(href="/BuscarOrdenes/ordenes", class="btn btn-primary mt-3") Actualizar Orden
+
+      // Paciente
+      .row
+        .col-lg-12
+          h2 Pacientes
+          a(href="/ingresar/administrativo", class="btn btn-primary btn-block mt-3") Registrar/Buscar Paciente
+
+      // Órdenes
+      .row
+        .col-lg-12
+          h2 Órdenes
+          a(href="/orden/generacion-orden", class="btn btn-primary btn-block mt-3") Generar Orden
+
+      .row
+        .col-lg-12
+          a(href="/BuscarOrdenes/ordenes", class="btn btn-primary btn-block mt-3") Actualizar Orden

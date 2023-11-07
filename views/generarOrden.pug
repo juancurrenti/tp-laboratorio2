@@ -3,8 +3,7 @@ extends layout
 block content
   head
     title Generación de Orden de Trabajo
-    link(rel="stylesheet", href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css")
-    link(rel="icon", href="/public/img/icon.png", type="image/png")
+
   body
     .container
       h1.mb-4 Generación de Orden de Trabajo
@@ -33,7 +32,7 @@ block content
           label(for="examenes") Examenes seleccionados:
           select#examenesSelect.form-control(name="examenesSelect", multiple)
           input#examenesSelectedIds(name="examenesSelectedIds", type="hidden")
-          p  Doble click para deseleccionar
+          p  Doble click para deseleccionar examenes
 
         .form-group
           .form-check 
@@ -49,7 +48,7 @@ block content
                 option(value="faltante-de-muestra") Faltante de muestra
 
 
-        button.btn.btn-primary(type="submit") Generar Orden de Trabajo
+        button.btn.btn-primary(type="submit", onclick="return confirm('¿Estás seguro de guardar la orden de trabajo?')") Generar Orden de Trabajo
 
     script.
       // JavaScript para manejar la búsqueda, selección y eliminación de exámenes

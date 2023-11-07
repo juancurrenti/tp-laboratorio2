@@ -3,7 +3,6 @@ extends layout
 block content
   head
     title Buscar y Modificar Examen
-    link(rel="icon", href="/public/img/icon.png", type="image/png")
   h1 Buscar y Modificar Examen
 
   div.container
@@ -15,16 +14,14 @@ block content
 
     if examen
       h2 Examen Encontrado
-      p
-        | ID: #{examen.id_examen}
-      p
-        | Nombre: #{examen.nombre_examen}
-      p
-        | Descripción: #{examen.descripcion}
-      p
-        | Código: #{examen.codigo}
-      p
-        | Estado: #{examen.estado ? 'Activo' : 'Inactivo'}
+
+      .card(style="width: 18rem;, background-color:#EEEEEE")
+        .card-body
+          h5.card-title ID: #{examen.id_examen}
+          p.card-text Nombre: #{examen.nombre_examen}
+          p.card-text Descripción: #{examen.descripcion}
+          p.card-text Código: #{examen.codigo}
+          p.card-text Estado: #{examen.estado ? 'Activo' : 'Inactivo'}
 
 
       form(action="/modificar-examen/modificar", method="post", class="mt-4")
@@ -47,4 +44,4 @@ block content
             option(value="1", selected=examen.estado === 1) Activo
             option(value="0", selected=examen.estado === 0) Inactivo
 
-        button(type="submit", class="btn btn-primary") Modificar Examen
+        button(type="submit", class="btn btn-primary", onclick="return confirm('¿Estás seguro de modificar el examen?')") Modificar Examen

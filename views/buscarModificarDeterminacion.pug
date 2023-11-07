@@ -4,8 +4,7 @@ block content
 
   head
     title Buscar y Modificar Determinación
-    link(rel="icon", href="/public/img/icon.png", type="image/png")
-    link(rel="stylesheet", href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css")
+
 
   h1(class="mt-4") Buscar y Modificar Determinación
 
@@ -47,7 +46,7 @@ block content
                   select(name="estado", class="form-control")
                     option(value="1", selected=determinacion.estado === 1) Activo
                     option(value="0", selected=determinacion.estado === 0) Inactivo
-                button(type="submit", class="btn btn-primary") Cambiar Estado
+                button(type="submit", class="btn btn-primary", onclick="return confirm('¿Estás seguro de modificar la determinacion?')") Cambiar Estado
 
   else
     p(class="mt-4") No se encontraron determinaciones para el ID de examen proporcionado.

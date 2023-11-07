@@ -1,11 +1,12 @@
-extends layout
 
 block content
   head
     title Iniciar Sesión
     link(rel="icon", href="/public/img/icon.png", type="image/png")
     link(rel="stylesheet", href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css")
-
+  body
+    nav.navbar.navbar-expand-lg.navbar-light.bg-light
+      h4.mb-4.mr-auto Laboratorio
   .container
     h1(class="mt-5 text-center") Iniciar Sesión
     form(class="mt-3", action='/login', method='POST')

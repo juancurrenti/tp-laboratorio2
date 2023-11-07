@@ -3,7 +3,6 @@ extends layout
 block content
   head
     title Crear Examen
-    link(rel="icon", href="/public/img/icon.png", type="image/png")
   body
     h1 Crear Examen
     form#crear-examen-form(action="/examen/crear-examen", method="post")
@@ -16,4 +15,4 @@ block content
       div.form-group
         label(for="codigo") Código del Examen:
         input#codigo(type="text", name="codigo" class="form-control" required)
-      button.btn.btn-primary(type="submit") Crear Examen
+      button.btn.btn-primary(type="submit", onclick="return confirm('¿Estás seguro de crearar el examen?')") Crear Examen

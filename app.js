@@ -316,6 +316,42 @@ app.get('/logout', (req, res) => {
         res.redirect('/'); // Redirige al usuario a la página de inicio o a otra página deseada
     });
 });
+// Ruta GET para cargar la vista de cambio de contraseña
+app.get('/cambiarContrasena', (req, res) => {
+    res.render('cambiarContrasena', { mensajeContrasenaIncorrecta: false, mensajeContrasenasNoCoinciden: false });
+  });
+  
+// Ruta POST para procesar el cambio de contraseña
+app.post('/cambiar-contrasena', (req, res) => {
+    const usuario = req.user; // Obtén el usuario autenticado
+  
+    const contrasenaActual = req.body.contrasena_actual;
+    const nuevaContrasena = req.body.nueva_contrasena;
+    const confirmarContrasena = req.body.confirmar_contrasena;
+  
+    // Verificar si la contraseña actual ingresada coincide con la del usuario
+    if (!bcrypt.compareSync(contrasenaActual, usuario.password)) {
+        console.log("Las contraseña actual no coinciden")
+        return res.render('cambiarContrasena', { mensajeContrasenaIncorrecta: true, mensajeContrasenasNoCoinciden: false });    }
+  
+    // Verificar si las contraseñas nuevas coinciden
+    if (nuevaContrasena !== confirmarContrasena) {
+      // Las contraseñas nuevas no coinciden, muestra un mensaje de error
+      console.log("Las contraseñas no coinciden")
+
+      return res.render('cambiarContrasena', { message: 'Las contraseñas no coinciden.',mensajeContrasenaIncorrecta: false, mensajeContrasenasNoCoinciden: true });
+    }
+  
+    // Cifrar la nueva contraseña y actualizarla en la base de datos
+    const hashedPassword = bcrypt.hashSync(nuevaContrasena, 10);
+    usuario.password = hashedPassword;
+    usuario.save();
+  
+    // Redirige al usuario a la página de inicio o a donde desees y muestra el mensaje de contraseña cambiada
+    res.render('cambiarContrasena', { message: 'Contraseña cambiada exitosamente.', contrasenaCambiada: true });
+  });
+  
+
 // Sincronización de modelos con la base de datos y arranque del servidor en el puerto 3000
 sequelize.sync()
     .then(() => {

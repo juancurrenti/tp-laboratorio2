@@ -2,7 +2,6 @@ extends layout
 
 block content
   head
-    link(rel="icon" href="/public/img/icon.png" type="image/png")
     title Crear Usuario
   body
     h1 Crear Usuario
@@ -23,7 +22,8 @@ block content
           option(value="tecnico") Técnico
           option(value="bioquimico") Bioquímico
           option(value="admin") Administrador
-      button.btn.btn-primary(type="submit") Crear Usuario
+      button.btn.btn-primary(type="submit", onclick="return confirm('¿Estás seguro de crear el usuario?')") Crear Usuario
+
       if mensaje
         p(style="color: green;") #{mensaje}
       if error

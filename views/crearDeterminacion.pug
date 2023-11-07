@@ -3,7 +3,6 @@ extends layout
 block content
   head
     title Crear Determinaciones
-    link(rel="icon", href="/public/img/icon.png", type="image/png")
   body
     h1 Crear Determinaciones
     form#crear-determinacion-form(action="/determinacion/crear-determinacion", method="POST")
@@ -27,4 +26,4 @@ block content
           each examen in examenes
             option(value=examen.id_examen) #{examen.nombre_examen} COD: #{examen.codigo} ID: #{examen.id_examen}
     
-      button.btn.btn-primary(type="submit") Crear Determinación
+      button.btn.btn-primary(type="submit", onclick="return confirm('¿Estás seguro de crear la determinacion?')") Crear Determinación

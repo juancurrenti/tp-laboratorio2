@@ -33,7 +33,7 @@ block content
           option(value="admin") Administrador
 
       .form-group
-        button(type="submit", class="btn btn-success") Actualizar Usuario
+        button(type="submit", class="btn btn-success", onclick="confirmarActualizarUsuario()") Actualizar Usuario
         button(type="button", onclick="eliminarUsuario()", class="btn btn-danger") Eliminar Usuario
 
   // Mostrar mensaje de actualización
@@ -63,6 +63,11 @@ block content
         .catch(error => {
           console.error("Error en la búsqueda: ", error);
         });
+    }
+
+    function confirmarActualizarUsuario() {
+      if (confirm("¿Estás seguro de que deseas actualizar este usuario?")) {
+      }
     }
 
     function eliminarUsuario() {
