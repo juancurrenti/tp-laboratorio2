@@ -19,14 +19,14 @@ block content
 
     // Órdenes de Exámenes Asociadas
     h2 Exámenes Asociados
-    if ordenTrabajoExistente.OrdenesExamenes && ordenTrabajoExistente.OrdenesExamenes.length > 0
+    if ordenTrabajoExistente.ordenes_examenes && ordenTrabajoExistente.ordenes_examenes.length > 0
       .d-flex.flex-wrap
-        each examen in ordenTrabajoExistente.OrdenesExamenes
-          .m-2.p-2.border.card(style="width: 250px; height: 200px; background-color: #8c8c8c; border-radius: 20px;")
+        each examen in ordenTrabajoExistente.ordenes_examenes
+          .m-2.p-2.border.card(style="width: 250px; height: 200px; background-color: #EEEEEE; border-radius: 20px;")
             label(for=`examen_${examen.id_examen}`) Nombre del Examen:
-            input(type="text", name=`examen_${examen.id_examen}`, value=examen.nombre_examen, class="form-control")
+            input(type="text", name=`examen_${examen.id_examen}`, value=examen.Examen.nombre_examen, class="form-control", readonly)
             label(for=`codigoExamen_${examen.id_examen}`) Código del Examen:
-            input(type="text", name=`codigoExamen_${examen.id_examen}`, value=examen.codigo, class="form-control")
+            input(type="text", name=`codigoExamen_${examen.id_examen}`, value=examen.Examen.codigo, class="form-control", readonly)
     else
       p No se encontraron exámenes asociados a esta orden de trabajo.
 
@@ -43,13 +43,13 @@ block content
     if ordenTrabajoExistente.Muestras && ordenTrabajoExistente.Muestras.length > 0
       .d-flex.flex-wrap
         each muestra in ordenTrabajoExistente.Muestras
-          .m-2.p-2.border.card(style="width: 250px; height: 200px; background-color: #8c8c8c; border-radius: 20px;")
+          .m-2.p-2.border.card(style="width: 250px; height: 200px; background-color: #EEEEEE; border-radius: 20px;")
             label(for=`tipoMuestra_${muestra.id_Muestra}`) Tipo de Muestra:
-            input(type="text", name=`tipoMuestra_${muestra.id_Muestra}`, value=muestra.Tipo_Muestra, class="form-control")
+            input(type="text", name=`tipoMuestra_${muestra.id_Muestra}`, value=muestra.Tipo_Muestra, class="form-control", readonly)
             label(for=`estadoMuestra_${muestra.id_Muestra}`) Estado de Muestra:
-            select.form-control(name=`estadoMuestra_${muestra.id_Muestra}`)
-              option(value="esperando_toma_muestra", selected=muestra.estado === 'esperando_toma_muestra') Esperando Toma de Muestra
-              option(value="analitica", selected=muestra.estado === 'analitica') Analítica
+            select.form-control(name=`estadoMuestra_${muestra.id_Muestra}` , readonly)
+              option(value="analitica", selected=muestra.estado = 'analitica') Analítica
+              option(value="esperando_toma_muestra", selected=muestra.estado = 'esperando_toma_muestra') Esperando Toma de Muestra
     else
       p No se encontraron muestras asociadas a esta orden de trabajo.
 

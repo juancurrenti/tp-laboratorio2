@@ -1,6 +1,5 @@
 const { DataTypes } = require('sequelize');
 const sequelize = require('../config/database');
-const OrdenesTrabajo = require('../models/ordenes_trabajo');
 const Examen = require('../models/examen');
 const OrdenesExamenes = sequelize.define('ordenes_examenes', {
   id_OrdenExamen:{
@@ -11,6 +10,10 @@ const OrdenesExamenes = sequelize.define('ordenes_examenes', {
   id_Orden: {
     type: DataTypes.INTEGER,
     allowNull: false,
+    references:{
+      model:'ordenes_trabajo',
+      key: 'id_Orden',
+    }
   },
   id_examen: {
     type: DataTypes.INTEGER,
@@ -21,5 +24,5 @@ const OrdenesExamenes = sequelize.define('ordenes_examenes', {
   tableName: 'ordenes_examenes',
   autoIncrement:false,
 });
-OrdenesExamenes.hasMany(Examen, { foreignKey: 'id_examen' }); 
+OrdenesExamenes.belongsTo(Examen, { foreignKey: 'id_examen' }); 
 module.exports = OrdenesExamenes;

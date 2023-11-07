@@ -3,7 +3,7 @@ const router = express.Router();
 const OrdenTrabajo = require("../models/ordenes_trabajo");
 const Muestra = require("../models/muestra");
 const Examen = require("../models/examen");
-const OrdenesExamenes = require("../models/ordenes_examen");
+const OrdenesExamen = require("../models/ordenes_examen");
 // Ruta para buscar un paciente y mostrar sus órdenes de trabajo
 router.get("/ordenes", (req, res) => {
   res.render("buscarPacientesOrdenes"); // Renderiza la vista inicial para buscar paciente y órdenes
@@ -36,6 +36,7 @@ router.post("/ordenes", async (req, res) => {
     } else {
       // Se encontraron órdenes de trabajo para el paciente
       res.json(ordenesTrabajo); // Enviar las órdenes de trabajo en formato JSON
+      console.log(ordenesTrabajo);
     }
   } catch (error) {
     console.error("Error al buscar órdenes de trabajo:", error);
@@ -61,18 +62,20 @@ router.get("/crear-modificar-orden/:idOrden", async (req, res) => {
         {
           model: Muestra,
           attributes: ["id_Muestra", "Tipo_Muestra"],
-        },{
-          model: OrdenesExamenes,
-          attributes: ["id_OrdenExamen"],
-          include:{
-            model:Examen,
-            attributes: ["id_examen", "nombre_examen","codigo"],
-          }
+        },
+        {
+          model: OrdenesExamen,
+          attributes: ["id_OrdenExamen", "id_examen"],
+          where:{
+            id_Orden: idOrden,
+          },
+          include:[Examen]
         }
       ],
     });
-    console.log('Los examenes asociados son:',ordenTrabajoExistente.OrdenesExamenes);
-    // Si la orden de trabajo no existe, devuelve un mensaje de error
+    console.log(ordenTrabajoExistente.ordenes_examenes);
+
+     // Si la orden de trabajo no existe, devuelve un mensaje de error
     if (!ordenTrabajoExistente) {
       return res.status(404).send("Orden de Trabajo no encontrada");
     }

@@ -2,7 +2,6 @@ const { DataTypes } = require('sequelize');
 const sequelize = require('../config/database');
 const Muestra = require('../models/muestra')
 const OrdenesExamenes = require('../models/ordenes_examen');
-const Examenes = require('../models/examen');
 const OrdenesTrabajo = sequelize.define('OrdenesTrabajo', {
   id_Orden: {
     type: DataTypes.INTEGER,
@@ -34,5 +33,5 @@ const OrdenesTrabajo = sequelize.define('OrdenesTrabajo', {
   timestamps: false
 });
 OrdenesTrabajo.hasMany(Muestra, { foreignKey: 'id_Orden' });
-OrdenesTrabajo.hasMany(OrdenesExamenes, { foreignKey: 'id_Orden' });
+OrdenesTrabajo.hasMany(OrdenesExamenes, { foreignKey: 'id_Orden' }); 
 module.exports = OrdenesTrabajo;
