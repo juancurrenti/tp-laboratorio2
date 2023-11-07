@@ -1,7 +1,7 @@
-const { DataTypes } = require('sequelize');
-const sequelize = require('../config/database');
+const { DataTypes } = require("sequelize");
+const sequelize = require("../config/database");
 
-const Auditoria = sequelize.define('Auditoria', {
+const Auditoria = sequelize.define("Auditoria", {
   Fecha_Hora_Operacion: {
     type: DataTypes.DATE,
   },
@@ -10,5 +10,5 @@ const Auditoria = sequelize.define('Auditoria', {
   },
   Detalles_adicionales: {
     type: DataTypes.STRING,
-  }
+  },
 });

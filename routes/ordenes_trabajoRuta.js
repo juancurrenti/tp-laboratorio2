@@ -39,17 +39,27 @@ router.get("/generacion-orden", async (req, res) => {
 router.post("/generacion-orden", async (req, res) => {
   try {
     // Obtiene los datos del formulario
-    const { estado, tipos_muestra, id_paciente, examenesSelectedIds, dni_paciente } = req.body;
+    const {
+      estado,
+      tipos_muestra,
+      id_paciente,
+      examenesSelectedIds,
+      dni_paciente,
+    } = req.body;
 
     // Verifica si id_paciente es null
     if (!id_paciente) {
-      return res.status(400).send("El valor de id_paciente es nulo o no válido.");
+      return res
+        .status(400)
+        .send("El valor de id_paciente es nulo o no válido.");
     }
 
     // Ahora puedes acceder al DNI del paciente usando la variable dni_paciente
     console.log("DNI del Paciente:", dni_paciente);
 
-    const examenesSelectedIdsArray = examenesSelectedIds.split(",").map((id_examen) => parseInt(id_examen));
+    const examenesSelectedIdsArray = examenesSelectedIds
+      .split(",")
+      .map((id_examen) => parseInt(id_examen));
 
     // Crea una nueva orden de trabajo
     const nuevaOrden = await OrdenTrabajo.create({
@@ -86,6 +96,5 @@ router.post("/generacion-orden", async (req, res) => {
     res.status(500).send("Error al procesar el formulario");
   }
 });
-
 
 module.exports = router;

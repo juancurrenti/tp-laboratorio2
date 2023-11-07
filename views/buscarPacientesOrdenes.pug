@@ -6,10 +6,10 @@ block content
   h1 Buscar Orden de Trabajo
 
   // Formulario de búsqueda de paciente
-  form(action="/ordenes", method="POST", id="searchForm")
+  form(action="/ordenes" method="POST" id="searchForm")
     .form-group
       label(for="dniPaciente") Buscar Orden por DNI del Paciente:
-      input(type="text", name="dniPaciente", id="dniPaciente", placeholder="DNI del Paciente", class="form-control", required)
+      input(type="text" name="dniPaciente" id="dniPaciente" placeholder="DNI del Paciente" class="form-control", required)
 
     button(type="submit" class="btn btn-primary") Buscar
 

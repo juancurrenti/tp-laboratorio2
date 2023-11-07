@@ -5,25 +5,25 @@ block content
 
   .container
     h1(class="mt-5 text-center") Cambiar Contraseña
-    form(class="mt-3", action='/cambiar-contrasena', method='POST', onsubmit="return confirmarCambio();")
+    form(class="mt-3" action='/cambiar-contrasena' method='POST' onsubmit="return confirmarCambio();")
       .form-group
         label(for='contrasena_actual') Contraseña Actual
-        input(type='password', name='contrasena_actual', id='contrasena_actual', class='form-control', required)
+        input(type='password' name='contrasena_actual' id='contrasena_actual' class='form-control', required)
         if mensajeContrasenaIncorrecta
           p(class='error-message text-center') Contraseña actual incorrecta.
 
       .form-group
         label(for='nueva_contrasena') Nueva Contraseña
-        input(type='password', name='nueva_contrasena', id='nueva_contrasena', class='form-control', required)
-        
+        input(type='password' name='nueva_contrasena' id='nueva_contrasena' class='form-control', required)
+
       .form-group
         label(for='confirmar_contrasena') Confirmar Nueva Contraseña
-        input(type='password', name='confirmar_contrasena', id='confirmar_contrasena', class='form-control', required)
+        input(type='password' name='confirmar_contrasena' id='confirmar_contrasena' class='form-control', required)
         if mensajeContrasenasNoCoinciden
           p(class='error-message text-center') Las contraseñas no coinciden.
 
       .text-center
-        button(type='submit', class='btn btn-primary mt-3') Cambiar Contraseña
+        button(type='submit' class='btn btn-primary mt-3') Cambiar Contraseña
 
     if contrasenaCambiada
       p(class='success-message text-center mt-3') Contraseña cambiada con éxito.

@@ -1,24 +1,23 @@
-const express = require('express');
+const express = require("express");
 const router = express.Router();
-const Examen = require('../models/examen');
-const ValoresReferencia = require('../models/valoresReferencia');
-
+const Examen = require("../models/examen");
+const ValoresReferencia = require("../models/valoresReferencia");
 
 // Ruta para mostrar el formulario de creación de exámenes con valores de referencia
-router.get('/crear-examen', async (req, res) => {
+router.get("/crear-examen", async (req, res) => {
   try {
-    res.render('crearExamen');
+    res.render("crearExamen");
   } catch (error) {
     console.error(error);
-    res.status(500).send('Error al obtener los valores de referencia.');
+    res.status(500).send("Error al obtener los valores de referencia.");
   }
 });
 
 // Ruta para procesar el formulario de creación de exámenes
 
-router.post('/crear-examen', async (req, res) => {
+router.post("/crear-examen", async (req, res) => {
   try {
-    const { nombre_examen, descripcion, codigo} = req.body;
+    const { nombre_examen, descripcion, codigo } = req.body;
 
     // Crea el examen
     const examen = await Examen.create({
@@ -28,14 +27,12 @@ router.post('/crear-examen', async (req, res) => {
       estado: true, // Establece el estado como true automáticamente
     });
 
-
-    console.log('Examen creado con éxito:', examen);
-    res.redirect('/determinacion/crear-determinacion');
+    console.log("Examen creado con éxito:", examen);
+    res.redirect("/determinacion/crear-determinacion");
   } catch (error) {
     console.error(error);
-    res.status(500).send('Error al crear el examen con valores de referencia.');
+    res.status(500).send("Error al crear el examen con valores de referencia.");
   }
 });
-
 
 module.exports = router;

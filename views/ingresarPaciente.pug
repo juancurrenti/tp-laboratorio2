@@ -9,22 +9,22 @@ block content
       #content
         h2#titulo Ingresar Datos del Paciente
         p.error-mensaje(class="text-danger") #{mensaje}
-        form#guardar-form(action="/guardar-paciente", method="post")
+        form#guardar-form(action="/guardar-paciente" method="post")
           .form-group
             label(for="nombre") Nombre:
-            input#nombre.form-control(type="text", name="nombre", value=`${paciente ? paciente.nombre : ''}`, required)
+            input#nombre.form-control(type="text" name="nombre", value=`${paciente ? paciente.nombre : ''}`, required)
 
           .form-group
             label(for="apellido") Apellido:
-            input#apellido.form-control(type="text", name="apellido", value=`${paciente ? paciente.apellido : ''}`, required)
+            input#apellido.form-control(type="text" name="apellido", value=`${paciente ? paciente.apellido : ''}`, required)
 
           .form-group
             label(for="dni") DNI:
-            input#dni.form-control(type="text", name="dni", value=`${paciente ? paciente.dni : ''}`, required)
+            input#dni.form-control(type="text" name="dni", value=`${paciente ? paciente.dni : ''}`, required)
 
           .form-group
             label(for="fecha_nacimiento") Fecha de Nacimiento:
-            input#fecha_nacimiento.form-control(type="date", name="fecha_nacimiento", value=fechaNacimiento, required)
+            input#fecha_nacimiento.form-control(type="date" name="fecha_nacimiento", value=fechaNacimiento, required)
 
           .form-group
             label(for="genero") Género:
@@ -40,18 +40,18 @@ block content
 
           .form-group
             label(for="direccion") Dirección:
-            input#direccion.form-control(type="text", name="direccion", value=`${paciente && paciente.direccion }`)
+            input#direccion.form-control(type="text" name="direccion", value=`${paciente && paciente.direccion }`)
 
           .form-group
             label(for="telefono") Teléfono:
-            input#telefono.form-control(type="text", name="telefono", value=`${paciente ? paciente.telefono : ''}`)
+            input#telefono.form-control(type="text" name="telefono", value=`${paciente ? paciente.telefono : ''}`)
 
           .form-group
             label(for="email") Correo Electrónico:
-            input#email.form-control(type="email", name="email", value=`${paciente ? paciente.email : ''}`)
+            input#email.form-control(type="email" name="email", value=`${paciente ? paciente.email : ''}`)
 
           .form-group
             label(for="diagnostico") Diagnóstico (presuntivo o confirmado):
-            input#diagnostico.form-control(type="text", name="diagnostico", value=`${paciente ? paciente.diagnostico : ''}`)
+            input#diagnostico.form-control(type="text" name="diagnostico", value=`${paciente ? paciente.diagnostico : ''}`)
 
           button#guardar-btn.btn.btn-primary(type="submit") Guardar Datos

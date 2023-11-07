@@ -9,11 +9,11 @@ block content
   h1(class="mt-4") Buscar y Modificar Determinación
 
   // Formulario de búsqueda por id_examen
-  form(action="/modificar-determinacion/buscar-determinacion", method="post" class="mt-4")
+  form(action="/modificar-determinacion/buscar-determinacion" method="post" class="mt-4")
     div.form-group
       label(for="id_examen") ID del Examen:
-      input(type="text", name="id_examen", class="form-control", required)
-    button(type="submit", class="btn btn-primary") Buscar Determinaciones
+      input(type="text" name="id_examen" class="form-control", required)
+    button(type="submit" class="btn btn-primary") Buscar Determinaciones
 
   // Mostrar resultados de búsqueda si los hay
   if determinacionesEncontradas
@@ -39,14 +39,14 @@ block content
             td= determinacion.estado ? 'Activa' : 'Inactiva'
             td
               // Formulario para modificar estado
-              form(action="/modificar-determinacion/modificar-estado", method="post")
+              form(action="/modificar-determinacion/modificar-estado" method="post")
                 input(type="hidden" name="id_Determinacion" value=determinacion.id_Determinacion)
                 div.form-group
                   label(for="estado") Modificar Estado:
-                  select(name="estado", class="form-control")
+                  select(name="estado" class="form-control")
                     option(value="1", selected=determinacion.estado === 1) Activo
                     option(value="0", selected=determinacion.estado === 0) Inactivo
-                button(type="submit", class="btn btn-primary", onclick="return confirm('¿Estás seguro de modificar la determinacion?')") Cambiar Estado
+                button(type="submit" class="btn btn-primary" onclick="return confirm('¿Estás seguro de modificar la determinacion?')") Cambiar Estado
 
   else
     p(class="mt-4") No se encontraron determinaciones para el ID de examen proporcionado.

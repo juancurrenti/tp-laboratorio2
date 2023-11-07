@@ -6,7 +6,7 @@ block content
   body
     div#container
       h2#titulo Buscar Paciente
-      form#buscar-form(action="/buscar-paciente", method="post")
+      form#buscar-form(action="/buscar-paciente" method="post")
         div.form-group
           label(for="searchType") Buscar por:
           select#searchType(name="searchType" class="form-control" required)
@@ -20,4 +20,4 @@ block content
 
         if mensaje
           p(style="color: #ff4040;")= mensaje
-          a#add-paciente(href="/ingresar-paciente", class="btn btn-success") Añadir Paciente
+          a#add-paciente(href="/ingresar-paciente" class="btn btn-success") Añadir Paciente

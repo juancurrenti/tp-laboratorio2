@@ -10,5 +10,5 @@ block content
       form(action=`/buscarOrdenes/cancelar-orden/${ordenTrabajoExistente.id_Orden}`, method="POST" class="mt-4")
         div.form-group
           label(for="razonCancelacion") Razón de Cancelación:
-          input(type="text", name="razonCancelacion", class="form-control", required)
-        button(type="submit", class="btn btn-danger", onclick="return confirm('¿Estás seguro de cancelar la orden?')") Cancelar Orden
+          input(type="text" name="razonCancelacion" class="form-control", required)
+        button(type="submit" class="btn btn-danger" onclick="return confirm('¿Estás seguro de cancelar la orden?')") Cancelar Orden

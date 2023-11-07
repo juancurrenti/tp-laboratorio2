@@ -56,7 +56,7 @@ router.get("/crear-modificar-orden/:idOrden", async (req, res) => {
     ];
     const examenes = await Examen.findAll();
     const { idOrden } = req.params;
-    // Buscar la orden de trabajo específica incluyendo las muestras 
+    // Buscar la orden de trabajo específica incluyendo las muestras
     const ordenTrabajoExistente = await OrdenTrabajo.findByPk(idOrden, {
       include: [
         {
@@ -66,20 +66,24 @@ router.get("/crear-modificar-orden/:idOrden", async (req, res) => {
         {
           model: OrdenesExamen,
           attributes: ["id_OrdenExamen", "id_examen"],
-          where:{
+          where: {
             id_Orden: idOrden,
           },
-          include:[Examen]
-        }
+          include: [Examen],
+        },
       ],
     });
     console.log(ordenTrabajoExistente.ordenes_examenes);
 
-     // Si la orden de trabajo no existe, devuelve un mensaje de error
+    // Si la orden de trabajo no existe, devuelve un mensaje de error
     if (!ordenTrabajoExistente) {
       return res.status(404).send("Orden de Trabajo no encontrada");
     }
-    res.render("crearModificarOrden", { tiposMuestra, ordenTrabajoExistente, examenes });
+    res.render("crearModificarOrden", {
+      tiposMuestra,
+      ordenTrabajoExistente,
+      examenes,
+    });
   } catch (error) {
     console.error(error);
     res.status(500).send("Error al obtener la orden de trabajo.");

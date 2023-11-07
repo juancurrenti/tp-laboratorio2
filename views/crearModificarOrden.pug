@@ -9,13 +9,13 @@ block content
   form(action=`/buscarOrdenes/crear-modificar-orden/${ordenTrabajoExistente.id_Orden}`, method="POST")
     .form-group
       label(for="idPaciente") ID del Paciente:
-      input(type="text", name="idPaciente", value=ordenTrabajoExistente.id_Paciente, class="form-control", required)
+      input(type="text" name="idPaciente", value=ordenTrabajoExistente.id_Paciente, class="form-control", required)
     .form-group
       label(for="Fecha_Creacion") Fecha de Creación:
-      input(type="text", name="Fecha_Creacion", value=ordenTrabajoExistente.Fecha_Creacion, class="form-control", required)
+      input(type="text" name="Fecha_Creacion", value=ordenTrabajoExistente.Fecha_Creacion, class="form-control", required)
     .form-group
       label(for="estado") Estado:
-      input(type="text", name="estado", value=ordenTrabajoExistente.estado, class="form-control", required)
+      input(type="text" name="estado", value=ordenTrabajoExistente.estado, class="form-control", required)
 
     // Órdenes de Exámenes Asociadas
     h2 Exámenes Asociados
@@ -33,11 +33,11 @@ block content
     // Código para la gestión de exámenes
     .form-group
       label(for="examenes") Agregar exámenes:
-      input#examSearch.form-control(type="text", placeholder="Buscar exámenes...")
+      input#examSearch.form-control(type="text" placeholder="Buscar exámenes...")
       #examResults
       label(for="examenesSelect") Exámenes seleccionados:
       select#examenesSelect.form-control(name="examenesSelect", multiple)
-      input#examenesSelectedIds(name="examenesSelectedIds", type="hidden")
+      input#examenesSelectedIds(name="examenesSelectedIds" type="hidden")
 
     h2 Muestras Asociadas
     if ordenTrabajoExistente.Muestras && ordenTrabajoExistente.Muestras.length > 0
@@ -59,14 +59,14 @@ block content
       label Tipos de Muestra:
       each tipo in tiposMuestra
         .form-check
-          input.form-check-input(type="checkbox", name="tipos_muestra", value=tipo.value, id=tipo.value)
+          input.form-check-input(type="checkbox" name="tipos_muestra", value=tipo.value, id=tipo.value)
           label.form-check-label(for=tipo.value)= tipo.label
           select.form-control(name="estado_" + tipo.value)
             option(value="esperando_toma_muestra") Esperando Toma de Muestra
             option(value="analitica") Analítica
 
     // Botón para guardar la orden de trabajo
-    button(type="submit", class="btn btn-primary", onclick="return confirm('¿Estás seguro de guardar la orden de trabajo?')") Guardar Orden de Trabajo
+    button(type="submit" class="btn btn-primary" onclick="return confirm('¿Estás seguro de guardar la orden de trabajo?')") Guardar Orden de Trabajo
     a(href=`/buscarOrdenes/cancelar-orden/${ordenTrabajoExistente.id_Orden}`, class="btn btn-danger") Cancelar Orden
 
     script.
@@ -74,45 +74,45 @@ block content
       const examSearchInput = document.getElementById("examSearch");
       const examResults = document.getElementById("examResults");
       const selectedExams = document.getElementById("examenesSelect");
- 
+
       // Lista de todos los exámenes (recibidos desde el servidor)
       const examenes = !{JSON.stringify(examenes)};
 
       examSearchInput.addEventListener("input", () => {
-          const searchTerm = examSearchInput.value.toLowerCase();
-          const filteredExams = examenes.filter(examen => {
-              return examen.nombre_examen.toLowerCase().includes(searchTerm) || examen.codigo.toLowerCase().includes(searchTerm);
-          });
-    
-          // Limpiar resultados anteriores
-          examResults.innerHTML = "";
-    
-          filteredExams.forEach(examen => {
-              const option = document.createElement("option");
-              option.value = examen.id_examen;
-              option.textContent = `${examen.nombre_examen} (Código: ${examen.codigo}, ID: ${examen.id_examen})`;
-              examResults.appendChild(option);
-          });
+        const searchTerm = examSearchInput.value.toLowerCase();
+        const filteredExams = examenes.filter(examen => {
+          return examen.nombre_examen.toLowerCase().includes(searchTerm) || examen.codigo.toLowerCase().includes(searchTerm);
+        });
+
+        // Limpiar resultados anteriores
+        examResults.innerHTML = "";
+
+        filteredExams.forEach(examen => {
+          const option = document.createElement("option");
+          option.value = examen.id_examen;
+          option.textContent = `${examen.nombre_examen} (Código: ${examen.codigo}, ID: ${examen.id_examen})`;
+          examResults.appendChild(option);
+        });
       });
-    
+
       // Manejar la selección de exámenes
       examResults.addEventListener("click", (event) => {
-          if (event.target.tagName === "OPTION") {
-              const selectedOption = event.target;
-              selectedExams.appendChild(selectedOption);
-              updateSelectedExamIds();
-          }
+        if (event.target.tagName === "OPTION") {
+          const selectedOption = event.target;
+          selectedExams.appendChild(selectedOption);
+          updateSelectedExamIds();
+        }
       });
-    
+
       // Manejar la eliminación de exámenes al hacer doble clic
       selectedExams.addEventListener("dblclick", (event) => {
-          if (event.target.tagName === "OPTION") {
-              const removedOption = event.target;
-              removedOption.remove();
-              updateSelectedExamIds();
-          }
+        if (event.target.tagName === "OPTION") {
+          const removedOption = event.target;
+          removedOption.remove();
+          updateSelectedExamIds();
+        }
       });
-      
+
       // Función para actualizar los IDs de exámenes seleccionados
       function updateSelectedExamIds() {
         const selectedOptions = selectedExams.querySelectorAll("option");
