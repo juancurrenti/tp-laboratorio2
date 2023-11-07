@@ -24,14 +24,12 @@ router.post('/buscar-paciente', async (req, res) => {
             if (pacientes.length > 1) {
                 // Si hay múltiples pacientes con el mismo apellido, mostrar una lista para seleccionar
                 res.render('seleccionarPaciente', { pacientes, searchTerm, searchType });
+                return;
             } else if (pacientes.length === 1) {
                 // Si se encuentra un paciente, redirigir a la página de edición
                 res.redirect(`/editar-paciente/${pacientes[0].id_paciente}`);
-            } else {
-                // Si no se encuentra un paciente, mostrar un mensaje de error
-                res.render('ingresarPaciente', { paciente: null, mensaje: 'Paciente no encontrado. Ingrese los datos del paciente.' });
+                return;
             }
-            return; // Importante: sal del controlador después de renderizar la lista o redirigir
         } else if (searchType === 'email') {
             whereCondition.email = searchTerm;
         }
@@ -41,16 +39,17 @@ router.post('/buscar-paciente', async (req, res) => {
         if (paciente) {
             // Si se encuentra un paciente, redirigir a la página de edición
             res.redirect(`/editar-paciente/${paciente.id_paciente}`);
-
         } else {
-            // Si no se encuentra un paciente, mostrar un mensaje de error
-            res.render('ingresarPaciente', { paciente: null, mensaje: 'Paciente no encontrado. Ingrese los datos del paciente.' });
+            // Si no se encuentra un paciente, redirigir a la misma página con el mensaje
+            res.render('busquedaPaciente', { paciente: null, mensaje: 'Paciente no encontrado.' });
         }
     } catch (error) {
         console.error(error);
         res.status(500).send('Error al buscar paciente por DNI, apellido o email.');
     }
 });
+
+
 
 // Controlador para seleccionar un paciente de la lista
 router.get('/editar-paciente/:id', async (req, res) => {
@@ -69,10 +68,7 @@ router.get('/editar-paciente/:id', async (req, res) => {
 
             // Renderiza el formulario con los campos llenos, pasando el valor de "fechaNacimiento"
             res.render('ingresarPaciente', { paciente, fechaNacimiento, mensaje: 'Paciente seleccionado:' });
-        } else {
-            // Si no se encuentra un paciente, muestra un mensaje de error
-            res.render('ingresarPaciente', { paciente: null, mensaje: 'Paciente no encontrado. Ingrese los datos del paciente.' });
-        }
+        } 
     } catch (error) {
         console.error(error);
         res.status(500).send('Error al seleccionar paciente para edición.');

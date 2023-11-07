@@ -14,4 +14,4 @@ block content
         ul(class="list-group")
           each paciente in pacientes
             li(class="list-group-item")
-              a(href=`/editar-paciente/${paciente.id_paciente}?searchTerm=${searchTerm}&searchType=${searchType}`) #{paciente.apellido}, #{paciente.nombre}
+              a(href=`/editar-paciente/${paciente.id_paciente}?searchTerm=${searchTerm}&searchType=${searchType}`) #{paciente.apellido} #{paciente.nombre},    DNI: #{paciente.dni}
