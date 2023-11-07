@@ -39,7 +39,7 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 app.use(express.urlencoded({ extended: true }));
 
-// Configuración de express-session
+// Configuración de express-session(habilita sesiones)
 app.use(
   session({
     secret: "corva",
@@ -144,7 +144,7 @@ app.get("/ingresar/administrativo", (req, res) => {
   res.render("busquedaPaciente"); // Redirige a la vista de búsqueda de pacientes
 });
 
-// Rutas protegidas
+// Rutas del recepcionista
 app.get("/recepcionista", (req, res) => {
   if (
     req.isAuthenticated() &&
@@ -158,7 +158,7 @@ app.get("/recepcionista", (req, res) => {
     res.status(403).send("Acceso no autorizado");
   }
 });
-
+//ruta del tecnico
 app.get("/tecnico", (req, res) => {
   if (
     req.isAuthenticated() &&
@@ -171,6 +171,7 @@ app.get("/tecnico", (req, res) => {
     res.status(403).send("Acceso no autorizado");
   }
 });
+//ruta del bioquimico
 app.get("/bioquimico", (req, res) => {
   if (
     req.isAuthenticated() &&
@@ -214,7 +215,7 @@ app.get("/admin/actualizarUsuarioAdm/:nombre", async (req, res) => {
       });
 
       if (usuario) {
-        // Encontraste al usuario, envía la respuesta JSON
+        // Encontro al usuario, envía la respuesta JSON
         res.json({ usuario });
       } else {
         // Usuario no encontrado, envía un mensaje como respuesta JSON
@@ -326,7 +327,7 @@ app.post("/admin/crear-usuario", async (req, res) => {
     res.status(403).send("Acceso no autorizado");
   }
 });
-// Middleware para verificar el acceso de roles
+// verifica el acceso de roles
 function checkRole(roles) {
   return (req, res, next) => {
     if (
@@ -340,7 +341,7 @@ function checkRole(roles) {
     }
   };
 }
-// Middleware para manejar rutas relacionadas con pacientes
+//rutas 
 app.use("/", pacienteRuta);
 app.use("/buscarOrdenes", buscarOrdenesRuta);
 app.use("/orden", OrdenesTrabajoRuta);
@@ -370,6 +371,7 @@ app.use(
   checkRole(["tecnico", "bioquimico", "admin"]),
   modificarValrefRuta
 );
+
 //Cierre de sesion.
 app.get("/logout", (req, res) => {
   req.logout(function (err) {

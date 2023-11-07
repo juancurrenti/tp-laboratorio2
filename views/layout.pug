@@ -14,5 +14,5 @@ body
         li.nav-item
           a.nav-link(href="/cambiarContrasena") Cambiar Contraseña
         li.nav-item
-          a.nav-link(href="/logout") Cerrar Sesión
+          a.nav-link(href="/logout", onclick="return confirm('¿Estás seguro de cerrar sesion?')") Cerrar Sesión
   block content
