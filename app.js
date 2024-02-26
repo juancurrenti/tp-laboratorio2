@@ -153,7 +153,7 @@ app.get("/recepcionista", (req, res) => {
       req.user.rol === "bioquimico" ||
       req.user.rol === "admin")
   ) {
-    res.render("recepcionista");
+    res.render("recepcionista", {nombreUsuario: req.user.nombre_usuario});
   } else {
     res.status(403).send("Acceso no autorizado");
   }
@@ -166,7 +166,7 @@ app.get("/tecnico", (req, res) => {
       req.user.rol === "bioquimico" ||
       req.user.rol === "admin")
   ) {
-    res.render("tecnico");
+    res.render("tecnico", { nombreUsuario: req.user.nombre_usuario });
   } else {
     res.status(403).send("Acceso no autorizado");
   }
@@ -177,7 +177,7 @@ app.get("/bioquimico", (req, res) => {
     req.isAuthenticated() &&
     (req.user.rol === "bioquimico" || req.user.rol === "admin")
   ) {
-    res.render("bioquimico");
+    res.render("bioquimico", { nombreUsuario: req.user.nombre_usuario });
   } else {
     res.status(403).send("Acceso no autorizado");
   }
@@ -185,7 +185,7 @@ app.get("/bioquimico", (req, res) => {
 //vista admin principal
 app.get("/admin", (req, res) => {
   if (req.isAuthenticated() && req.user.rol === "admin") {
-    res.render("admin");
+    res.render("admin", { nombreUsuario: req.user.nombre_usuario });
   } else {
     res.status(403).send("Acceso no autorizado");
   }
