@@ -46,6 +46,7 @@ router.post("/generacion-orden", async (req, res) => {
       examenesSelectedIds,
       dni_paciente,
     } = req.body;
+    const user = req.user;
 
     // Verifica si id_paciente es null
     if (!id_paciente) {
@@ -90,7 +91,26 @@ router.post("/generacion-orden", async (req, res) => {
       });
     }
 
-    res.redirect("/tecnico");
+    // Redirigir según el rol del usuario
+    if (req.isAuthenticated() && req.user && req.user.rol === "tecnico") {
+      res.redirect("/tecnico");
+    } else if (
+      req.isAuthenticated() &&
+      req.user &&
+      req.user.rol === "recepcionista"
+    ) {
+      res.redirect("/recepcionista");
+    } else if (
+      req.isAuthenticated() &&
+      req.user &&
+      req.user.rol === "bioquimico"
+    ) {
+      res.redirect("/bioquimico");
+    } else if (req.isAuthenticated() && req.user && req.user.rol === "admin") {
+      res.redirect("/admin");
+    } else {
+      res.status(403).send("Acceso no autorizado");
+    }
   } catch (error) {
     console.error("Error al procesar el formulario:", error);
     res.status(500).send("Error al procesar el formulario");
