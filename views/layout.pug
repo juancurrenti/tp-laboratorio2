@@ -6,13 +6,14 @@ head
   script(src='https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js' crossorigin='anonymous')
 body
   nav.navbar.navbar-expand-lg.navbar-light.bg-light
-    h4.mb-4.mr-auto Laboratorio
-    button.navbar-toggler(type="button" data-toggle="collapse" data-target="#navbarMenu")
+    a.navbar-brand(href="/redirigirUsuario") Laboratorio
+    button.navbar-toggler(type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation")
       span.navbar-toggler-icon
-    #navbarMenu.collapse.navbar-collapse
+    #navbarNav.collapse.navbar-collapse
       ul.navbar-nav.ml-auto
-        li.nav-item
-          a.nav-link(href="/cambiarContrasena") Cambiar Contraseña
-        li.nav-item
-          a.nav-link(href="/logout", onclick="return confirm('¿Estás seguro de cerrar sesion?')") Cerrar Sesión
+        li.nav-item.dropdown
+          a.nav-link.dropdown-toggle(href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false") Menu
+          .dropdown-menu(aria-labelledby="navbarDropdown")
+            a.dropdown-item(href="/cambiarContrasena") Cambiar Contraseña
+            a.dropdown-item(href="/logout", onclick="return confirm('¿Estás seguro de cerrar sesión?')") Cerrar Sesión
   block content

@@ -153,7 +153,7 @@ app.get("/recepcionista", (req, res) => {
       req.user.rol === "bioquimico" ||
       req.user.rol === "admin")
   ) {
-    res.render("recepcionista", {nombreUsuario: req.user.nombre_usuario});
+    res.render("recepcionista", { nombreUsuario: req.user.nombre_usuario });
   } else {
     res.status(403).send("Acceso no autorizado");
   }
@@ -227,6 +227,24 @@ app.get("/admin/actualizarUsuarioAdm/:nombre", async (req, res) => {
     }
   } else {
     res.status(403).send("Acceso no autorizado");
+  }
+});
+app.get("/redirigirUsuario", (req, res) => {
+  if (!req.isAuthenticated()) {
+    return res.redirect("/"); // Redirigir a la página de inicio de sesión si no está autenticado
+  }
+
+  switch (req.user.rol) {
+    case "recepcionista":
+      return res.redirect("/recepcionista");
+    case "tecnico":
+      return res.redirect("/tecnico");
+    case "bioquimico":
+      return res.redirect("/bioquimico");
+    case "admin":
+      return res.redirect("/admin");
+    default:
+      return res.status(403).send("Acceso no autorizado");
   }
 });
 app.post("/admin/actualizar-usuario", async (req, res) => {
@@ -341,7 +359,7 @@ function checkRole(roles) {
     }
   };
 }
-//rutas 
+//rutas
 app.use("/", pacienteRuta);
 app.use("/buscarOrdenes", buscarOrdenesRuta);
 app.use("/orden", OrdenesTrabajoRuta);
