@@ -1,6 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const OrdenTrabajo = require("../models/ordenes_trabajo");
+const Paciente = require("../models/paciente"); // Asegúrate de tener un modelo Paciente
 const Muestra = require("../models/muestra");
 const Examen = require("../models/examen");
 const OrdenesExamen = require("../models/ordenes_examen");
@@ -41,6 +42,46 @@ router.post("/ordenes", async (req, res) => {
   } catch (error) {
     console.error("Error al buscar órdenes de trabajo:", error);
     res.status(500).json({ error: "Error al buscar órdenes de trabajo" });
+  }
+});
+// Ruta para obtener los detalles adicionales de una orden de trabajo específica
+router.get("/detalles/:id_Orden", async (req, res) => {
+  try {
+    const { id_Orden } = req.params;
+
+    // Buscar la orden de trabajo por ID
+    const orden = await OrdenTrabajo.findByPk(id_Orden);
+    if (!orden) {
+      return res.status(404).json({ error: "Orden de trabajo no encontrada." });
+    }
+
+    // Buscar los detalles del paciente
+    const paciente = await Paciente.findOne({
+      where: { id_Paciente: orden.id_Paciente },
+    });
+    if (!paciente) {
+      return res.status(404).json({ error: "Paciente no encontrado." });
+    }
+
+    const datosAdicionales = {
+      id_Orden: orden.id_Orden,
+      id_Paciente: orden.id_Paciente,
+      nombre: paciente.nombre,
+      apellido: paciente.apellido,
+      dni: paciente.dni,
+      fecha_hora: orden.Fecha_Creacion, // Ajusta esto según tu esquema de base de datos
+      estado: orden.estado,
+    };
+
+    res.json(datosAdicionales);
+  } catch (error) {
+    console.error(
+      "Error al obtener los detalles de la orden de trabajo:",
+      error
+    );
+    res
+      .status(500)
+      .json({ error: "Error al obtener los detalles de la orden de trabajo." });
   }
 });
 // Ruta para mostrar el formulario de modificación de órdenes de trabajo
@@ -107,17 +148,21 @@ router.post("/crear-modificar-orden/:idOrden", async (req, res) => {
 
       // Verificar si se han seleccionado tipos de muestra
       if (Array.isArray(tipos_muestra) && tipos_muestra.length > 0) {
-        for (const tipoMuestra of tipos_muestra) {
-          const estadoValue = req.body[`estado_${tipoMuestra}`];
-          // Crear y guardar la muestra en la base de datos
-          const nuevaMuestra = await Muestra.create({
-            id_Orden: idOrden,
-            id_Paciente: idPaciente,
-            Fecha_Recepcion: new Date(),
-            Tipo_Muestra: tipoMuestra,
-            estado: estadoValue,
-          });
-          console.log("Muestra creada:", nuevaMuestra);
+        try {
+          for (const tipoMuestra of tipos_muestra) {
+            const estadoValue = req.body[`estado_${tipoMuestra}`];
+            // Crear y guardar la muestra en la base de datos
+            const nuevaMuestra = await Muestra.create({
+              id_Orden: idOrden,
+              id_Paciente: idPaciente,
+              Fecha_Recepcion: new Date(),
+              Tipo_Muestra: tipoMuestra,
+              estado: estadoValue,
+            });
+            console.log("Muestra creada:", nuevaMuestra);
+          }
+        } catch (error) {
+          console.error("Error al crear la muestra:", error);
         }
       } else {
         console.log("No se seleccionaron tipos de muestra.");

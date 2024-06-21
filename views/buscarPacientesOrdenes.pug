@@ -9,7 +9,7 @@ block content
   form(action="/ordenes" method="POST" id="searchForm")
     .form-group
       label(for="dniPaciente") Buscar Orden por DNI del Paciente:
-      input(type="text" name="dniPaciente" id="dniPaciente" placeholder="DNI del Paciente" class="form-control", required)
+      input(type="text" name="dniPaciente" id="dniPaciente" placeholder="DNI del Paciente" class="form-control" required)
 
     button(type="submit" class="btn btn-primary") Buscar
 
@@ -20,15 +20,18 @@ block content
       each orden in ordenesTrabajo 
         .card.mb-3
           .card-body
-            ul.list-unstyled
+            ul.list-unstyled(id=`orden_${orden.id_Orden}`)
               li Órden de Trabajo: #{orden.id_Orden}
               li Id Paciente: #{orden.id_Paciente}
-              li Fecha de Creación: #{orden.Fecha_Creacion}
-              li Fecha de Entrega: #{orden.Fecha_Entrega}
+              li Fecha de Creación: #{orden.Fecha_Creacion.split('T')[0]}
+              li Fecha de Entrega: #{orden.Fecha_Entrega.split('T')[0]}
               li Estado: #{orden.estado}
               li
                 // Enlace para modificar la orden de trabajo individualmente
                 a.btn.btn-secondary(href=`/buscarOrdenes/crear-modificar-orden/${orden.id_Orden}`) Modificar Orden
+              li
+                // Botón para imprimir la orden de trabajo individualmente
+                button(type="button" class="btn btn-secondary" onclick=`imprimirOrden(${orden.id_Orden})`) Imprimir Orden
 
   // Script para manejar la respuesta
   script.
@@ -59,18 +62,24 @@ block content
           resultHeading.textContent = `Órdenes de trabajo asociadas al paciente con DNI: ${dniPaciente}`;
 
           data.forEach((orden) => {
+            const fechaCreacion = orden.Fecha_Creacion.split('T')[0];
+            const fechaEntrega = orden.Fecha_Entrega.split('T')[0];
+
             const listItem = document.createElement("div");
             listItem.classList.add("card", "mb-3");
             listItem.innerHTML = `
               <div class="card-body">
-                <ul class="list-unstyled">
+                <ul class="list-unstyled" id="orden_${orden.id_Orden}">
                   <li>Órden de Trabajo: ${orden.id_Orden}</li>
                   <li>Id Paciente: ${orden.id_Paciente}</li>
-                  <li>Fecha de Creación: ${orden.Fecha_Creacion}</li>
-                  <li>Fecha de Entrega: ${orden.Fecha_Entrega}</li>
+                  <li>Fecha de Creación: ${fechaCreacion}</li>
+                  <li>Fecha de Entrega: ${fechaEntrega}</li>
                   <li>Estado: ${orden.estado}</li>
                   <li>
                     <a class="btn btn-secondary" href="/buscarOrdenes/crear-modificar-orden/${orden.id_Orden}">Modificar Orden</a>
+                  </li>
+                  <li>
+                    <button type="button" class="btn btn-secondary" onclick="imprimirOrden(${orden.id_Orden})">Imprimir Orden</button>
                   </li>
                 </ul>
               </div>
@@ -85,3 +94,56 @@ block content
         resultHeading.textContent = "Error al buscar órdenes de trabajo.";
       }
     });
+
+    async function imprimirOrden(id) {
+      try {
+        const response = await fetch(`/buscarOrdenes/detalles/${id}`);
+        if (!response.ok) {
+          throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+
+        const datos = await response.json();
+
+        const fechaSolo = datos.fecha_hora.split('T')[0];
+
+        const ventanaImpresion = window.open('', '_blank');
+        ventanaImpresion.document.write(`
+          <html>
+            <head>
+              <title>Imprimir Orden de Trabajo</title>
+              <style>
+                body { font-family: Arial, sans-serif; }
+                h2 { color: #333; }
+                .card { margin-bottom: 1em; }
+                .card-body { padding: 1em; border: 1px solid #ddd; border-radius: 4px; }
+                ul { list-style-type: none; padding: 0; }
+                li { margin-bottom: 0.5em; }
+              </style>
+            </head>
+            <body>
+              <h2>Órden de Trabajo</h2>
+              <div class="card">
+                <div class="card-body">
+                  <ul class="list-unstyled">
+                    <li>Nº de Orden: ${datos.id_Orden}</li>
+                    <li>Código de Persona: ${datos.id_Paciente}</li>
+                    <li>Nombre del Paciente: ${datos.nombre} ${datos.apellido} </li>
+                    <li>DNI del Paciente: ${datos.dni}</li>
+                    <li>Fecha de Creación: ${fechaSolo}</li>
+                    <li>Estado: ${datos.estado}</li>
+                  </ul>
+                </div>
+              </div>
+              <script>
+                window.print();
+                window.onafterprint = function() { window.close(); }
+              <\/script>
+            </body>
+          </html>
+        `);
+        ventanaImpresion.document.close();
+      } catch (error) {
+        console.error('Error al obtener los detalles de la orden de trabajo:', error);
+        alert('Error al obtener los detalles de la orden de trabajo.');
+      }
+    }
