@@ -1,5 +1,6 @@
 const { DataTypes } = require("sequelize");
 const sequelize = require("../config/database");
+const Paciente = require("./paciente");
 
 const Muestra = sequelize.define(
   "Muestra",
@@ -20,6 +21,10 @@ const Muestra = sequelize.define(
     id_Paciente: {
       type: DataTypes.INTEGER,
       allowNull: false,
+      references: {
+        model: Paciente,
+        key: "id_paciente", // Asegúrate de que coincida con la clave primaria de Paciente
+      },
     },
     Tipo_Muestra: {
       type: DataTypes.STRING,
@@ -35,4 +40,7 @@ const Muestra = sequelize.define(
     timestamps: false,
   }
 );
+
+Muestra.belongsTo(Paciente, { foreignKey: 'id_Paciente', as: 'Paciente' });
+
 module.exports = Muestra;

@@ -1,116 +1,54 @@
 extends layout
 
 block content
-  head 
-    title Buscar ordenes
-  h1 Buscar Orden de Trabajo
+  h1 Muestras de la Orden #{id_orden}
 
-  // Formulario de búsqueda de paciente
-  form(action="/ordenes" method="POST" id="searchForm")
-    .form-group
-      label(for="dniPaciente") Buscar Orden por DNI del Paciente:
-      input(type="text" name="dniPaciente" id="dniPaciente" placeholder="DNI del Paciente" class="form-control" required)
+  if muestras
+    each muestra in muestras
+      .card.mb-3
+        .card-body
+          ul.list-unstyled
+            li Id Muestra: #{muestra.id_Muestra}
+            li Id Orden: #{muestra.id_Orden}
+            li Id Paciente: #{muestra.id_Paciente}
+            li Nombre Paciente: #{muestra.Paciente.nombre} #{muestra.Paciente.apellido}
+            li Tipo de Muestra: #{muestra.Tipo_Muestra}
+            li Fecha de Recepción: #{muestra.Fecha_Recepcion ? muestra.Fecha_Recepcion.toLocaleDateString() : ''}
+            li Estado: #{muestra.estado}
+          a.btn.btn-primary(href=`/añadirResultados/${muestra.id_Muestra}`) Añadir Resultados
+          button.btn.btn-success(type="button", onclick=`previsualizarPDF('${muestra.id_Muestra}')`) Previsualizar
 
-    button(type="submit" class="btn btn-primary") Buscar
+  else
+    p #{mensaje}
 
-  // Resultados de búsqueda de órdenes de trabajo
-  h2(id="resultHeading") Resultados:
-  #resultList
-    if ordenesTrabajo
-      each orden in ordenesTrabajo 
-        .card.mb-3
-          .card-body
-            ul.list-unstyled(id=`orden_${orden.id_Orden}`)
-              li Órden de Trabajo: #{orden.id_Orden}
-              li Id Paciente: #{orden.id_Paciente}
-              li Fecha de Creación: #{orden.Fecha_Creacion.split('T')[0]}
-              li Fecha de Entrega: #{orden.Fecha_Entrega.split('T')[0]}
-              li Estado: #{orden.estado}
-              li
-                .d-flex
-                  // Enlace para modificar la orden de trabajo individualmente
-                  a.btn.btn-secondary.mr-2(href=`/buscarOrdenes/crear-modificar-orden/${orden.id_Orden}`) Modificar Orden
-                  // Botón para imprimir la orden de trabajo individualmente
-                  button(type="button" class="btn btn-secondary" onclick=`imprimirOrden(${orden.id_Orden})`) Imprimir Orden
-
-  // Script para manejar la respuesta
   script.
-    document.getElementById("searchForm").addEventListener("submit", async (e) => {
-      e.preventDefault();
-      const dniPaciente = document.getElementById("dniPaciente").value;
-      const resultHeading = document.getElementById("resultHeading");
-      const resultList = document.getElementById("resultList");
-
+    async function previsualizarPDF(idMuestra) {
       try {
-        const info = await fetch("/buscarOrdenes/ordenes", {  
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ dniPaciente }),
-        });
-
+        const info = await fetch(`mostrar/generarPDFMuestra/${idMuestra}`);
         if (!info.ok) {
           throw new Error(`HTTP error! Status: ${info.status}`);
         }
 
-        const data = await info.json();
-        console.log(data);
-        resultList.innerHTML = ""; // Limpia el contenedor de la lista
+        const { pdfBase64 } = await info.json();
 
-        if (data.length > 0) {
-          resultHeading.textContent = `Órdenes de trabajo asociadas al paciente con DNI: ${dniPaciente}`;
-
-          data.forEach((orden) => {
-            const fechaCreacion = orden.Fecha_Creacion.split('T')[0];
-            const fechaEntrega = orden.Fecha_Entrega.split('T')[0];
-
-            const listItem = document.createElement("div");
-            listItem.classList.add("card", "mb-3");
-            listItem.innerHTML = `
-              <div class="card-body">
-                <ul class="list-unstyled" id="orden_${orden.id_Orden}">
-                  <li>Órden de Trabajo: ${orden.id_Orden}</li>
-                  <li>Id Paciente: ${orden.id_Paciente}</li>
-                  <li>Fecha de Creación: ${fechaCreacion}</li>
-                  <li>Fecha de Entrega: ${fechaEntrega}</li>
-                  <li>Estado: ${orden.estado}</li>
-                  <li>
-                    <div class="d-flex">
-                      <a class="btn btn-secondary mr-2" href="/buscarOrdenes/crear-modificar-orden/${orden.id_Orden}">Modificar Orden</a>
-                      <button type="button" class="btn btn-secondary" onclick="imprimirOrden(${orden.id_Orden})">Imprimir Orden</button>
-                    </div>
-                  </li>
-                </ul>
-              </div>
-            `;
-            resultList.appendChild(listItem);
-          });
-        } else {
-          resultHeading.textContent = `No se encontraron órdenes de trabajo para el paciente con DNI ${dniPaciente}.`;
+        // Decodificar el PDF base64
+        const byteCharacters = atob(pdfBase64);
+        const byteNumbers = new Array(byteCharacters.length);
+        for (let i = 0; i < byteCharacters.length; i++) {
+          byteNumbers[i] = byteCharacters.charCodeAt(i);
         }
-      } catch (error) {
-        console.error('Error al buscar órdenes de trabajo:', error);
-        resultHeading.textContent = "Error al buscar órdenes de trabajo.";
-      }
-    });
+        const byteArray = new Uint8Array(byteNumbers);
+        const blob = new Blob([byteArray], { type: 'application/pdf' });
 
-    async function imprimirOrden(id) {
-      try {
-        const response = await fetch(`/buscarOrdenes/detalles/${id}`);
-        if (!response.ok) {
-          throw new Error(`HTTP error! Status: ${response.status}`);
-        }
+        // Crear una URL del blob para mostrar el PDF en el navegador
+        const url = URL.createObjectURL(blob);
 
-        const datos = await response.json();
-
-        const fechaSolo = datos.fecha_hora.split('T')[0];
-
+        // Abrir una nueva ventana con el contenido HTML personalizado para la impresión
         const ventanaImpresion = window.open('', '_blank');
         ventanaImpresion.document.write(`
           <html>
             <head>
-              <title>Imprimir Orden de Trabajo</title>
+              <title>Previsualización de Muestra</title>
               <style>
                 body { font-family: Arial, sans-serif; }
                 h2 { color: #333; }
@@ -121,29 +59,19 @@ block content
               </style>
             </head>
             <body>
-              <h2>Órden de Trabajo</h2>
-              <div class="card">
-                <div class="card-body">
-                  <ul class="list-unstyled">
-                    <li>Nº de Orden: ${datos.id_Orden}</li>
-                    <li>Código de Persona: ${datos.id_Paciente}</li>
-                    <li>Nombre del Paciente: ${datos.nombre} ${datos.apellido} </li>
-                    <li>DNI del Paciente: ${datos.dni}</li>
-                    <li>Fecha de Creación: ${fechaSolo}</li>
-                    <li>Estado: ${datos.estado}</li>
-                  </ul>
-                </div>
-              </div>
+              <h2>Previsualización de Muestra</h2>
+              <embed src="${url}" type="application/pdf" width="100%" height="600px" />
               <script>
-                window.print();
+                setTimeout(() => window.print(), 1000); // Esperar 1 segundo antes de imprimir
                 window.onafterprint = function() { window.close(); }
-              <\/script>
+              </script>
             </body>
           </html>
         `);
         ventanaImpresion.document.close();
+
       } catch (error) {
-        console.error('Error al obtener los detalles de la orden de trabajo:', error);
-        alert('Error al obtener los detalles de la orden de trabajo.');
+        console.error('Error al previsualizar PDF:', error);
+        alert('Error al previsualizar PDF.');
       }
     }

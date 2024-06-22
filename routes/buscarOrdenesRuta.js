@@ -37,7 +37,6 @@ router.post("/ordenes", async (req, res) => {
     } else {
       // Se encontraron órdenes de trabajo para el paciente
       res.json(ordenesTrabajo); // Enviar las órdenes de trabajo en formato JSON
-      console.log(ordenesTrabajo);
     }
   } catch (error) {
     console.error("Error al buscar órdenes de trabajo:", error);
@@ -114,7 +113,6 @@ router.get("/crear-modificar-orden/:idOrden", async (req, res) => {
         },
       ],
     });
-    console.log(ordenTrabajoExistente.ordenes_examenes);
 
     // Si la orden de trabajo no existe, devuelve un mensaje de error
     if (!ordenTrabajoExistente) {

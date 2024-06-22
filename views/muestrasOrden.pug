@@ -1,0 +1,58 @@
+extends layout
+
+block content
+  h1 Muestras de la Orden #{id_orden}
+
+  if muestras
+    each muestra in muestras
+      .card.mb-3
+        .card-body
+          ul.list-unstyled
+            li Id Muestra: #{muestra.id_Muestra}
+            li Id Orden: #{muestra.id_Orden}
+            li Id Paciente: #{muestra.id_Paciente}
+            li Nombre Paciente: #{muestra.Paciente.nombre} #{muestra.Paciente.apellido}
+            li Tipo de Muestra: #{muestra.Tipo_Muestra}
+            li Fecha de Recepción: #{muestra.Fecha_Recepcion ? muestra.Fecha_Recepcion.toLocaleDateString() : ''}
+            li Estado: #{muestra.estado}
+          a.btn.btn-primary.mb-2(href=`/añadirResultados/${muestra.id_Muestra}`) Añadir Resultados
+          button.btn.btn-success.mb-2(type="button", onclick=`generarPDF('${muestra.id_Muestra}')`) Imprimir
+
+  else
+    p #{mensaje}
+
+  script.
+    async function generarPDF(idMuestra) {
+      try {
+        const info = await fetch(`mostrar/generarPDFMuestra/${idMuestra}`);
+        if (!info.ok) {
+          throw new Error(`HTTP error! Status: ${info.status}`);
+        }
+
+        const { pdfBase64 } = await info.json();
+
+        // Crear un objeto blob desde el PDF base64
+        const byteCharacters = atob(pdfBase64);
+        const byteNumbers = new Array(byteCharacters.length);
+        for (let i = 0; i < byteCharacters.length; i++) {
+          byteNumbers[i] = byteCharacters.charCodeAt(i);
+        }
+        const byteArray = new Uint8Array(byteNumbers);
+        const blob = new Blob([byteArray], { type: 'application/pdf' });
+
+        // Crear una URL del blob para mostrar el PDF en el navegador
+        const url = URL.createObjectURL(blob);
+
+        // Abrir una nueva ventana o mostrar el PDF en un iframe
+        window.open(url, '_blank');
+
+      } catch (error) {
+        console.error('Error al generar PDF:', error);
+        alert('Error al generar PDF.');
+      }
+    }
+
+
+
+
+

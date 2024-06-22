@@ -12,6 +12,8 @@ const modificarExamenRuta = require("./routes/modificarExamenRuta");
 const modificarDeterminacionRuta = require("./routes/modificarDeterminacionRuta");
 const buscarOrdenesRuta = require("./routes/buscarOrdenesRuta");
 const modificarValrefRuta = require("./routes/modificarValrefRuta");
+const muestrasRouter = require("./routes/resultadosRuta");
+
 const passport = require("passport");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
@@ -34,6 +36,7 @@ app.use(
     },
   })
 );
+app.use("/muestras", muestrasRouter);
 
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
@@ -343,6 +346,15 @@ app.post("/admin/crear-usuario", async (req, res) => {
     }
   } else {
     res.status(403).send("Acceso no autorizado");
+  }
+});
+app.get("/muestras", async (req, res) => {
+  try {
+    // Render the muestras.pug view
+    res.render("muestras");
+  } catch (error) {
+    console.error("Error rendering muestras view:", error);
+    res.status(500).send("Internal Server Error");
   }
 });
 // verifica el acceso de roles
