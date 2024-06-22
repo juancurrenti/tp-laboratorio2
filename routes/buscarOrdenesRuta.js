@@ -102,7 +102,7 @@ router.get("/crear-modificar-orden/:idOrden", async (req, res) => {
       include: [
         {
           model: Muestra,
-          attributes: ["id_Muestra", "Tipo_Muestra"],
+          attributes: ["id_Muestra", "Tipo_Muestra", "Fecha_Recepcion"],
         },
         {
           model: OrdenesExamen,
@@ -138,16 +138,13 @@ router.post("/crear-modificar-orden/:idOrden", async (req, res) => {
     const { estado, idPaciente, tipos_muestra, examenesSelectedIds } = req.body;
 
     const ordenTrabajoExistente = await OrdenTrabajo.findByPk(idOrden);
-    const examenesSelectedIdsArray = examenesSelectedIds
-      .split(",")
-      .map((id_examen) => parseInt(id_examen));
 
     if (ordenTrabajoExistente) {
       ordenTrabajoExistente.estado = estado;
       await ordenTrabajoExistente.save();
 
-      // Verificar si se han seleccionado tipos de muestra
-      if (Array.isArray(tipos_muestra) && tipos_muestra.length > 0) {
+      // Verificar si se han seleccionado tipos de muestra y crearlas si es necesario
+      if (Array.isArray(tipos_muestra) && tipos_muestra.length > -1) {
         try {
           for (const tipoMuestra of tipos_muestra) {
             const estadoValue = req.body[`estado_${tipoMuestra}`];
@@ -168,22 +165,40 @@ router.post("/crear-modificar-orden/:idOrden", async (req, res) => {
         console.log("No se seleccionaron tipos de muestra.");
       }
 
-      // Continúa con el procesamiento de exámenes
-      for (const examenId of examenesSelectedIdsArray) {
-        await OrdenesExamen.create({
-          id_Orden: idOrden,
-          id_examen: examenId,
+      // Verificar si se han seleccionado exámenes y crearlos si es necesario
+      if (examenesSelectedIds) {
+        // Convertir examenesSelectedIds a un array de IDs enteros válidos
+        const examenesSelectedIdsArray = examenesSelectedIds
+          .split(",")
+          .map((id_examen) => parseInt(id_examen))
+          .filter((id) => !isNaN(id)); // Filtrar cualquier NaN
+
+        // Verificar que los IDs de examen sean válidos y existan en la base de datos
+        const examenesExistentes = await Examen.findAll({
+          where: {
+            id_examen: examenesSelectedIdsArray,
+          },
         });
+
+        if (examenesExistentes.length !== examenesSelectedIdsArray.length) {
+          return res.status(400).send("Uno o más IDs de examen no son válidos.");
+        }
+
+        // Insertar los exámenes asociados a la orden si hay IDs válidos
+        for (const examenId of examenesSelectedIdsArray) {
+          await OrdenesExamen.create({
+            id_Orden: idOrden,
+            id_examen: examenId,
+          });
+        }
       }
-      res.send("Orden de trabajo y muestras procesadas con éxito.");
+
+      res.send("Orden de trabajo modificada con éxito.");
     } else {
       res.status(404).send("Orden de trabajo no encontrada.");
     }
   } catch (error) {
-    console.error(
-      "Error al procesar la orden de trabajo y las muestras:",
-      error
-    );
+    console.error("Error al procesar la orden de trabajo y las muestras:", error);
     res.status(500).send("Error interno del servidor");
   }
 });

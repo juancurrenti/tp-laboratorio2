@@ -12,29 +12,6 @@ function sumarDias(fecha, dias) {
   resultado.setDate(resultado.getDate() + dias);
   return resultado;
 }
-
-// Ruta para mostrar la vista de generación de orden
-router.get("/generacion-orden", async (req, res) => {
-  try {
-    const tiposMuestra = [
-      { value: "sangre", label: "Sangre" },
-      { value: "orina", label: "Orina" },
-      { value: "heces", label: "Heces" },
-      { value: "liquidoCefaloraquideo", label: "Líquido Cefalorraquídeo" },
-      { value: "saliva", label: "Saliva" },
-      { value: "nasofaringea", label: "Secreción Nasofaríngea" },
-    ];
-
-    // Obtén la lista de exámenes y pacientes desde la base de datos
-    const examenes = await Examen.findAll();
-    const pacientes = await Paciente.findAll();
-    res.render("generarOrden", { tiposMuestra, examenes, pacientes });
-  } catch (error) {
-    console.error(error);
-    res.status(500).send("Error al obtener la lista de exámenes.");
-  }
-});
-
 // Ruta para procesar la generación de orden
 router.post("/generacion-orden", async (req, res) => {
   try {
@@ -58,10 +35,6 @@ router.post("/generacion-orden", async (req, res) => {
     // Ahora puedes acceder al DNI del paciente usando la variable dni_paciente
     console.log("DNI del Paciente:", dni_paciente);
 
-    const examenesSelectedIdsArray = examenesSelectedIds
-      .split(",")
-      .map((id_examen) => parseInt(id_examen));
-
     // Crea una nueva orden de trabajo
     const nuevaOrden = await OrdenTrabajo.create({
       id_Paciente: id_paciente,
@@ -73,22 +46,42 @@ router.post("/generacion-orden", async (req, res) => {
     });
     const nuevaOrdenId = nuevaOrden.id_Orden;
 
-    for (const examenId of examenesSelectedIdsArray) {
-      await OrdenesExamenes.create({
-        id_Orden: nuevaOrdenId,
-        id_examen: examenId,
-      });
+    // Verifica si examenesSelectedIds está definido y no está vacío
+    if (examenesSelectedIds && examenesSelectedIds.length > 0) {
+      const examenesSelectedIdsArray = examenesSelectedIds
+        .split(",")
+        .map((id_examen) => parseInt(id_examen))
+        .filter((id) => !isNaN(id)); // Filtra cualquier NaN
+
+      // Inserta los exámenes asociados a la orden
+      if (examenesSelectedIdsArray.length > 0) {
+        for (const examenId of examenesSelectedIdsArray) {
+          await OrdenesExamenes.create({
+            id_Orden: nuevaOrdenId,
+            id_examen: examenId,
+          });
+        }
+      } else {
+        console.warn("No se seleccionaron exámenes válidos.");
+      }
+    } else {
+      console.warn("No se seleccionaron exámenes.");
     }
 
-    for (const tipoMuestra of tipos_muestra) {
-      const estadoValue = req.body[`estado_${tipoMuestra}`];
-      await Muestra.create({
-        id_Orden: nuevaOrdenId,
-        id_Paciente: id_paciente,
-        Fecha_Recepcion: new Date(),
-        Tipo_Muestra: tipoMuestra,
-        estado: estadoValue,
-      });
+    // Verifica si tipos_muestra está definido y tiene elementos
+    if (tipos_muestra && tipos_muestra.length > 0) {
+      for (const tipoMuestra of tipos_muestra) {
+        const estadoValue = req.body[`estado_${tipoMuestra}`];
+        await Muestra.create({
+          id_Orden: nuevaOrdenId,
+          id_Paciente: id_paciente,
+          Fecha_Recepcion: new Date(),
+          Tipo_Muestra: tipoMuestra,
+          estado: estadoValue,
+        });
+      }
+    } else {
+      console.warn("No se seleccionaron tipos de muestra.");
     }
 
     // Redirigir según el rol del usuario
@@ -116,5 +109,6 @@ router.post("/generacion-orden", async (req, res) => {
     res.status(500).send("Error al procesar el formulario");
   }
 });
+
 
 module.exports = router;
