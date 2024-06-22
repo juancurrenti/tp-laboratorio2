@@ -3,6 +3,8 @@ extends layout
 block content
   head
     title Actualizar orden de trabajo
+    link(rel="stylesheet", href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css")
+
   h1 Modificar Orden de Trabajo
 
   // Formulario de creación/modificación de órdenes de trabajo
@@ -10,9 +12,11 @@ block content
     .form-group
       label(for="idPaciente") ID del Paciente:
       input(type="text", name="idPaciente", value=ordenTrabajoExistente.id_Paciente, class="form-control", required)
+
     .form-group
       label(for="Fecha_Creacion") Fecha de Creación:
-      input(type="text", name="Fecha_Creacion", value=ordenTrabajoExistente.Fecha_Creacion, class="form-control", required)
+      input(type="text", id="Fecha_Creacion", name="Fecha_Creacion", value=ordenTrabajoExistente.Fecha_Creacion, class="form-control", required)
+
     .form-group
       label(for="estado") Estado:
       input(type="text", name="estado", value=ordenTrabajoExistente.estado, class="form-control", required)
@@ -71,3 +75,12 @@ block content
     // Botón para guardar la orden de trabajo
     button(type="submit", class="btn btn-primary", onclick="return confirm('¿Estás seguro de guardar la orden de trabajo?')") Guardar Orden de Trabajo
     a(href=`/buscarOrdenes/cancelar-orden/${ordenTrabajoExistente.id_Orden}`, class="btn btn-danger") Cancelar Orden
+
+  // Incluir scripts de flatpickr al final del documento para asegurar que el DOM esté cargado
+  script(src="https://cdn.jsdelivr.net/npm/flatpickr")
+
+  script.
+   flatpickr("#Fecha_Creacion", {
+      enableTime: true, 
+      dateFormat: "d-m-Y H:i", 
+    });
