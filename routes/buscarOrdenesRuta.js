@@ -118,10 +118,13 @@ router.get("/crear-modificar-orden/:idOrden", async (req, res) => {
     if (!ordenTrabajoExistente) {
       return res.status(404).send("Orden de Trabajo no encontrada");
     }
+    const estadoOrden = ordenTrabajoExistente.estado;
+
     res.render("crearModificarOrden", {
       tiposMuestra,
       ordenTrabajoExistente,
       examenes,
+      estadoOrden,
     });
   } catch (error) {
     console.error(error);

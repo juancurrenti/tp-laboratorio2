@@ -9,7 +9,7 @@ router.get("/crear-examen", async (req, res) => {
     res.render("crearExamen");
   } catch (error) {
     console.error(error);
-    res.status(500).send("Error al obtener los valores de referencia.");
+    res.status(500).send("Error al obtener.");
   }
 });
 
