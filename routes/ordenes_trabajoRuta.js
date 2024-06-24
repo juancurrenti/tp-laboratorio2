@@ -35,6 +35,7 @@ router.get('/generacion-orden', async (req, res) => {
       res.status(500).send('Error al obtener la lista de exámenes.');
   }
 });
+
 // Ruta para procesar la generación de orden
 router.post("/generacion-orden", async (req, res) => {
   try {

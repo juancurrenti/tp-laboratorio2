@@ -60,26 +60,20 @@ block content
       const examenes = !{JSON.stringify(examenes)};
 
       examSearchInput.addEventListener("input", () => {
-        const searchTerm = examSearchInput.value.trim().toLowerCase(); // Obtener el término de búsqueda y limpiar espacios
+        const searchTerm = examSearchInput.value.toLowerCase();
+        const filteredExams = examenes.filter(examen => {
+          return examen.nombre_examen.toLowerCase().includes(searchTerm) || examen.codigo.toLowerCase().includes(searchTerm);
+        });
 
-        // Filtrar los exámenes solo si hay un término de búsqueda presente
-        if (searchTerm) {
-          const filteredExams = examenes.filter(examen => {
-            return examen.nombre_examen.toLowerCase().includes(searchTerm) || examen.codigo.toLowerCase().includes(searchTerm);
-          });
+        // Limpiar resultados anteriores
+        examResults.innerHTML = "";
 
-          // Mostrar resultados filtrados
-          examResults.innerHTML = "";
-          filteredExams.forEach(examen => {
-            const option = document.createElement("option");
-            option.value = examen.id_examen;
-            option.textContent = `${examen.nombre_examen} (Código: ${examen.codigo}, ID: ${examen.id_examen})`;
-            examResults.appendChild(option);
-          });
-        } else {
-          // Si no hay término de búsqueda, limpiar los resultados
-          examResults.innerHTML = "";
-        }
+        filteredExams.forEach(examen => {
+          const option = document.createElement("option");
+          option.value = examen.id_examen;
+          option.textContent = `${examen.nombre_examen} (Código: ${examen.codigo}, ID: ${examen.id_examen})`;
+          examResults.appendChild(option);
+        });
       });
 
       // Manejar la selección de exámenes

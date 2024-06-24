@@ -146,6 +146,8 @@ router.post("/guardar-paciente", async (req, res) => {
         apellido,
         dni
       );
+      const dniPaciente = req.body.dni;
+
       // Redirigir a la página de generación de orden con el id_paciente
       res.redirect("/orden/generacion-orden");
     }

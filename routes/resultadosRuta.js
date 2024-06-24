@@ -1,4 +1,3 @@
-
 const express = require("express");
 const router = express.Router();
 const Muestra = require("../models/muestra");
@@ -42,26 +41,26 @@ router.get("/mostrar/:id_orden/generarPDFMuestra/:idMuestra", async (req, res) =
       return res.status(404).json({ mensaje: "Muestra no encontrada." });
     }
 
-const pdfDoc = new PDFDocument();
+    const pdfDoc = new PDFDocument();
 
-// Construir el contenido del PDF
-pdfDoc.fontSize(12).text("Información de la Muestra\n\n");
+    // Construir el contenido del PDF
+    pdfDoc.fontSize(12).text("Información de la Muestra\n\n");
 
-pdfDoc.font('Helvetica-Bold');
-pdfDoc.text(`Nombre del Paciente: ${muestra.Paciente.nombre} ${muestra.Paciente.apellido}\n`);
-pdfDoc.text(`Nro Muestra: ${muestra.id_Muestra}\n`);
-pdfDoc.text(`Nro Orden: ${muestra.id_Orden}\n`);
-pdfDoc.text(`Nro Paciente: ${muestra.id_Paciente}\n`);
-pdfDoc.text(`Tipo de Muestra: ${muestra.Tipo_Muestra}\n`);
-pdfDoc.text(`Fecha de Recepción: ${
-  muestra.Fecha_Recepcion
-    ? new Date(muestra.Fecha_Recepcion).toLocaleDateString()
-    : ""
-}\n`);
-pdfDoc.text(`Estado: ${muestra.estado}\n`);
+    pdfDoc.font('Helvetica-Bold');
+    pdfDoc.text(`Nombre del Paciente: ${muestra.Paciente.nombre} ${muestra.Paciente.apellido}\n`);
+    pdfDoc.text(`Nro Muestra: ${muestra.id_Muestra}\n`);
+    pdfDoc.text(`Nro Orden: ${muestra.id_Orden}\n`);
+    pdfDoc.text(`Nro Paciente: ${muestra.id_Paciente}\n`);
+    pdfDoc.text(`Tipo de Muestra: ${muestra.Tipo_Muestra}\n`);
+    pdfDoc.text(`Fecha de Recepción: ${
+      muestra.Fecha_Recepcion
+        ? new Date(muestra.Fecha_Recepcion).toLocaleString()
+        : ""
+    }\n`);
+    pdfDoc.text(`Estado: ${muestra.estado}\n`);
 
-// Finalizar el documento PDF
-pdfDoc.end();
+    // Finalizar el documento PDF
+    pdfDoc.end();
 
     // Obtener el contenido del PDF en formato base64
     const pdfBytes = await new Promise((resolve, reject) => {

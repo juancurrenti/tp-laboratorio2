@@ -24,8 +24,7 @@ const path = require("path");
 
 // Configuración de la vista
 app.set("view engine", "pug");
-app.set("views", __dirname + "/views");
-app.use(router);
+app.set("views", path.join(__dirname, "views"));
 
 // Middleware para servir archivos estáticos desde la carpeta '/public'
 app.use(
@@ -36,13 +35,12 @@ app.use(
     },
   })
 );
-app.use("/muestras", muestrasRouter);
 
+// Middleware para body parsing
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
-app.use(express.urlencoded({ extended: true }));
 
-// Configuración de express-session(habilita sesiones)
+// Configuración de express-session (habilita sesiones)
 app.use(
   session({
     secret: "corva",
@@ -51,11 +49,11 @@ app.use(
   })
 );
 
-// Middleware para inicializar Passport después de la sesión
+// Inicialización de Passport y sesión después de la configuración de sesión
 app.use(passport.initialize());
 app.use(passport.session());
 
-// Passport.js configuración de estrategia local
+// Configuración de la estrategia local de Passport.js
 passport.use(
   new LocalStrategy(
     {
@@ -90,7 +88,7 @@ passport.use(
   )
 );
 
-// Passport.js serialización y deserialización de usuarios
+// Serialización y deserialización de usuarios con Passport.js
 passport.serializeUser((user, done) => {
   done(null, user.id_Usuario);
 });
@@ -108,10 +106,58 @@ passport.deserializeUser(async (id_Usuario, done) => {
   }
 });
 
-// Ruta para la vista de inicio de sesión
+// Middleware para verificar roles
+function checkRole(roles) {
+  return (req, res, next) => {
+    if (
+      req.isAuthenticated() &&
+      (roles.includes(req.user.rol) || req.user.rol === "admin")
+    ) {
+      next(); // Si el usuario tiene el rol adecuado o es un admin, permite el acceso
+    } else {
+      res.status(403).send("Acceso no autorizado");
+    }
+  };
+}
+
+// Rutas protegidas por roles
+app.use("/", pacienteRuta);
+app.use("/buscarOrdenes", buscarOrdenesRuta);
+app.use("/orden", OrdenesTrabajoRuta);
+app.use("/examen", checkRole(["tecnico", "bioquimico", "admin"]), examenRuta);
+app.use(
+  "/determinacion",
+  checkRole(["tecnico", "bioquimico", "admin"]),
+  determinacionesRuta
+);
+app.use(
+  "/valoresreferencia",
+  checkRole(["tecnico", "bioquimico", "admin"]),
+  valoresRefRuta
+);
+app.use(
+  "/modificar-examen",
+  checkRole(["tecnico", "bioquimico", "admin"]),
+  modificarExamenRuta
+);
+app.use(
+  "/modificar-determinacion",
+  checkRole(["tecnico", "bioquimico", "admin"]),
+  modificarDeterminacionRuta
+);
+app.use(
+  "/buscar-valores",
+  checkRole(["tecnico", "bioquimico", "admin"]),
+  modificarValrefRuta
+);
+app.use("/muestras", muestrasRouter);
+
+// Ruta GET para la vista de inicio de sesión
 app.get("/", (req, res) => {
   res.render("login");
 });
+
+// Ruta POST para el inicio de sesión con Passport.js
 app.post("/login", (req, res, next) => {
   passport.authenticate("local", { session: true }, (err, user, info) => {
     if (err) {
@@ -130,108 +176,23 @@ app.post("/login", (req, res, next) => {
         { id: user.id_Usuario, rol: user.rol },
         "messicrack"
       );
-      if (user.rol === "recepcionista") {
-        return res.redirect("/recepcionista");
-      } else if (user.rol === "tecnico") {
-        return res.redirect("/tecnico");
-      } else if (user.rol === "bioquimico") {
-        return res.redirect("/bioquimico");
-      } else if (user.rol === "admin") {
-        return res.redirect("/admin");
+      switch (user.rol) {
+        case "recepcionista":
+          return res.redirect("/recepcionista");
+        case "tecnico":
+          return res.redirect("/tecnico");
+        case "bioquimico":
+          return res.redirect("/bioquimico");
+        case "admin":
+          return res.redirect("/admin");
+        default:
+          return res.status(403).send("Acceso no autorizado");
       }
     });
   })(req, res, next);
 });
 
-app.get("/ingresar/administrativo", (req, res) => {
-  res.render("busquedaPaciente"); // Redirige a la vista de búsqueda de pacientes
-});
-
-// Rutas del recepcionista
-app.get("/recepcionista", (req, res) => {
-  if (
-    req.isAuthenticated() &&
-    (req.user.rol === "recepcionista" ||
-      req.user.rol === "tecnico" ||
-      req.user.rol === "bioquimico" ||
-      req.user.rol === "admin")
-  ) {
-    res.render("recepcionista", { nombreUsuario: req.user.nombre_usuario });
-  } else {
-    res.status(403).send("Acceso no autorizado");
-  }
-});
-//ruta del tecnico
-app.get("/tecnico", (req, res) => {
-  if (
-    req.isAuthenticated() &&
-    (req.user.rol === "tecnico" ||
-      req.user.rol === "bioquimico" ||
-      req.user.rol === "admin")
-  ) {
-    res.render("tecnico", { nombreUsuario: req.user.nombre_usuario });
-  } else {
-    res.status(403).send("Acceso no autorizado");
-  }
-});
-//ruta del bioquimico
-app.get("/bioquimico", (req, res) => {
-  if (
-    req.isAuthenticated() &&
-    (req.user.rol === "bioquimico" || req.user.rol === "admin")
-  ) {
-    res.render("bioquimico", { nombreUsuario: req.user.nombre_usuario });
-  } else {
-    res.status(403).send("Acceso no autorizado");
-  }
-});
-//vista admin principal
-app.get("/admin", (req, res) => {
-  if (req.isAuthenticated() && req.user.rol === "admin") {
-    res.render("admin", { nombreUsuario: req.user.nombre_usuario });
-  } else {
-    res.status(403).send("Acceso no autorizado");
-  }
-});
-//vista admin para crear un usuario
-app.get("/admin/crear-usuario", (req, res) => {
-  if (req.isAuthenticated() && req.user.rol === "admin") {
-    res.render("crear-usuario");
-  } else {
-    res.status(403).send("Acceso no autorizado");
-  }
-});
-//vista admin para actualizar un usuario
-app.get("/admin/actualizarUsuarioAdm", (req, res) => {
-  if (req.isAuthenticated() && req.user.rol === "admin") {
-    res.render("actualizarUsuarioAdm");
-  } else {
-    res.status(403).send("Acceso no autorizado");
-  }
-});
-app.get("/admin/actualizarUsuarioAdm/:nombre", async (req, res) => {
-  if (req.isAuthenticated() && req.user.rol === "admin") {
-    try {
-      const nombreBusqueda = req.params.nombre;
-      const usuario = await User.findOne({
-        where: { nombre_usuario: nombreBusqueda },
-      });
-
-      if (usuario) {
-        // Encontro al usuario, envía la respuesta JSON
-        res.json({ usuario });
-      } else {
-        // Usuario no encontrado, envía un mensaje como respuesta JSON
-        res.json({ mensaje: "Usuario no encontrado" });
-      }
-    } catch (error) {
-      console.error("Error en la búsqueda:", error);
-      res.status(500).json({ error: "Error en la búsqueda" });
-    }
-  } else {
-    res.status(403).send("Acceso no autorizado");
-  }
-});
+// Ruta GET para redirigir al usuario según su rol después del inicio de sesión
 app.get("/redirigirUsuario", (req, res) => {
   if (!req.isAuthenticated()) {
     return res.redirect("/"); // Redirigir a la página de inicio de sesión si no está autenticado
@@ -250,6 +211,96 @@ app.get("/redirigirUsuario", (req, res) => {
       return res.status(403).send("Acceso no autorizado");
   }
 });
+
+// Ruta GET para la vista de recepcionista
+app.get("/recepcionista", (req, res) => {
+  if (
+    req.isAuthenticated() &&
+    (req.user.rol === "recepcionista" ||
+      req.user.rol === "tecnico" ||
+      req.user.rol === "bioquimico" ||
+      req.user.rol === "admin")
+  ) {
+    res.render("recepcionista", { nombreUsuario: req.user.nombre_usuario });
+  } else {
+    res.status(403).send("Acceso no autorizado");
+  }
+});
+
+// Ruta GET para la vista de técnico
+app.get("/tecnico", (req, res) => {
+  if (
+    req.isAuthenticated() &&
+    (req.user.rol === "tecnico" || req.user.rol === "bioquimico" || req.user.rol === "admin")
+  ) {
+    res.render("tecnico", { nombreUsuario: req.user.nombre_usuario });
+  } else {
+    res.status(403).send("Acceso no autorizado");
+  }
+});
+
+// Ruta GET para la vista de bioquímico
+app.get("/bioquimico", (req, res) => {
+  if (req.isAuthenticated() && (req.user.rol === "bioquimico" || req.user.rol === "admin")) {
+    res.render("bioquimico", { nombreUsuario: req.user.nombre_usuario });
+  } else {
+    res.status(403).send("Acceso no autorizado");
+  }
+});
+
+// Ruta GET para la vista de administrador
+app.get("/admin", (req, res) => {
+  if (req.isAuthenticated() && req.user.rol === "admin") {
+    res.render("admin", { nombreUsuario: req.user.nombre_usuario });
+  } else {
+    res.status(403).send("Acceso no autorizado");
+  }
+});
+
+// Ruta GET para la vista de creación de usuario para administrador
+app.get("/admin/crear-usuario", (req, res) => {
+  if (req.isAuthenticated() && req.user.rol === "admin") {
+    res.render("crear-usuario");
+  } else {
+    res.status(403).send("Acceso no autorizado");
+  }
+});
+
+// Ruta GET para la vista de actualización de usuario para administrador
+app.get("/admin/actualizarUsuarioAdm", (req, res) => {
+  if (req.isAuthenticated() && req.user.rol === "admin") {
+    res.render("actualizarUsuarioAdm");
+  } else {
+    res.status(403).send("Acceso no autorizado");
+  }
+});
+
+// Ruta GET para buscar un usuario por nombre para administrador
+app.get("/admin/actualizarUsuarioAdm/:nombre", async (req, res) => {
+  if (req.isAuthenticated() && req.user.rol === "admin") {
+    try {
+      const nombreBusqueda = req.params.nombre;
+      const usuario = await User.findOne({
+        where: { nombre_usuario: nombreBusqueda },
+      });
+
+      if (usuario) {
+        // Encontró al usuario, envía la respuesta JSON
+        res.json({ usuario });
+      } else {
+        // Usuario no encontrado, envía un mensaje como respuesta JSON
+        res.json({ mensaje: "Usuario no encontrado" });
+      }
+    } catch (error) {
+      console.error("Error en la búsqueda:", error);
+      res.status(500).json({ error: "Error en la búsqueda" });
+    }
+  } else {
+    res.status(403).send("Acceso no autorizado");
+  }
+});
+
+// Ruta POST para actualizar un usuario por administrador
 app.post("/admin/actualizar-usuario", async (req, res) => {
   try {
     // Obtén los datos del formulario enviado por el cliente
@@ -289,10 +340,11 @@ app.post("/admin/actualizar-usuario", async (req, res) => {
     res.status(500).send("Error en el servidor");
   }
 });
+
+// Ruta DELETE para eliminar un usuario por administrador
 app.delete("/admin/eliminarUsuarioAdm/:nombre", async (req, res) => {
   const nombreUsuario = req.params.nombre;
 
-  // Agregar lógica para buscar y eliminar el usuario en la base de datos
   try {
     const usuario = await User.findOne({
       where: { nombre_usuario: nombreUsuario },
@@ -311,6 +363,7 @@ app.delete("/admin/eliminarUsuarioAdm/:nombre", async (req, res) => {
   }
 });
 
+// Ruta POST para crear un usuario por administrador
 app.post("/admin/crear-usuario", async (req, res) => {
   if (req.isAuthenticated() && req.user.rol === "admin") {
     const { nombre, correo_electronico, password, rol } = req.body;
@@ -348,71 +401,30 @@ app.post("/admin/crear-usuario", async (req, res) => {
     res.status(403).send("Acceso no autorizado");
   }
 });
+
+// Ruta GET para la vista de muestras
 app.get("/muestras", async (req, res) => {
   try {
-    // Render the muestras.pug view
+    // Renderiza la vista 'muestras.pug'
     res.render("muestras");
   } catch (error) {
-    console.error("Error rendering muestras view:", error);
-    res.status(500).send("Internal Server Error");
+    console.error("Error al renderizar la vista de muestras:", error);
+    res.status(500).send("Error interno del servidor");
   }
 });
-// verifica el acceso de roles
-function checkRole(roles) {
-  return (req, res, next) => {
-    if (
-      req.isAuthenticated() &&
-      (roles.includes(req.user.rol) || req.user.rol === "admin")
-    ) {
-      // Si el usuario tiene uno de los roles específicos o es un admin, permite el acceso.
-      next();
-    } else {
-      res.status(403).send("Acceso no autorizado");
-    }
-  };
-}
-//rutas
-app.use("/", pacienteRuta);
-app.use("/buscarOrdenes", buscarOrdenesRuta);
-app.use("/orden", OrdenesTrabajoRuta);
-app.use("/examen", checkRole(["tecnico", "bioquimico", "admin"]), examenRuta);
-app.use(
-  "/determinacion",
-  checkRole(["tecnico", "bioquimico", "admin"]),
-  determinacionesRuta
-);
-app.use(
-  "/valoresreferencia",
-  checkRole(["tecnico", "bioquimico", "admin"]),
-  valoresRefRuta
-);
-app.use(
-  "/modificar-examen",
-  checkRole(["tecnico", "bioquimico", "admin"]),
-  modificarExamenRuta
-);
-app.use(
-  "/modificar-determinacion",
-  checkRole(["tecnico", "bioquimico", "admin"]),
-  modificarDeterminacionRuta
-);
-app.use(
-  "/buscar-valores",
-  checkRole(["tecnico", "bioquimico", "admin"]),
-  modificarValrefRuta
-);
 
-//Cierre de sesion.
+// Ruta GET para cerrar sesión
 app.get("/logout", (req, res) => {
   req.logout(function (err) {
     if (err) {
       console.error("Error al cerrar sesión:", err);
       return res.status(500).send("Error al cerrar sesión");
     }
-    console.log("sesion cerrada");
+    console.log("Sesión cerrada");
     res.redirect("/"); // Redirige al usuario a la página de inicio o a otra página deseada
   });
 });
+
 // Ruta GET para cargar la vista de cambio de contraseña
 app.get("/cambiarContrasena", (req, res) => {
   res.render("cambiarContrasena", {
@@ -431,7 +443,7 @@ app.post("/cambiar-contrasena", (req, res) => {
 
   // Verificar si la contraseña actual ingresada coincide con la del usuario
   if (!bcrypt.compareSync(contrasenaActual, usuario.password)) {
-    console.log("Las contraseña actual no coinciden");
+    console.log("Las contraseñas actuales no coinciden");
     return res.render("cambiarContrasena", {
       mensajeContrasenaIncorrecta: true,
       mensajeContrasenasNoCoinciden: false,
@@ -444,7 +456,6 @@ app.post("/cambiar-contrasena", (req, res) => {
     console.log("Las contraseñas no coinciden");
 
     return res.render("cambiarContrasena", {
-      message: "Las contraseñas no coinciden.",
       mensajeContrasenaIncorrecta: false,
       mensajeContrasenasNoCoinciden: true,
     });
@@ -471,5 +482,8 @@ sequelize
     });
   })
   .catch((error) => {
-    console.error("Error al sincronizar modelos con la base de datos:", error);
+    console.error(
+      "Error al sincronizar modelos con la base de datos:",
+      error
+    );
   });

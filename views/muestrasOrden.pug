@@ -13,7 +13,7 @@ block content
             li Id Paciente: #{muestra.id_Paciente}
             li Nombre Paciente: #{muestra.Paciente.nombre} #{muestra.Paciente.apellido}
             li Tipo de Muestra: #{muestra.Tipo_Muestra}
-            li Fecha de Recepción: #{muestra.Fecha_Recepcion ? muestra.Fecha_Recepcion.toLocaleDateString() : ''}
+            li Fecha de Recepción: #{muestra.Fecha_Recepcion ? muestra.Fecha_Recepcion.toLocaleString('es-AR') : ''}
             li Estado: #{muestra.estado}
           a.btn.btn-primary.mb-2(href=`/añadirResultados/${muestra.id_Muestra}`) Añadir Resultados
           button.btn.btn-success.mb-2(type="button", onclick=`generarPDF('${muestra.id_Muestra}')`) Imprimir
