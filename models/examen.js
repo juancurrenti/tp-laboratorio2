@@ -18,6 +18,9 @@ const Examen = sequelize.define(
     codigo: {
       type: DataTypes.STRING,
     },
+    tipo_Muestra:{
+      type: DataTypes.STRING
+    },
     estado: {
       type: DataTypes.BOOLEAN,
     },

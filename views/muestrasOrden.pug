@@ -1,30 +1,30 @@
 extends layout
-
 block content
   h1 Muestras de la Orden #{id_orden}
 
   if muestras
-    each muestra in muestras
-      .card.mb-3
-        .card-body
-          ul.list-unstyled
-            li Id Muestra: #{muestra.id_Muestra}
-            li Id Orden: #{muestra.id_Orden}
-            li Id Paciente: #{muestra.id_Paciente}
-            li Nombre Paciente: #{muestra.Paciente.nombre} #{muestra.Paciente.apellido}
-            li Tipo de Muestra: #{muestra.Tipo_Muestra}
-            li Fecha de Recepción: #{muestra.Fecha_Recepcion ? muestra.Fecha_Recepcion.toLocaleString('es-AR') : ''}
-            li Estado: #{muestra.estado}
-          a.btn.btn-primary.mb-2(href=`/añadirResultados/${muestra.id_Muestra}`) Añadir Resultados
-          button.btn.btn-success.mb-2(type="button", onclick=`generarPDF('${muestra.id_Muestra}')`) Imprimir
-
+    .row.row-cols-1.row-cols-md-3
+      each muestra in muestras
+        .col.mb-4
+          .card
+            .card-body
+              ul.list-unstyled
+                li Id Muestra: #{muestra.id_Muestra}
+                li Id Orden: #{muestra.id_Orden}
+                li Id Paciente: #{muestra.id_Paciente}
+                li Nombre Paciente: #{muestra.Paciente.nombre} #{muestra.Paciente.apellido}
+                li Tipo de Muestra: #{muestra.Tipo_Muestra}
+                li Fecha de Recepción: #{muestra.Fecha_Recepcion ? muestra.Fecha_Recepcion.toLocaleString('es-AR') : ''}
+                li Estado: #{muestra.estado}
+              a.btn.btn-primary(href=`/muestras/mostrar/aniadirResultados/${muestra.id_Muestra}`) Añadir Resultados
+              button.btn.btn-success(type="button", onclick=`generarPDF('${muestra.id_Muestra}')`) Imprimir
   else
     p #{mensaje}
 
   script.
     async function generarPDF(idMuestra) {
       try {
-        const info = await fetch(`mostrar/generarPDFMuestra/${idMuestra}`);
+        const info = await fetch(`/mostrar/generarPDFMuestra/${idMuestra}`);
         if (!info.ok) {
           throw new Error(`HTTP error! Status: ${info.status}`);
         }
@@ -51,8 +51,3 @@ block content
         alert('Error al generar PDF.');
       }
     }
-
-
-
-
-

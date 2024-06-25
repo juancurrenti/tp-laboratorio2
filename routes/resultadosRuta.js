@@ -3,6 +3,10 @@ const router = express.Router();
 const Muestra = require("../models/muestra");
 const Paciente = require("../models/paciente");
 const PDFDocument = require("pdfkit");
+const Examen = require("../models/examen");
+const Determinacion = require("../models/determinacion");
+const Resultado = require("../models/resultados");
+const ValoresReferencia = require('../models/valoresReferencia');
 const fs = require("fs");
 
 // Ruta para buscar y mostrar muestras asociadas a una orden
@@ -80,5 +84,83 @@ router.get("/mostrar/:id_orden/generarPDFMuestra/:idMuestra", async (req, res) =
     res.status(500).json({ error: "Error al obtener muestra para PDF" });
   }
 });
+// Ruta para mostrar la vista de añadir resultados
+router.get("/mostrar/aniadirResultados/:id_muestra", async (req, res) => {
+  const id_muestra = req.params.id_muestra;
+
+  try {
+    // Buscar la muestra por ID
+    const muestra = await Muestra.findByPk(id_muestra);
+
+    if (!muestra) {
+      return res.status(404).json({ mensaje: "Muestra no encontrada." });
+    }
+
+    // Obtener el tipo de muestra
+    const tipo_muestra = muestra.Tipo_Muestra;
+
+    // Consultar los exámenes que coinciden con el tipo de muestra
+    const examenes = await Examen.findAll({ where: { tipo_muestra } });
+
+    // Obtener todos los id_examen
+    const id_examenes = examenes.map(examen => examen.id_examen);
+
+    // Consultar las determinaciones que coinciden con los id_examen
+    const determinaciones = await Determinacion.findAll({
+      where: { id_examen: id_examenes }
+    });
+
+    res.render("aniadirResultados", { muestra, determinaciones });
+  } catch (error) {
+    console.error("Error al buscar determinaciones:", error);
+    res.status(500).json({ error: "Error al buscar determinaciones" });
+  }
+});
+
+// Ruta para obtener valores de referencia según la determinación seleccionada
+router.get('/mostrar/aniadirResultados/:id_muestra/valoresReferencia/:id_determinacion', async (req, res) => {
+  const id_determinacion = req.params.id_determinacion;
+
+  try {
+    const valoresReferencia = await ValoresReferencia.findAll({
+      where: { id_Determinacion: id_determinacion },
+      attributes: {
+        exclude: ['estado'], // Excluir el campo "estado"
+      },
+    });
+
+    res.json(valoresReferencia);
+  } catch (error) {
+    console.error('Error al obtener valores de referencia:', error);
+    res.status(500).json({ error: 'Error al obtener valores de referencia' });
+  }
+});
+
+
+// Ruta para añadir un resultado
+router.post("/mostrar/aniadirResultados/:id_muestra", async (req, res) => {
+  const id_muestra = req.params.id_muestra;
+  const { id_determinacion, valor_final } = req.body;
+
+  try {
+    // Crear un nuevo resultado
+    await Resultado.create({
+      id_Muestra: id_muestra,
+      id_determinacion,
+      valor_final,
+      fecha_resultado: new Date()
+    });
+
+    // Obtener id_Orden desde la muestra
+    const muestra = await Muestra.findByPk(id_muestra);
+    const id_Orden = muestra.id_Orden; // Captura id_Orden
+
+    res.redirect(`/muestras/mostrar/${id_Orden}`); // Redirige a la vista de muestras
+  } catch (error) {
+    console.error("Error al añadir resultado:", error);
+    res.status(500).json({ error: "Error al añadir resultado" });
+  }
+});
+
 
 module.exports = router;

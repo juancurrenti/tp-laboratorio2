@@ -1,8 +1,9 @@
 const { DataTypes } = require("sequelize");
 const sequelize = require("../config/database");
 const Determinacion = require("./determinacion");
+
 const ValoresReferencia = sequelize.define(
-  "valoresreferencia",
+  "ValoresReferencia",
   {
     id_ValorReferencia: {
       type: DataTypes.INTEGER,
@@ -39,7 +40,10 @@ const ValoresReferencia = sequelize.define(
   },
   {
     timestamps: false,
+    tableName: "valoresreferencia",
   }
 );
+
 ValoresReferencia.belongsTo(Determinacion, { foreignKey: "id_Determinacion" });
+
 module.exports = ValoresReferencia;

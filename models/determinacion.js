@@ -10,7 +10,10 @@ const Determinacion = sequelize.define(
       primaryKey: true,
       autoIncrement: true,
     },
-    Nombre_Determinacion: {
+    id_ValorReferencia:{
+      type: DataTypes.INTEGER,
+      allowNull: true,
+    },    Nombre_Determinacion: {
       type: DataTypes.STRING,
     },
     Valor: {

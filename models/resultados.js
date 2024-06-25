@@ -18,7 +18,7 @@ const Resultado = sequelize.define(
         key: "id_Muestra",
       },
     },
-    id_Determinacion: {
+    id_determinacion: {
       type: DataTypes.INTEGER,
       allowNull: false,
       references: {
@@ -26,6 +26,13 @@ const Resultado = sequelize.define(
         key: "id_Determinacion",
       },
     },
+    valor_final:{
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
+    fecha_resultado:{
+      type: DataTypes.DATE,
+    }
   },
   {
     tableName: "resultados",
