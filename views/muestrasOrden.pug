@@ -1,4 +1,5 @@
 extends layout
+
 block content
   h1 Muestras de la Orden #{id_orden}
 
@@ -17,14 +18,14 @@ block content
                 li Fecha de Recepción: #{muestra.Fecha_Recepcion ? muestra.Fecha_Recepcion.toLocaleString('es-AR') : ''}
                 li Estado: #{muestra.estado}
               a.btn.btn-primary(href=`/muestras/mostrar/aniadirResultados/${muestra.id_Muestra}`) Añadir Resultados
-              button.btn.btn-success(type="button", onclick=`generarPDF('${muestra.id_Muestra}')`) Imprimir
+              button.btn.btn-success(type="button", onclick=`generarPDF('${muestra.id_Muestra}', '${id_orden}')`) Imprimir
   else
     p #{mensaje}
 
   script.
-    async function generarPDF(idMuestra) {
+    async function generarPDF(idMuestra, idOrden) {
       try {
-        const info = await fetch(`/mostrar/generarPDFMuestra/${idMuestra}`);
+        const info = await fetch(`/muestras/${idOrden}/generarPDFMuestra/${idMuestra}`);
         if (!info.ok) {
           throw new Error(`HTTP error! Status: ${info.status}`);
         }

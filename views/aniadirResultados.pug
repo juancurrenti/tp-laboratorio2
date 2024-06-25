@@ -7,6 +7,7 @@ block content
     .form-group
       label(for="id_determinacion") Determinación
       select#id_determinacion.form-control(name="id_determinacion" required)
+        option(value="") -- Seleccionar Determinación --
         each determinacion in determinaciones
           option(value=determinacion.id_Determinacion) #{determinacion.Nombre_Determinacion}
 

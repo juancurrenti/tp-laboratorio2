@@ -33,7 +33,7 @@ router.get("/mostrar/:id_orden", async (req, res) => {
 });
 
 // Ruta para generar el PDF de una muestra específica utilizando pdfkit
-router.get("/mostrar/:id_orden/generarPDFMuestra/:idMuestra", async (req, res) => {
+router.get("/:id_orden/generarPDFMuestra/:idMuestra", async (req, res) => {
   const idMuestra = req.params.idMuestra;
 
   try {
