@@ -17,3 +17,8 @@ body {
 .buttons {
   margin-right: 200px;
 }
+
+.btn-padding-right {
+  display: block;
+  margin-top: 3px;
+}

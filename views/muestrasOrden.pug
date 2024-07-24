@@ -17,10 +17,12 @@ block content
                 li Tipo de Muestra: #{muestra.Tipo_Muestra}
                 li Fecha de Recepción: #{muestra.Fecha_Recepcion ? muestra.Fecha_Recepcion.toLocaleString('es-AR') : ''}
                 li Estado: #{muestra.estado}
-              a.btn.btn-primary(href=`/muestras/mostrar/aniadirResultados/${muestra.id_Muestra}`) Añadir Resultados
-              button.btn.btn-success(type="button", onclick=`generarPDF('${muestra.id_Muestra}', '${id_orden}')`) Imprimir
+              a.btn.btn-primary.btn-padding-right(href=`/muestras/mostrar/aniadirResultados/${muestra.id_Muestra}`) Añadir Resultados
+              a.btn.btn-secondary.btn-padding-right(href="") Modificar Muestra
+              button.btn.btn-success.btn-padding-right(type="button", onclick=`generarPDF('${muestra.id_Muestra}', '${id_orden}')`) Imprimir
   else
     p #{mensaje}
+  h1 Validar Orden de trabajo
 
   script.
     async function generarPDF(idMuestra, idOrden) {

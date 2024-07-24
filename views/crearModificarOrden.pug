@@ -11,7 +11,7 @@ block content
   form(action=`/buscarOrdenes/crear-modificar-orden/${ordenTrabajoExistente.id_Orden}`, method="POST")
     .form-group
       label(for="idPaciente") ID del Paciente:
-      input(type="text", name="idPaciente", value=ordenTrabajoExistente.id_Paciente, class="form-control", required)
+      input(type="text", name="idPaciente", value=ordenTrabajoExistente.id_Paciente, class="form-control", readonly)
 
     .form-group
       label(for="Fecha_Creacion") Fecha de Creación:

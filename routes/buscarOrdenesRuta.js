@@ -5,6 +5,8 @@ const Paciente = require("../models/paciente"); // Asegúrate de tener un modelo
 const Muestra = require("../models/muestra");
 const Examen = require("../models/examen");
 const OrdenesExamen = require("../models/ordenes_examen");
+const { Op } = require('sequelize');
+
 // Ruta para buscar un paciente y mostrar sus órdenes de trabajo
 router.get("/ordenes", (req, res) => {
   res.render("buscarPacientesOrdenes"); // Renderiza la vista inicial para buscar paciente y órdenes
@@ -18,7 +20,9 @@ router.post("/ordenes", async (req, res) => {
 
     // Buscar órdenes de trabajo por id_paciente
     const ordenesTrabajo = await OrdenTrabajo.findAll({
-      where: { dni: dniPaciente },
+      where: { dni: dniPaciente,
+        estado: {[Op.not]: 'cancelada'}
+       },
       attributes: [
         "id_Orden",
         "id_Paciente",
